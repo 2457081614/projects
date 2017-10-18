@@ -1,0 +1,749 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<div style="width: 100%" id="div">
+		<br />
+		<h:form>
+			<p:dataTable id="customerListTable" var="customer"
+				value="#{customerView.customerList}" rows="6"
+				binding="#{customerListTable}" sortBy="#{customer.name}"
+				filteredValue="#{customerView.filteredCustomerList}"
+				paginatorPosition="bottom" paginator="true"
+				rowsPerPageTemplate="6,10,15,20"
+				paginatorTemplate="{CurrentPageReport} 
+											{FirstPageLink}
+											{PreviousPageLink}
+											{PageLinks}
+											{NextPageLink}
+											{LastPageLink}
+											{RowsPerPageDropdown}"
+				currentPageReportTemplate="{totalRecords}
+									 ({currentPage} of {totalPages})"
+				rowKey="#{customer.id}"
+				selection="#{customerView.selectedCustomerList}"
+				widgetVar="customerListTable" rowSelectMode="add">
+
+				<p:column selectionMode="multiple"
+					style="width:16px;text-align:center" />
+
+				<f:facet name="header">
+					<p:outputPanel style="text-align: left;font-weight:normal">
+						<h:outputText value="请输入过滤关键字：" />
+						<p:inputText id="globalFilter"
+							onkeyup="PF('customerListTable').filter()" style="width:150px"
+							placeholder="关键字" />
+
+						<p:commandButton value="定制任务" ajax="true" icon="ui-icon-plusthick"
+							style="margin-left:2%;" update="@form:customerListTable"
+							action="#{customerView.validateSelectedCustomerList}">
+						</p:commandButton>
+
+						<p:commandButton value="批量删除" ajax="true"
+							icon="ui-icon-minusthick" style="margin-left:2%;"
+							onclick="PF('dlg_confirmToDeleteBatch').show()">
+						</p:commandButton>
+					</p:outputPanel>
+				</f:facet>
+
+				<p:column headerText="姓名" filterBy="#{customer.name}"
+					filterable="false" filterMatchMode="contains"
+					styleClass="nameColumn">
+					<p:commandLink title="点击查看客户更多信息" value="#{customer.name}"
+						style="color:#003a6c;text-decoration: underline;" process="@this"
+						update="@form:dlg_customerDetails:detail" icon="ui-icon-search"
+						oncomplete="PF('dlg_customerDetails').show()" immediate="true">
+						<f:setPropertyActionListener value="#{customer}"
+							target="#{customerView.customer}" />
+					</p:commandLink>
+				</p:column>
+
+				<p:column headerText="院系" filterBy="#{customer.academy}"
+					filterable="false" filterMatchMode="contains" styleClass=""
+					style="width:80px;">
+					<h:outputText value="#{customer.academy}" />
+				</p:column>
+
+				<p:column headerText="班级" filterBy="#{customer.className}"
+					filterable="false" filterMatchMode="contains"
+					styleClass="classNameColumn" style="width:110px;">
+					<h:outputText value="#{customer.className}" />
+				</p:column>
+
+				<p:column headerText="联系电话" filterBy="#{customer.tel}"
+					filterMatchMode="contains" filterable="false"
+					styleClass="telColumn">
+					<h:outputText value="#{customer.tel}" />
+				</p:column>
+
+				<p:column headerText="QQ" filterBy="#{customer.qq}"
+					filterMatchMode="contains" filterable="false" styleClass="qqColumn">
+					<h:outputText value="#{customer.qq}" />
+				</p:column>
+
+				<p:column headerText="住址" filterBy="#{customer.address}"
+					filterMatchMode="contains" filterable="false"
+					styleClass="addressColumn">
+					<h:outputText value="#{customer.address}" />
+				</p:column>
+
+				<p:column headerText="交互信息" styleClass="modificationColumn">
+					<p:commandButton title="点击查看与客户的交互信息" value="查看"
+						update="@form:dlg_communicationInfo:taskListTable"
+						action="#{taskView.findTheCustomerHistory(customer.id)}"
+						icon="fa fa-fw fa-eye"
+						oncomplete="PF('dlg_communicationInfo').show()" process="@this">
+						<f:setPropertyActionListener value="#{customer}"
+							target="#{customerView.customer}" />
+					</p:commandButton>
+				</p:column>
+
+				<p:column headerText="修改客户信息" styleClass="modificationColumn">
+					<p:commandButton title="修改客户信息" value="修改"
+						update="@form:dlg_updateCustomerInfo" process="@this"
+						oncomplete="PF('dlg_updateCustomerInfo').show()"
+						icon="ui-icon-scissors" immediate="true">
+						<f:setPropertyActionListener value="#{customer}"
+							target="#{customerView.customer}" />
+					</p:commandButton>
+				</p:column>
+
+				<p:column headerText="删除客户" styleClass="deletionColumn">
+					<p:commandButton title="删除此客户" value="删除" icon="ui-icon-trash"
+						ajax="true" oncomplete="PF('dlg_confirmToDeleteOne').show()"
+						immediate="true">
+						<f:setPropertyActionListener value="#{customer}"
+							target="#{customerView.customer}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+
+
+			<!-- 查看客户交涉记录对话框 -->
+			<!-- 查看客户交涉记录对话框 -->
+			<!-- 查看客户交涉记录对话框 -->
+			<p:dialog header="查看客户交互记录" widgetVar="dlg_communicationInfo"
+				modal="true" id="dlg_communicationInfo" showEffect="blind"
+				hideEffect="clip" resizable="false" width="1000">
+				<p:dataTable id="taskListTable" var="taskInfo"
+					value="#{taskView.historyTaskListOfCustomer}" rows="4"
+					binding="#{taskListTable}" sortBy="#{taskInfo.plannedFinshDate}"
+					filteredValue="#{taskView.filteredTaskList}"
+					paginatorPosition="bottom" paginator="true"
+					rowsPerPageTemplate="4,6,8,10"
+					paginatorTemplate="{CurrentPageReport} 
+											{FirstPageLink}
+											{PreviousPageLink}
+											{PageLinks}
+											{NextPageLink}
+											{LastPageLink}
+											{RowsPerPageDropdown}"
+					currentPageReportTemplate="{totalRecords}
+									 ({currentPage} of {totalPages})"
+					rowKey="#{taskInfo.id}" widgetVar="finishedTaskListTable">
+
+
+					<f:facet name="header">
+						<p:outputPanel style="text-align: left;font-weight:normal">
+							<h:outputText value="请输入过滤条件：" />
+							<p:inputText id="globalFilter"
+								onkeyup="PF('taskListTable').filter()" style="width:150px"
+								placeholder="过滤" />
+
+						</p:outputPanel>
+					</f:facet>
+
+					<p:column headerText="任务描述" filterBy="#{taskInfo.taskDescription}"
+						filterable="false" filterMatchMode="contains" style="width:300px;">
+						<h:outputText value="#{taskInfo.taskDescription}" />
+					</p:column>
+
+					<p:column headerText="计划完成时间"
+						filterBy="#{taskInfo.plannedFinishedDate}"
+						filterMatchMode="contains" filterable="false" style="width:85px;">
+						<h:outputText value="#{taskInfo.plannedFinishedDate}" />
+					</p:column>
+					<p:column headerText="实际完成时间" filterBy="#{taskInfo.finishedDate}"
+						filterMatchMode="contains" filterable="false" style="width:85px;">
+						<h:outputText value="#{taskInfo.finishedDate}" />
+					</p:column>
+					<p:column headerText="任务状态" filterBy="#{taskInfo.status}"
+						filterMatchMode="contains" filterable="false" style="width:80px;">
+						<h:outputText value="#{taskInfo.status}" />
+					</p:column>
+
+					<p:column headerText="相关兼职" filterBy="#{taskInfo.parttimeStaff}"
+						filterMatchMode="contains" filterable="false" style="width:80px;">
+						<h:outputText value="#{taskInfo.parttimeStaff.name}" />
+					</p:column>
+
+					<p:column headerText="相关问题" filterMatchMode="contains"
+						filterable="false" style="width:80px;">
+						<p:commandButton title="相关问卷" value="相关问卷" process="@this"
+							action="#{taskView.getAnswerListByTask}"
+							oncomplete="PF('dlg_questionnaire').show()"
+							update="@form:questionListPanel">
+							<f:setPropertyActionListener value="#{taskInfo}"
+								target="#{taskView.task}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+			</p:dialog>
+
+			<!-- 相关问卷 -->
+			<!-- 相关问卷 -->
+			<!-- 相关问卷 -->
+			<p:dialog id="dlg_questionnaire" widgetVar="dlg_questionnaire"
+				header="相关问题" modal="true" showEffect="blind" hideEffect="clip">
+				<p:outputPanel id="questionListPanel">
+					<p:dataScroller mode="inline" scrollHeight="300"
+						value="#{customerView.oneList}">
+						<h:panelGrid columns="5" style="width:500px;">
+							<p:outputPanel>
+								<table border="0">
+									<c:forEach items="#{taskView.questionList}" var="question"
+										varStatus="q">
+										<tr>
+											<span
+												style="float: left; font-size: 16px; color: DarkSlateGray">#{q.index+1}.#{question}</span>
+										</tr>
+										<tr>
+											<p:inputTextarea rows="2" cols="25" style="width:500px;"
+												disabled="disabled" value="#{taskView.answerList[q.index]}" />
+										</tr>
+									</c:forEach>
+								</table>
+							</p:outputPanel>
+						</h:panelGrid>
+					</p:dataScroller>
+				</p:outputPanel>
+			</p:dialog>
+
+			<!-- 查看客户信息对话框 -->
+			<!-- 查看客户信息对话框 -->
+			<!-- 查看客户信息对话框 -->
+			<p:dialog id="dlg_customerDetails" header="详细信息"
+				widgetVar="dlg_customerDetails" modal="true" showEffect="size"
+				hideEffect="size" resizable="false" width="500px">
+				<p:outputPanel style="text-align:center;" id="detail">
+					<p:panelGrid rendered="#{not empty customerView.customer}">
+						<table class="common_market_tab">
+							<tr>
+								<!--第1行开始-->
+								<th>姓名</th>
+								<td colspan="3"><h:outputText
+										value="#{customerView.customer.name}" /></td>
+								<th>家乡</th>
+								<td colspan="3"><h:outputText
+										value="#{customerView.customer.hometown}" /></td>
+							</tr>
+							<!--第1行结束-->
+
+							<tr>
+								<!--第2行开始-->
+								<th>学校</th>
+								<td colspan="3"><h:outputText
+										value="#{customerView.customer.school}" /></td>
+								<th>院系</th>
+								<td colspan="3"><h:outputText
+										value="#{customerView.customer.academy}" /></td>
+							</tr>
+							<tr>
+								<!--第4行开始-->
+								<th>年级</th>
+								<td colspan="3"><h:outputText
+										value="#{customerView.customer.grade}" /></td>
+								<th>班级</th>
+								<td colspan="3"><h:outputText
+										value="#{customerView.customer.className}" /></td>
+							</tr>
+
+
+
+							<tr>
+								<!--第6行开始-->
+								<th>电话</th>
+								<td colspan="3"><h:outputText
+										value="#{customerView.customer.tel}" /></td>
+								<th>QQ</th>
+								<td colspan="3"><h:outputText
+										value="#{customerView.customer.qq}" /></td>
+							</tr>
+							<!--第6行结束-->
+
+							<tr>
+								<th>兴趣</th>
+								<td colspan="3"><h:outputText
+										value="#{customerView.customer.interest}" /></td>
+								<th>生日</th>
+								<td colspan="3"><h:outputText
+										value="#{customerView.customer.birthday}" /></td>
+							</tr>
+
+							<tr>
+								<th>住址</th>
+								<td colspan="3"><h:outputText
+										value="#{customerView.customer.address}" /></td>
+								<th>备注</th>
+								<td colspan="3"><h:outputText
+										value="#{customerView.customer.remarks}" /></td>
+							</tr>
+						</table>
+					</p:panelGrid>
+				</p:outputPanel>
+			</p:dialog>
+
+
+			<!-- 修改客户信息对话框 -->
+			<p:dialog header="修改客户信息" widgetVar="dlg_updateCustomerInfo"
+				modal="true" id="dlg_updateCustomerInfo" showEffect="size"
+				hideEffect="size" resizable="false" width="500px">
+				<p:outputPanel style="text-align:center;" id="cusomterInfo">
+					<p:panelGrid>
+						<table class="common_market_tab">
+							<tr>
+								<!--第1行开始-->
+								<th>姓名</th>
+								<td colspan="3"><p:inputText
+										value="#{customerView.customer.name}" /></td>
+								<th>家乡</th>
+								<td colspan="3"><p:inputText
+										value="#{customerView.customer.hometown}" /></td>
+							</tr>
+							<!--第1行结束-->
+
+							<tr>
+								<!--第2行开始-->
+								<th>学校</th>
+								<td colspan="3"><p:inputText
+										value="#{customerView.customer.school}" /></td>
+								<th>院系</th>
+								<td colspan="3"><p:inputText
+										value="#{customerView.customer.academy}" /></td>
+							</tr>
+							<tr>
+								<!--第4行开始-->
+								<th>年级</th>
+								<td colspan="3"><p:inputText
+										value="#{customerView.customer.grade}" /></td>
+								<th>班级</th>
+								<td colspan="3"><p:inputText
+										value="#{customerView.customer.className}" /></td>
+							</tr>
+
+
+
+							<tr>
+								<!--第6行开始-->
+								<th>电话</th>
+								<td colspan="3"><p:inputText
+										value="#{customerView.customer.tel}" /></td>
+								<th>QQ</th>
+								<td colspan="3"><p:inputText
+										value="#{customerView.customer.qq}" /></td>
+							</tr>
+							<!--第6行结束-->
+
+							<tr>
+								<th>兴趣</th>
+								<td colspan="3"><p:inputText
+										value="#{customerView.customer.interest}" /></td>
+								<th>生日</th>
+								<td colspan="3"><p:inputText value="1997-02-14" /></td>
+							</tr>
+
+							<tr>
+								<th>住址</th>
+								<td colspan="3"><p:inputText
+										value="#{customerView.customer.address}" /></td>
+								<th>备注</th>
+								<td colspan="3"><p:inputText
+										value="#{customerView.customer.remarks}" /></td>
+							</tr>
+						</table>
+						<p:commandButton value="取消"
+							oncomplete="PF('dlg_updateCustomerInfo').hide()"
+							update="@form:dlg_updateCustomerInfo:cusomterInfo"
+							icon="fa fa-fw fa-remove" immediate="true">
+							`	</p:commandButton>
+
+						<p:commandButton value="确认" style="margin-left:30%;"
+							action="#{customerView.updateCustomer}"
+							oncomplete="PF('dlg_updateCustomerInfo').hide()"
+							update="@form:customerListTable" icon="ui-icon-check">
+						</p:commandButton>
+					</p:panelGrid>
+				</p:outputPanel>
+			</p:dialog>
+
+
+			<!-- 确认删除一个客户的对话框 -->
+			<p:dialog id="dlg_confirmToDeleteOne" header="请确认"
+				widgetVar="dlg_confirmToDeleteOne" modal="true" showEffect="bounce"
+				hideEffect="fade" resizable="false" width="230" height="60">
+				<table>
+					<tr>
+						<h:outputText value="确认删除吗?"
+							style="font-size:20px;color:#003a6c;text-align:center;" />
+					</tr>
+					<tr>
+						<td><p:commandButton value="Cancel"
+								oncomplete="PF('dlg_confirmToDeleteOne').hide()"
+								icon="fa fa-fw fa-remove" immediate="true">
+							</p:commandButton></td>
+						<td><p:commandButton value="OK" style="margin-left:15%;"
+								action="#{customerView.discardCustomer}"
+								update="@form:customerListTable"
+								oncomplete="PF('dlg_confirmToDeleteOne').hide()"
+								icon="ui-icon-check" process="@this">
+							</p:commandButton></td>
+					</tr>
+				</table>
+			</p:dialog>
+
+			<!-- 确认批量删除对话框 -->
+			<!-- 确认批量删除对话框 -->
+			<!-- 确认批量删除对话框 -->
+			<p:dialog id="dlg_confirmToDeleteBatch" header="请确认"
+				widgetVar="dlg_confirmToDeleteBatch" modal="true"
+				showEffect="bounce" hideEffect="fade" resizable="false" width="230"
+				height="60">
+				<table>
+					<tr>
+						<h:outputText value="确认删除吗?"
+							style="font-size:20px;color:#003a6c;text-align:center;" />
+					</tr>
+					<tr>
+						<td><p:commandButton value="Cancel"
+								oncomplete="PF('dlg_confirmToDeleteBatch').hide()"
+								icon="fa fa-fw fa-remove" immediate="true">
+							</p:commandButton></td>
+						<td><p:commandButton value="OK" style="margin-left:15%;"
+								action="#{customerView.discardBatch}"
+								update="@form:customerListTable"
+								oncomplete="PF('dlg_confirmToDeleteBatch').hide()"
+								icon="ui-icon-check" process="@this">
+							</p:commandButton></td>
+					</tr>
+				</table>
+			</p:dialog>
+
+			<!-- 定制任务对话框 -->
+			<!-- 定制任务对话框 -->
+			<!-- 定制任务对话框 -->
+			<p:dialog id="dlg_customizedTask" widgetVar="dlg_customizedTask"
+				modal="true" showEffect="blind" hideEffect="clip" resizable="false"
+				width="740" height="500" header="定制任务" onHide="reInit()">
+				<p:remoteCommand name="initCustomizedTask"
+					actionListener="#{taskView.initCustomizedTask}" />
+				<p:outputPanel id="task_description" style="margin-top:10px;">
+					<table class="common_tab">
+						<tr>
+							<th
+								style="width: 15%; float: left; margin-left: 2%; border-radius: 5px;"><span
+								style="font-size: 16px;">任务描述:</span></th>
+						</tr>
+						<tr>
+							<td><p:inputTextarea rows="4" placeholder="请输入对任务的描述"
+									value="#{taskView.customizedTask.taskDescription}"
+									style="font-size:16px;margin-left:2%; border: solid Dark 1px;border-radius:5px; width:95%;" />
+							</td>
+						</tr>
+					</table>
+				</p:outputPanel>
+
+				<p:outputPanel id="add_question">
+					<br />
+					<br />
+					<table class="common_tab">
+						<tr>
+							<th
+								style="width: 15%; float: left; margin-left: 2%; border-radius: 5px;"><span
+								style="font-size: 16px;">添加问题:</span></th>
+						</tr>
+					</table>
+					<p:dataTable id="newQuestionListTable" var="question"
+						value="#{questionView.newQuestionList}"
+						rows="#{questionView.newQuestionList.size()}"
+						binding="#{newQuestionListTable}" paginator="false"
+						widgetVar="newQuestionListTable" style="width:96%;">
+						<p:column headerText="题号" styleClass="nameColumn">
+							<h:outputText
+								value="#{questionView.newQuestionList.indexOf(question)+1}" />
+						</p:column>
+						<p:column headerText="问题内容">
+							<p:inputTextarea rows="2" autoResize="false"
+								style="width:100%;font-size:16px;"
+								placeholder="请输入问题#{questionView.newQuestionList.indexOf(question)+1}的内容,若要手动编辑，可在选择问题后，按退格键删除问题内容，然后编辑"
+								value="#{question.questionContent}"
+								onfocus="showTable(this),passQuestionNo('#{questionView.newQuestionList.indexOf(question)}')" />
+							<p:remoteCommand name="getParams"
+								actionListener="#{questionView.getParams}" />
+						</p:column>
+						<p:column headerText="清除问题内容" styleClass="modificationColumn">
+							<p:commandButton value="清除" style="border-radius:3px;"
+								process="@this" update="@form:newQuestionListTable"
+								icon="ui-icon-trash"
+								action="#{questionView.clearQuestionContent}">
+								<f:setPropertyActionListener value="#{question}"
+									target="#{questionView.newQuestion}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+					<table style="border: 1px;">
+						<tr>
+							<p:graphicImage value="/images/plus.png"
+								onclick="lengthenTable()" />
+						</tr>
+						<p:remoteCommand name="lengthenList"
+							update="@form:newQuestionListTable"
+							actionListener="#{questionView.lengthenList}" />
+					</table>
+				</p:outputPanel>
+				<br />
+				<p:outputPanel id="parttimeStaffAndplannedFinishedDate">
+					<table style="margin-left: 1%; width: 100%">
+						<tr>
+							<th><h:outputText value="指派兼职:"
+									style="color: #003a6c; font-size: 16px; margin-left: 2%;" /></th>
+							<td><p:inputText style="margin-left:2%;font-size:16px;"
+									value="#{taskView.parttimeStaff.name}"
+									onfocus="PF('dlg_parttimeStaff').show()" id="ptsNameTextarea" /></td>
+							<th><h:outputText value="计划完成日期:"
+									style="color: #003a6c; font-size: 16px; margin-left: 18%" /></th>
+							<td><p:calendar effect="blind" pattern="yyyy-MM-dd" locale="zh_CN"
+									navigator="true" yearRange="c:c+5" lang="zh_CN"
+									mindate="#{taskView.currentDate}"
+									value="#{taskView.plannedFinishedDate}" readonlyInput="true"
+									style="margin-left:2%;font-size:16px;">
+									<p:ajax event="dateSelect" />
+								</p:calendar></td>
+						</tr>
+					</table>
+				</p:outputPanel>
+				<br />
+				<h:outputText value="任务阶段:"
+					style="margin-left:2%;float:left;color: #003a6c; font-size: 16px; font-weight: bold;" />
+				<p:selectOneMenu value="#{taskView.customizedTask.stage}"
+					style="float:left;font-size:16px;width:100px;margin-left:2%;">
+					<f:selectItems value="#{taskView.taskStages}" />
+				</p:selectOneMenu>
+				<br />
+				<br />
+				<p:separator style="width:100%; margin-top:10px;" />
+				<div style="margin-top: 20px; margin-bottom: 10px;">
+					<p:commandButton value="返回" icon="ui-icon-arrowreturnthick-1-w"
+						immediate="true" oncomplete="PF('dlg_customizedTask').hide()"
+						style="height:35px;width:100px;border-radius:3px;margin-left:30%">
+					</p:commandButton>
+					<p:commandButton value="确&#160;&#160;&#160;定" id="comfirmTaskBtn"
+						icon="ui-icon-check" binding="#{confirmTaskBtn}" process="@this"
+						immediate="true" oncomplete="PF('dlg_confirmCreateTask').show()"
+						style="height:35px;width:100px;margin-left:10%;border-radius:3px;">
+					</p:commandButton>
+				</div>
+			</p:dialog>
+
+			<!--选择问题-->
+			<!--选择问题-->
+			<!--选择问题-->
+			<p:dialog header="选择问题" widgetVar="dlg_chooseQuestion" modal="true"
+				id="dlg_chooseQuestion" showEffect="blind" hideEffect="size"
+				resizable="false" width="50%">
+				<p:commandButton id="hiddenBtn" binding="#{hiddenBtn}"
+					update="@form:chooseQuestionListTable" />
+				<p:dataTable id="chooseQuestionListTable" var="question"
+					value="#{questionView.questionList}" rows="5"
+					binding="#{chooseQuestionListTable}" sortBy="#{question.id}"
+					filteredValue="#{questionView.filteredQuestionList}"
+					paginatorPosition="bottom" paginator="true"
+					paginatorTemplate="{CurrentPageReport} 
+											{FirstPageLink}
+											{PreviousPageLink}
+											{PageLinks}
+											{NextPageLink}
+											{LastPageLink}
+											{RowsPerPageDropdown}"
+					currentPageReportTemplate="{totalRecords}
+									 ({currentPage} of {totalPages})"
+					rowKey="#{question.id}" selection="#{questionView.newQuestion}"
+					widgetVar="chooseQuestionListTable" selectionMode="single">
+
+					<p:ajax event="rowSelect" listener="#{questionView.onRowSelect}"
+						update="@form:chooseQuestionListTable" />
+
+					<p:column selectionMode="single"
+						style="width:16px;text-align:center" />
+
+					<f:facet name="header">
+						<p:outputPanel style="text-align: left;font-weight:normal">
+							<h:outputText value="请输入过滤条件：" />
+							<p:inputText id="globalFilter"
+								onkeyup="PF('chooseQuestionListTable').filter()"
+								style="width:150px" placeholder="过滤" />
+						</p:outputPanel>
+					</f:facet>
+					<p:column headerText="问题内容" filterBy="#{question.questionContent}"
+						filterMatchMode="contains" filterable="false">
+						<h:outputText value="#{question.questionContent}" />
+					</p:column>
+					<p:column headerText="问题意图" filterBy="#{question.purpose}"
+						filterMatchMode="contains" filterable="false">
+						<h:outputText value="#{question.purpose}" />
+					</p:column>
+					<p:column headerText="问题阶段" filterBy="#{question.stage}"
+						filterMatchMode="contains" filterable="false"
+						styleClass="nameColumn">
+						<h:outputText value="#{question.stage}" />
+					</p:column>
+				</p:dataTable>
+				<br />
+				<p:separator />
+				<p:commandButton value="返回" icon="ui-icon-arrowreturnthick-1-w"
+					oncomplete="PF('dlg_chooseQuestion').hide()"
+					style="margin-left: 30%" immediate="true" />
+				<p:commandButton value="确认" icon="ui-icon-check"
+					action="#{questionView.chooseQuestion}" process="@this"
+					update="@form:newQuestionListTable"
+					oncomplete="PF('dlg_chooseQuestion').hide()"
+					style="margin-left:18%" />
+			</p:dialog>
+
+
+			<!-- 确认创建任务对话框 -->
+			<!-- 确认创建任务对话框 -->
+			<!-- 确认创建任务对话框 -->
+			<p:dialog id="dlg_confirmCreateTask" header="请确认"
+				widgetVar="dlg_confirmCreateTask" modal="true" showEffect="bounce"
+				hideEffect="fade" resizable="false" width="280" height="100">
+				<table>
+					<tr>
+						<h:outputText value="确认为您选择的这批客户定制任务吗?"
+							style="font-size:20px;color:#003a6c;text-align:center;" />
+					</tr>
+					<tr>
+						<td><p:commandButton value="Cancel"
+								oncomplete="PF('dlg_confirmCreateTask').hide()"
+								icon="ui-icon-cancel" immediate="true">
+							</p:commandButton></td>
+						<td><p:commandButton value="OK" style="margin-left:20%"
+								action="#{taskView.createTaskForCustomer}" type="submit"
+								oncomplete="PF('dlg_confirmCreateTask').hide(),PF('dlg_customizedTask').hide()"
+								process="@this"
+								update="@form:customerListTable,@form:dlg_customizedTask"
+								icon="ui-icon-check">
+							</p:commandButton></td>
+					</tr>
+				</table>
+			</p:dialog>
+
+
+			<!-- 选择兼职对话框 -->
+			<!-- 选择兼职对话框 -->
+			<!-- 选择兼职对话框 -->
+			<p:dialog id="dlg_parttimeStaff" header="请确认"
+				widgetVar="dlg_parttimeStaff" modal="true" appendTo="@(body)"
+				showEffect="blind" hideEffect="clip" position="400,150"
+				resizable="false" width="700" height="400">
+				<p:dataTable id="parttimeStaffListTableInCm" var="parttimeStaff"
+					value="#{parttimeStaffView.parttimeStaffList}" rows="6"
+					binding="#{parttimeStaffListTableInCm}" sortBy="#{parttimeStaff.name}"
+					filteredValue="#{parttimeStaffView.filteredParttimeStaffList}"
+					rowsPerPageTemplate="6,8,10" paginatorPosition="bottom"
+					paginator="true"
+					paginatorTemplate="{CurrentPageReport} 
+											{FirstPageLink}
+											{PreviousPageLink}
+											{PageLinks}
+											{NextPageLink}
+											{LastPageLink}
+											{RowsPerPageDropdown}"
+					currentPageReportTemplate="{totalRecords}
+									 ({currentPage} of {totalPages})"
+					rowKey="#{parttimeStaff.id}"
+					selection="#{taskView.customizedTask.parttimeStaff}"
+					widgetVar="parttimeStaffListTableInCm" selectionMode="single">
+
+					<p:ajax event="rowSelect" listener="#{taskView.onRowSelect}"
+						update="@form:parttimeStaffListTableInCm" />
+
+					<p:column selectionMode="single"
+						style="width:16px;text-align:center" />
+
+					<f:facet name="header">
+						<p:outputPanel style="text-align: left;font-weight:normal">
+							<h:outputText value="请输入过滤条件：" />
+							<p:inputText id="globalFilter"
+								onkeyup="PF('parttimeStaffListTableInCm').filter()"
+								style="width:150px" placeholder="过滤" />
+						</p:outputPanel>
+					</f:facet>
+
+					<p:column headerText="姓名" filterBy="#{parttimeStaff.name}"
+						filterMatchMode="contains" filterable="false">
+						<h:outputText value="#{parttimeStaff.name}" />
+					</p:column>
+
+					<p:column headerText="性别" filterBy="#{parttimeStaff.gender}"
+						filterMatchMode="contains" filterable="false">
+						<h:outputText value="#{parttimeStaff.gender}" />
+					</p:column>
+
+					<p:column headerText="联系电话" filterBy="#{parttimeStaff.tel}"
+						filterMatchMode="contains" filterable="false">
+						<h:outputText value="#{parttimeStaff.tel}" />
+					</p:column>
+
+					<p:column headerText="QQ" filterBy="#{parttimeStaff.qq}"
+						filterMatchMode="contains" filterable="false">
+						<h:outputText value="#{parttimeStaff.qq}" />
+					</p:column>
+
+					<p:column headerText="住址" filterBy="#{parttimeStaff.address}"
+						filterMatchMode="contains" filterable="false">
+						<h:outputText value="#{parttimeStaff.address}" />
+					</p:column>
+
+					<p:column headerText="家乡" filterBy="#{parttimeStaff.hometown}"
+						filterMatchMode="contains" filterable="false">
+						<h:outputText value="#{parttimeStaff.hometown}" />
+					</p:column>
+				</p:dataTable>
+				<p:separator />
+				<p:commandButton value="返回" icon="ui-icon-arrowreturnthick-1-w"
+					oncomplete="PF('dlg_parttimeStaff').hide()"
+					style="margin-left: 30%" immediate="true" />
+				<p:commandButton value="确认" icon="ui-icon-check"
+					update="@form:ptsNameTextarea"
+					oncomplete="PF('dlg_parttimeStaff').hide()" style="margin-left:18%" />
+			</p:dialog>
+		</h:form>
+	</div>
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$("[id='#{hiddenBtn.clientId}']").hide();
+		});
+		function passQuestionNo(obj) {
+			getParams([ {
+				name : 'qno',
+				value : obj
+			} ]);
+		}
+		function lengthenTable() {
+			lengthenList();
+		}
+		function showTable(obj) {
+			if (obj == null || obj.value == null || obj.value.length == 0) {
+				PF('dlg_chooseQuestion').show();
+				$("[id='#{hiddenBtn.clientId}']").click();
+			}
+		}
+		function reInit() {
+			initCustomizedTask();
+		}
+	</script>
+</f:view>

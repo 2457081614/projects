@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util 
+		http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<!-- <bean id="menuList" class="java.util.ArrayList">
+		<constructor-arg>
+			<list>
+				<ref bean="menu1" />
+				<ref bean="menu2" />
+				<ref bean="menu3" />
+				<ref bean="menu4" />
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<bean id="adminTabList" class="java.util.ArrayList">
+		<constructor-arg>
+			<list>
+				<ref bean="adminTab1" />
+				<ref bean="adminTab2" />
+				<ref bean="adminTab3" />
+				<ref bean="adminTab4" />
+				<ref bean="adminTab5" />
+				<ref bean="adminTab6" />
+				<ref bean="adminTab7" />
+				<ref bean="adminTab8" />
+				<ref bean="adminTab9" />
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<bean id="menu1" class="com.meession.system.entity.Menu">
+		<property name="name" value="首页" />
+		<property name="code" value="1" />
+		<property name="icon" value="icon-home" />
+		<property name="url" value="home/index.xhtml" />
+	</bean>
+
+	
+	<bean id="menu2" class="com.meession.system.entity.Menu">
+			<property name="name" value="作业管理" />
+			<property name="code" value="2" />
+			<property name="icon" value="icon-profile" />
+			<property name="url" value="homework/index.xhtml" />
+		</bean>
+	
+		<bean id="menu3" class="com.meession.system.entity.Menu">
+			<property name="name" value="人事管理" />
+			<property name="code" value="3" />
+			<property name="icon" value="icon-stack" />
+			<property name="url" value="orga/index.xhtml" />
+		</bean>
+	
+		<bean id="menu4" class="com.meession.system.entity.Menu">
+			<property name="name" value="管理员特权" />
+			<property name="code" value="4" />
+			<property name="icon" value="icon-books" />
+			<property name="url" value="admin/index.xhtml" />
+			<property name="roles">
+				<list>
+					<util:constant static-field="com.meession.orga.constant.RoleConstant.SUPER_ADMIN" />
+				</list>
+			</property>
+		</bean>
+	
+
+		
+		管理员菜单
+	<bean id="adminTab1" class="com.meession.system.entity.Menu">
+		<property name="name" value="基本设置" />
+		<property name="code" value="6.1" />
+		<property name="url" value="admin/general.xhtml" />
+		<property name="roles">
+			<list>
+				<util:constant static-field="com.meession.orga.constant.RoleConstant.SUPER_ADMIN" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="adminTab2" class="com.meession.system.entity.Menu">
+		<property name="name" value="人事组织导入" />
+		<property name="code" value="6.2" />
+		<property name="url" value="admin/orga.xhtml" />
+		<property name="roles">
+			<list>
+			<util:constant static-field="com.meession.orga.constant.RoleConstant.SUPER_ADMIN" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="adminTab3" class="com.meession.system.entity.Menu">
+		<property name="name" value="Reopen ED" />
+		<property name="code" value="6.3" />
+		<property name="url" value="admin/reopenED.xhtml" />
+		<property name="roles">
+			<list>
+				<util:constant static-field="com.meession.orga.constant.RoleConstant.HR_ADMIN" />
+				<util:constant static-field="com.meession.orga.constant.RoleConstant.HR_SUPER_ADMIN" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="adminTab4" class="com.meession.system.entity.Menu">
+		<property name="name" value="Reports" />
+		<property name="code" value="6.4" />
+		<property name="url" value="admin/reports.xhtml" />
+		<property name="roles">
+			<list>
+				<util:constant static-field="com.meession.orga.constant.RoleConstant.HR_ADMIN" />
+				<util:constant static-field="com.meession.orga.constant.RoleConstant.HR_SUPER_ADMIN" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="adminTab5" class="com.meession.system.entity.Menu">
+		<property name="name" value="首页管理" />
+		<property name="code" value="6.5" />
+		<property name="url" value="admin/homePage.xhtml" />
+		<property name="roles">
+			<list>
+			<util:constant static-field="com.meession.orga.constant.RoleConstant.SUPER_ADMIN" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="adminTab6" class="com.meession.system.entity.Menu">
+		<property name="name" value="管理人事人员" />
+		<property name="code" value="6.6" />
+		<property name="url" value="admin/adminUser.xhtml" />
+		<property name="roles">
+			<list>
+				<util:constant static-field="com.meession.orga.constant.RoleConstant.SUPER_ADMIN" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="adminTab7" class="com.meession.system.entity.Menu">
+		<property name="name" value="发送邮件通知" />
+		<property name="code" value="6.7" />
+		<property name="url" value="admin/email.xhtml" />
+		<property name="roles">
+			<list>
+				<util:constant static-field="com.meession.orga.constant.RoleConstant.SUPER_ADMIN" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="adminTab8" class="com.meession.system.entity.Menu">
+		<property name="name" value="FAQ管理" />
+		<property name="code" value="6.8" />
+		<property name="url" value="admin/faq.xhtml" />
+		<property name="roles">
+			<list>
+				<util:constant static-field="com.meession.orga.constant.RoleConstant.SUPER_ADMIN" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="adminTab9" class="com.meession.system.entity.Menu">
+		<property name="name" value="系统日志" />
+		<property name="code" value="6.9" />
+		<property name="url" value="admin/systemLog.xhtml" />
+		<property name="roles">
+			<list>
+				<util:constant static-field="com.meession.orga.constant.RoleConstant.SUPER_ADMIN" />
+			</list>
+		</property>
+	</bean> -->
+
+
+</beans>

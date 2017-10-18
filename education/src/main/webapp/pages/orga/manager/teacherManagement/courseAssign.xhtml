@@ -1,0 +1,219 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition template="../../../templates/basicPage.xhtml">
+		<ui:define name="content">
+			<h:form id="courseListForm">
+				<p:dataTable id="courseListTable" var="course"
+				    widgetVar="courseListTable"
+					value="#{courseView.courseList}" rows="6" 
+					binding="#{courseListTable}" sortBy="#{course.courseNo}"
+					filteredValue="#{courseView.filteredCourseList}"
+					paginatorPosition="bottom" paginator="true"
+					rowsPerPageTemplate="6,10,15,20"
+					paginatorTemplate="{CurrentPageReport} 
+											{FirstPageLink}
+											{PreviousPageLink}
+											{PageLinks}
+											{NextPageLink}
+											{LastPageLink}
+											{RowsPerPageDropdown}"
+					currentPageReportTemplate="{totalRecords}
+									 ({currentPage} of {totalPages})"
+					rowKey="#{course.courseNo}" 
+					emptyMessage="No items.">
+
+					<f:facet name="header">
+						<p:outputPanel style="text-align: left;font-weight:normal">
+							<h:outputText value="请输入过滤关键字：" />
+							<p:inputText id="globalFilter"
+								onkeyup="PF('courseListTable').filter()" style="width:150px"
+								placeholder="关键字" />
+						</p:outputPanel>
+					</f:facet>
+
+					<p:column headerText="课程号名" filterBy="#{course.courseName}"
+						filterable="false" filterMatchMode="contains"
+						styleClass="nameColumn">
+						<p:commandLink title="点击查看课程更多信息" value="#{course.courseName}"
+							style="color:#003a6c;text-decoration: underline;" process="@this"
+							icon="ui-icon-search" oncomplete="PF('dlg_courseDetails').show()"
+							update="@form:@parent:dlg_courseDetails:detail" immediate="true">
+							<f:setPropertyActionListener value="#{course}"
+								target="#{courseView.course}" />
+						</p:commandLink>
+					</p:column>
+
+					<p:column headerText="课程号" filterBy="#{course.courseNo}"
+						filterable="false" filterMatchMode="contains">
+						<h:outputText value="#{course.courseNo}" />
+					</p:column>
+
+					<p:column headerText="学时" filterBy="#{course.hours}"
+						filterMatchMode="contains" filterable="false"
+						styleClass="hoursColumn">
+						<h:outputText value="#{course.hours}" />
+					</p:column>
+
+					<p:column headerText="学分" filterBy="#{course.credit}"
+						filterMatchMode="contains" filterable="false"
+						styleClass="creditColumn">
+						<h:outputText value="#{course.credit}" />
+					</p:column>
+
+					<p:column headerText="分派课程" filterable="false"
+						filterMatchMode="contains">
+						<p:commandButton title="指派教师" value="指派"
+							icon="fa fa-fw fa-user-plus"
+							disabled="#{teacherView.getTheDisableOfCourse(course)}"
+							update="@form:@parent:dlg_assignTeacher"
+							oncomplete="PF('dlg_assignTeacher').show();">
+							<f:setPropertyActionListener value="#{course}"
+								target="#{courseView.course}" />
+						</p:commandButton>
+					</p:column>
+
+
+				</p:dataTable>
+			</h:form>
+		</ui:define>
+
+		<ui:define name="dialog">
+			<!--    分配教师 -->
+			<!--    分配教师 -->
+			<!--    分配教师 -->
+			<!--    分配教师 -->
+			<p:dialog header="分配教师" widgetVar="dlg_assignTeacher" modal="true"
+				id="dlg_assignTeacher" showEffect="blind" hideEffect="clip"
+				resizable="false" width="50%">
+				<h:form>
+					<p:dataTable id="assignTeacherListTable" var="teacher"
+						value="#{teacherView.teacherList}" rows="7"
+						binding="#{assignTeacherListTable}" sortBy="#{teacher.workerNo}"
+						filteredValue="#{teacherView.filteredTeacherList}"
+						paginatorPosition="bottom" paginator="true"
+						rowsPerPageTemplate="5,7,10"
+						paginatorTemplate="{CurrentPageReport} 
+											{FirstPageLink}
+											{PreviousPageLink}
+											{PageLinks}
+											{NextPageLink}
+											{LastPageLink}
+											{RowsPerPageDropdown}"
+						currentPageReportTemplate="{totalRecords}
+									 ({currentPage} of {totalPages})"
+						rowKey="#{teacher.id}"
+						selection="#{teacherView.selectedTeacherList}"
+						widgetVar="assignTeacherListTable" rowSelectMode="add">
+
+						<p:column selectionMode="multiple"
+							style="width:16px;text-align:center" />
+
+						<f:facet name="header">
+							<p:outputPanel style="text-align: left;font-weight:normal">
+								<h:outputText value="请输入过滤条件：" />
+								<p:inputText id="globalFilter"
+									onkeyup="PF('assignTeacherListTable').filter()"
+									style="width:150px" placeholder="过滤" />
+							</p:outputPanel>
+						</f:facet>
+						<p:column headerText="职工号" filterBy="#{teacher.workerNo}"
+							filterable="false" filterMatchMode="contains">
+							<h:outputText value="#{teacher.workerNo}" />
+						</p:column>
+						<p:column headerText="姓名" filterBy="#{teacher.name}"
+							filterMatchMode="contains" filterable="false">
+							<h:outputText value="#{teacher.name}" />
+						</p:column>
+						<p:column headerText="联系电话" filterBy="#{teacher.cellPhone}"
+							filterMatchMode="contains" filterable="false"
+							styleClass="telColumn">
+							<h:outputText value="#{teacher.cellPhone}" />
+						</p:column>
+					</p:dataTable>
+					<br />
+					<p:separator />
+
+					<p:commandButton value="返回" icon="ui-icon-arrowreturnthick-1-w"
+						oncomplete="PF('dlg_assignTeacher').hide()"
+						style="margin-left: 30%" />
+					<p:commandButton value="确认" icon="ui-icon-check" iconPos="right"
+						actionListener="#{teacherView.assignCourseForTeacherList}"
+						update="@all:courseListForm"
+						oncomplete="PF('dlg_assignTeacher').hide()"
+						style="margin-left:18%"></p:commandButton>
+
+				</h:form>
+			</p:dialog>
+
+
+			<!-- 查看课程信息对话框 -->
+			<!-- 查看课程信息对话框 -->
+			<!-- 查看课程信息对话框 -->
+			<p:dialog id="dlg_courseDetails" header="详细信息"
+				widgetVar="dlg_courseDetails" modal="true" showEffect="size"
+				hideEffect="size" resizable="false" width="400px">
+				<p:outputPanel style="text-align:center;" id="detail">
+					<p:panelGrid rendered="#{not empty courseView.course}">
+						<table class="common_market_tab">
+							<tr>
+								<th>课程号</th>
+								<td colspan="3"><h:outputText
+										value="#{courseView.course.courseNo}" /></td>
+								<th>课程名</th>
+								<td colspan="3"><h:outputText
+										value="#{courseView.course.courseName}" /></td>
+							</tr>
+
+							<tr>
+								<th>开课时间</th>
+								<td colspan="3"><h:outputText
+										value="#{courseView.course.courseTime}" /></td>
+								<th>上课地点</th>
+								<td colspan="3"><h:outputText
+										value="#{courseView.course.courseAddress}" /></td>
+							</tr>
+							<tr>
+								<th>学时</th>
+								<td colspan="3"><h:outputText
+										value="#{courseView.course.credit}" /></td>
+								<th>课程简介</th>
+								<td colspan="3"><h:outputText
+										value="#{courseView.course.courseInfo}" /></td>
+							</tr>
+						</table>
+					</p:panelGrid>
+				</p:outputPanel>
+			</p:dialog>
+
+
+			<!-- 确认删除一个课程的对话框 -->
+			<p:dialog id="dlg_confirmToAssignOne" header="请确认"
+				widgetVar="dlg_confirmToAssignOne" modal="true" showEffect="bounce"
+				hideEffect="fade" resizable="false" width="230" height="60">
+				<table>
+					<tr>
+						<h:outputText value="确认删除吗?"
+							style="font-size:20px;color:#003a6c;text-align:center;" />
+					</tr>
+					<tr>
+						<td><p:commandButton value="Cancel"
+								oncomplete="PF('dlg_confirmToAssignOne').hide()"
+								icon="fa fa-fw fa-remove" immediate="true">
+							</p:commandButton></td>
+						<td><p:commandButton value="OK" style="margin-left:15%;"
+								action="#{courseView.testDelete}"
+								oncomplete="PF('dlg_confirmToAssignOne').hide()"
+								icon="ui-icon-check" process="@this">
+							</p:commandButton></td>
+					</tr>
+				</table>
+			</p:dialog>
+		</ui:define>
+
+	</ui:composition>
+
+</f:view>

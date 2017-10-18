@@ -1,0 +1,184 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<br/>
+	<div style="width: 100%">
+		<p:accordionPanel>
+			<p:tab title="已删除客户">
+				<div style="width: 100%">
+					<h:form>
+						<p:dataTable id="deletedCustomerListTable" var="customer" rows="6"
+							value="#{customerView.deletedCustomerList}"
+							binding="#{deletedCustomerListTable}" sortBy="#{customer.name}"
+							paginatorPosition="bottom" paginator="true"
+							rowsPerPageTemplate="6,10,15,20"
+							paginatorTemplate="{CurrentPageReport} 
+											{FirstPageLink}
+											{PreviousPageLink}
+											{PageLinks}
+											{NextPageLink}
+											{LastPageLink}
+											{RowsPerPageDropdown}"
+							currentPageReportTemplate="{totalRecords}
+									 ({currentPage} of {totalPages})"
+							rowKey="#{customer.tel}" widgetVar="deletedCustomerListTable"
+							rowSelectMode="add">
+
+							<p:column selectionMode="multiple" style="width:16px;text-align:center" />
+
+							<f:facet name="header">
+								<p:outputPanel style="text-align: left;font-weight:normal">
+									<h:outputText value="请输入过滤条件：" />
+									<p:inputText id="globalFilter" style="width:150px" placeholder="过滤" />
+									<p:commandButton value="全部恢复" ajax="true" icon="ui-icon-plusthick"
+										style="margin-left:2%;" action="#{customerView.recoverAll}"
+										update="@form:deletedCustomerListTable">
+									</p:commandButton>
+									<p:commandButton value="全部清空" ajax="true" icon="ui-icon-minusthick"
+										style="margin-left:2%;" action="#{customerView.deleteAll}"
+										update="@form:deletedCustomerListTable">
+									</p:commandButton>
+								</p:outputPanel>
+							</f:facet>
+
+							<p:column headerText="姓名" filterBy="#{customer.name}" filterable="false"
+								filterMatchMode="contains" styleClass="nameColumn">
+								<p:commandLink title="点击查看客户更多信息" value="#{customer.name}"
+									style="color:#003a6c;text-decoration: underline;" process="@this"
+									onclick="alert('请立即完善该功能')" immediate="true">
+								</p:commandLink>
+							</p:column>
+
+							<p:column headerText="院系" filterBy="#{customer.academy}"
+								filterable="false" filterMatchMode="contains">
+								<h:outputText value="#{customer.academy}" />
+							</p:column>
+
+							<p:column headerText="班级" filterBy="#{customer.className}"
+								filterable="false" filterMatchMode="contains"
+								styleClass="classNameColumn">
+								<h:outputText value="#{customer.className}" />
+							</p:column>
+
+							<p:column headerText="联系电话" filterBy="#{customer.tel}"
+								filterMatchMode="contains" filterable="false" styleClass="telColumn">
+								<h:outputText value="#{customer.tel}" />
+							</p:column>
+
+							<p:column headerText="QQ" filterBy="#{customer.qq}"
+								filterMatchMode="contains" filterable="false" styleClass="qqColumn">
+								<h:outputText value="#{customer.qq}" />
+							</p:column>
+
+							<p:column headerText="住址" filterBy="#{customer.address}"
+								filterMatchMode="contains" filterable="false" styleClass="addressColumn">
+								<h:outputText value="#{customer.address}" />
+							</p:column>
+
+							<p:column headerText="恢复此客户" styleClass="modificationColumn">
+								<p:commandButton title="从回收站只恢复客户" value="恢复"
+									action="#{customerView.recover}"
+									update="@form:deletedCustomerListTable" icon="fa fa-fw fa-mail-reply">
+									<f:setPropertyActionListener value="#{customer}" target="#{customerView.customer}"/>
+								</p:commandButton>
+							</p:column>
+
+							<p:column headerText="删除客户" styleClass="deletionColumn">
+								<p:commandButton title="删除此客户" value="删除" icon="ui-icon-trash"
+									action="#{customerView.delete}"
+									update="@form:deletedCustomerListTable">
+									<f:setPropertyActionListener value="#{customer}" target="#{customerView.customer}"/>
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+					</h:form>
+				</div>
+			</p:tab>
+			<p:tab title="已删除兼职">
+				<div style="width: 100%">
+					<h:form>
+						<p:dataTable id="deletedParttimeStaffListTable" var="parttimeStaff"
+							value="#{parttimeStaffView.deletedParttimeStaffList}" rows="6" binding="#{deletedParttimeStaffListTable}"
+							sortBy="#{parttimeStaff.name}"
+							filteredValue="#{parttimeStaffView.filteredParttimeStaffList}"
+							paginatorPosition="bottom" paginator="true"
+							rowsPerPageTemplate="8,10,15,20,40"
+							paginatorTemplate="{CurrentPageReport} 
+											{FirstPageLink}
+											{PreviousPageLink}
+											{PageLinks}
+											{NextPageLink}
+											{LastPageLink}
+											{RowsPerPageDropdown}"
+							currentPageReportTemplate="{totalRecords}
+									 ({currentPage} of {totalPages})"
+							rowKey="#{parttimeStaff.tel}"
+							selection="#{parttimeStaffView.selectedParttimeStaffList}"
+							widgetVar="deletedParttimeStaffListTable" rowSelectMode="add">
+
+							<f:facet name="header">
+								<p:outputPanel style="text-align: left;font-weight:normal">
+									<h:outputText value="请输入过滤条件：" />
+									<p:inputText id="globalFilter" onclick="alert('请立即完善该功能')"
+										style="width:150px" placeholder="过滤" />
+									<p:commandButton value="全部恢复" ajax="true" icon="ui-icon-plusthick"
+										style="margin-left:2%;" action="#{parttimeStaffView.recoverAll}"
+										update="@form:deletedParttimeStaffListTable">
+									</p:commandButton>
+
+									<p:commandButton value="全部清空" ajax="true" icon="ui-icon-minusthick"
+										style="margin-left:2%;" action="#{parttimeStaffView.deleteAll}"
+										update="@form:deletedParttimeStaffListTable">
+									</p:commandButton>
+
+
+								</p:outputPanel>
+							</f:facet>
+
+							<p:column headerText="姓名" filterBy="#{parttimeStaff.name}"
+								filterable="false" filterMatchMode="contains" styleClass="nameColumn">
+								<p:commandLink title="点此查看兼职的详细信息" value="#{parttimeStaff.name}"
+									style="color:#003a6c;text-decoration: underline;" icon="ui-icon-search"
+									onclick="alert('请立即完善该功能')" immediate="true">
+								</p:commandLink>
+							</p:column>
+
+
+							<p:column headerText="联系电话" filterBy="#{parttimeStaff.tel}"
+								filterMatchMode="contains" filterable="false">
+								<h:outputText value="#{parttimeStaff.tel}" />
+							</p:column>
+
+							<p:column headerText="QQ" filterBy="#{parttimeStaff.qq}"
+								filterMatchMode="contains" filterable="false">
+								<h:outputText value="#{parttimeStaff.qq}" />
+							</p:column>
+
+							<p:column headerText="住址" filterBy="#{parttimeStaff.address}"
+								filterMatchMode="contains" filterable="false">
+								<h:outputText value="#{parttimeStaff.address}" />
+							</p:column>
+
+
+							<p:column headerText="恢复此兼职">
+								<p:commandButton title="恢复此兼职" value="恢复" action="#{parttimeStaffView.recover}"
+									icon="fa fa-fw fa-mail-reply" update="@form:deletedParttimeStaffListTable">
+										<f:setPropertyActionListener value="#{parttimeStaff}" target="#{parttimeStaffView.parttimeStaff}"/>
+								</p:commandButton>
+							</p:column>
+
+							<p:column headerText="删除此兼职">
+								<p:commandButton title="删除此兼职" value="删除" icon="ui-icon-trash"
+									action="#{parttimeStaffView.delete}" update="@form:deletedParttimeStaffListTable">
+									<f:setPropertyActionListener value="#{parttimeStaff}" target="#{parttimeStaffView.parttimeStaff}"/>
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+					</h:form>
+				</div>
+			</p:tab>
+		</p:accordionPanel>
+
+	</div>
+</f:view>

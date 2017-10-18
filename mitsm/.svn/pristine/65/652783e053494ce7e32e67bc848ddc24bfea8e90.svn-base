@@ -1,0 +1,250 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+
+	<div style="width: 100%" id="div">
+		<br />
+		<div
+			style="background-color: #33667C; font-size: 20px; color: white; text-align: center;">客户信息列表</div>
+		<h:form>
+		<p:dataTable id="customerListTable" var="customer"
+			value="#{customerView.customerListForParttimeStaff}" rows="6"
+			binding="#{customerListTable}" sortBy="#{customer.name}"
+			filteredValue="#{customerView.filteredCustomerList}"
+			paginatorPosition="bottom" paginator="true" rowsPerPageTemplate="6,10,15,20"
+			paginatorTemplate="{CurrentPageReport} 
+											{FirstPageLink}
+											{PreviousPageLink}
+											{PageLinks}
+											{NextPageLink}
+											{LastPageLink}
+											{RowsPerPageDropdown}"
+			currentPageReportTemplate="{totalRecords}
+									 ({currentPage} of {totalPages})"
+			rowKey="#{customer.tel}" selectionMode="single"
+			selection="#{customerView.selectedCustomerList}"
+			widgetVar="customerListTable" rowSelectMode="add">
+
+
+			<!-- 客户信息字段行 -->
+			<!-- 客户信息字段行 -->
+			<!-- 客户信息字段行 -->
+			<!-- 客户信息字段行 -->
+			<p:column headerText="客户姓名" filterBy="#{customer.name}" filterable="false"
+				filterMatchMode="contains" styleClass="nameColumn">
+				<p:commandLink title="点击查看客户更多信息" value="#{customer.name}"
+					style="color:red;text-decoration: underline;" icon="ui-icon-search"
+					update="@form:dlg_customerDetails:detail"
+					oncomplete="PF('dlg_customerDetails').show()" immediate="true">
+
+					<f:setPropertyActionListener value="#{customer}"
+						target="#{customerView.customerInfo}" />
+				</p:commandLink>
+			</p:column>
+
+			<p:column headerText="院系" filterBy="#{customer.academy}" filterable="false"
+				filterMatchMode="contains">
+				<h:outputText value="#{customer.academy}" />
+			</p:column>
+
+			<p:column headerText="班级" filterBy="#{customer.className}" filterable="false"
+				filterMatchMode="contains" styleClass="classNameColumn">
+				<h:outputText value="#{customer.className}" />
+			</p:column>
+
+			<p:column headerText="联系电话" filterBy="#{customer.tel}"
+				filterMatchMode="contains" filterable="false" styleClass="telColumn">
+				<h:outputText value="#{customer.tel}" />
+			</p:column>
+
+			<p:column headerText="QQ" filterBy="#{customer.qq}"
+				filterMatchMode="contains" filterable="false" styleClass="qqColumn">
+				<h:outputText value="#{customer.qq}" />
+			</p:column>
+
+			<p:column headerText="住址" filterBy="#{customer.address}"
+				filterMatchMode="contains" filterable="false" styleClass="addressColumn">
+				<h:outputText value="#{customer.address}" />
+			</p:column>
+
+			<p:column headerText="客户反馈结果">
+				<p:commandButton title="点击编辑客户反馈结果" value="反馈" icon="fa fa-fw fa-edit"
+					update="@form:dlg_customerFeedback" process="@this"
+					action="#{customerView.findQuestionsByCsId(customer.id)}"
+					disabled="#{customerView.disables.get(customerView.customerListForParttimeStaff.indexOf(customer))}"
+					oncomplete="PF('dlg_customerFeedback').show()">
+					<f:setPropertyActionListener value="#{customer}"
+						target="#{customerView.customerInfo}" />
+				</p:commandButton>
+			</p:column>
+
+			<p:column headerText="提交">
+				<p:commandButton title="提交" value="提交" icon="ui-icon-check" ajax="true"
+					update="@form:customerListTable" action="#{customerView.submit(customer)}"
+					disabled="#{customerView.disables.get(customerView.customerListForParttimeStaff.indexOf(customer))}"
+					process="@this">
+					<f:setPropertyActionListener value="#{customer}"
+						target="#{customerView.customerInfo}" />
+				</p:commandButton>
+			</p:column>
+
+		</p:dataTable>
+
+
+		<!-- 查看客户信息对话框 -->
+		<!-- 查看客户信息对话框 -->
+		<!-- 查看客户信息对话框 -->
+		<!-- 查看客户信息对话框 -->
+		<!-- dlg_customer -->
+		<!-- dlg_customerDetails  用来显示客户的细节信息 -->
+		<p:dialog id="dlg_customerDetails" header="客户详细信息"
+			widgetVar="dlg_customerDetails" modal="true" showEffect="size"
+			hideEffect="size" resizable="false" style="width:500px;">
+			<p:outputPanel style="text-align:center;" id="detail">
+				<p:panelGrid rendered="#{not empty customerView.customerInfo}">
+					<table class="common_market_tab" style="width: 450px">
+						<tr>
+							<!--第1行开始-->
+							<th>姓名</th>
+							<td colspan="3"><h:outputText
+									value="#{customerView.customerInfo.name}" /></td>
+
+						</tr>
+						<!--第1行结束-->
+
+						<tr>
+							<!--第2行开始-->
+							<th>院系</th>
+							<td colspan="3"><h:outputText
+									value="#{customerView.customerInfo.academy}" /></td>
+						</tr>
+
+						<tr>
+							<!--第3行开始-->
+							<th>班级</th>
+							<td colspan="3"><h:outputText
+									value="#{customerView.customerInfo.className}" /></td>
+						</tr>
+
+						<tr>
+							<!--第4行开始-->
+							<th>联系电话</th>
+							<td colspan="3"><h:outputText
+									value="#{customerView.customerInfo.tel}" /></td>
+						</tr>
+
+						<tr>
+							<!--第5行开始-->
+							<th>QQ</th>
+							<td colspan="3"><h:outputText
+									value="#{customerView.customerInfo.qq}" /></td>
+						</tr>
+
+						<tr>
+							<!--第6行开始-->
+							<th>住址</th>
+							<td colspan="3"><h:outputText
+									value="#{customerView.customerInfo.address}" /></td>
+						</tr>
+						<!--第6行结束-->
+						<tr>
+							<!--第7行开始-->
+							<th>生日</th>
+							<td colspan="3"><h:outputText
+									value="#{customerView.customerInfo.birthday}" /></td>
+						</tr>
+						<!--  第七行-->
+						<tr>
+							<th>备注</th>
+
+
+							<td colspan="3"><h:outputText
+									value="#{customerView.customerInfo.remarks}" /></td>
+						</tr>
+						<!--第八行结束  -->
+					</table>
+				</p:panelGrid>
+			</p:outputPanel>
+		</p:dialog>
+
+		<!-- 反馈客户信息对话框 -->
+		<!-- 反馈客户信息对话框 -->
+		<!-- 反馈客户信息对话框 -->
+		<!-- 反馈客户信息对话框 -->
+		<!-- 反馈客户信息对话框 -->
+		<p:dialog id="dlg_customerFeedback" header="编辑客户反馈信息" style="width:500px;"
+			widgetVar="dlg_customerFeedback" modal="true" showEffect="size"
+			hideEffect="size" resizable="false">
+			<p:outputPanel style="text-align:center;" id="details">
+				<!--  这里的id：details要对应上面的反馈里面的-->
+
+				<p:panelGrid rendered="#{not empty customerView.customerInfo}">
+					<table class="common_tab" id="customerInfoTable" border="1">
+						<tr>
+							<!-- 第1行开始 -->
+							<th>姓名</th>
+							<td colspan="3"><h:outputText
+									value="#{customerView.customerInfo.name}" /></td>
+							<th>电话</th>
+							<td colspan="3"><h:outputText
+									value="#{customerView.customerInfo.tel}" /></td>
+							<th>班级</th>
+							<td colspan="3"><h:outputText
+									value="#{customerView.customerInfo.className}" /></td>
+							<th>住址</th>
+							<td colspan="3"><h:outputText
+									value="#{customerView.customerInfo.address}" /></td>
+						</tr>
+						<!-- 第1行结束 -->
+
+					</table>
+
+					<!-- 反馈问题显示 -->
+					<!-- 反馈问题显示 -->
+					<!-- 反馈问题显示 -->
+					<p:dataScroller mode="inline" scrollHeight="300"
+						value="#{customerView.oneList}">
+						<f:facet name="header">
+							<span style="font-size: 18px">客户反馈信息</span>
+						</f:facet>
+						<h:panelGrid columns="5" style="width:500px;">
+							<p:outputPanel>
+								<table border="0">
+									<c:forEach items="#{customerView.questionList}" var="question"
+										varStatus="q">
+										<tr>
+											<h:outputText value="#{question.questionContent}" style="float: left; font-size: 16px; color: DarkSlateGray"/>
+										</tr>
+										<tr>
+											<p:inputTextarea rows="2" cols="25" style="width:500px;"
+												placeholder="请输入客户对此问题的回答" value="#{answerView.answerListForPts[q.index].answerContent}" >
+												<p:ajax/>
+											</p:inputTextarea>
+										</tr>
+									</c:forEach>
+								</table>
+							</p:outputPanel>
+						</h:panelGrid>
+					</p:dataScroller>
+
+					<p:commandButton value="返回" oncomplete="PF('dlg_customerFeedback').hide();"
+						icon="ui-icon-arrowreturnthick-1-w" immediate="true" 
+						style="width:100px;height:35px;margin:10px">
+					</p:commandButton>
+
+					<p:commandButton value="保存"
+						style="margin-left:30%;width:100px;height:35px;"
+						action="#{answerView.saveAnswer(customerView.customerInfo.id,customerView.task.id,customerView.questionList)}"
+						oncomplete="PF('dlg_customerFeedback').hide();"
+						process="@this"
+						update="@form:customerListTable" icon="ui-icon-check">
+					</p:commandButton>
+				</p:panelGrid>
+			</p:outputPanel>
+		</p:dialog>
+		</h:form>
+	</div>
+	
+</f:view>

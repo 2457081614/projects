@@ -1,0 +1,1530 @@
+package com.meession.market.task.view;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang.StringUtils;
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.RateEvent;
+import org.primefaces.event.SelectEvent;
+
+import com.meession.market.answer.entity.Answer;
+import com.meession.market.answer.view.AnswerView;
+import com.meession.market.common.dateutil.DateUtil;
+import com.meession.market.customer.entity.Customer;
+import com.meession.market.customer.view.CustomerView;
+import com.meession.market.evaluation.entity.Evaluation;
+import com.meession.market.evaluation.view.EvaluationView;
+import com.meession.market.parttimestaff.entity.ParttimeStaff;
+import com.meession.market.parttimestaff.service.IParttimeStaffService;
+import com.meession.market.parttimestaff.view.ParttimeStaffView;
+import com.meession.market.question.entity.Question;
+import com.meession.market.question.view.QuestionView;
+import com.meession.market.revisit.entity.Revisit;
+import com.meession.market.revisit.service.IRevisitService;
+import com.meession.market.staff.entity.Staff;
+import com.meession.market.task.entity.Task;
+import com.meession.market.task.service.ITaskService;
+import com.meession.market.task.service.impl.TaskService;
+
+@ManagedBean
+@ViewScoped
+public class TaskView implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	@ManagedProperty(value = "#{taskService}")
+	private ITaskService taskService;
+
+	@ManagedProperty(value = "#{questionView}")
+	private QuestionView questionView;
+
+	@ManagedProperty(value = "#{customerView}")
+	private CustomerView customerView;
+
+	@ManagedProperty(value = "#{parttimeStaffView}")
+	private ParttimeStaffView parttimeStaffView;
+
+	/**
+	 * 兼职界面的任务list
+	 */
+	private List<Task> taskListForParttimeStaff;
+	/**
+	 * 任务对象，将任务属性显示在页面，对任务进行删除，修改，查询时调用
+	 */
+	private Task task = new Task();
+
+	/**
+	 * 任务信息
+	 */
+	private Task taskInfo;
+	/**
+	 * 已创建，未下达任务的集合
+	 */
+	private List<Task> unassignedTaskList = new ArrayList<Task>();
+	/**
+	 * 已下答，未完成的集合
+	 */
+	private List<Task> assignedTaskList = new ArrayList<Task>();
+	/**
+	 * 已完成任务的集合
+	 */
+	private List<Task> finishedTaskList = new ArrayList<Task>();
+	/**
+	 * 任务过滤集合
+	 */
+	private List<Task> filteredTaskList;
+	/**
+	 * 任务选择集合
+	 */
+	private List<Task> selectedTaskList;
+	/**
+	 * 被选中任务状态
+	 */
+	private List<String> selectedStatusList;
+	/**
+	 * /** 新任务
+	 */
+	private Task newTask = new Task();
+
+	private List<Task> taskList;
+
+	private List<String> statusList;
+
+	private HttpSession session;
+	private Customer customer;
+	/**
+	 *customer集合
+	 *用来在任务管理界面查看任务详情时列出相应的客户
+	 */
+	private List<Customer>customerListForTaskMgt= new ArrayList<Customer>();
+	
+	private List<Question> questionListForTaskMgt=new ArrayList<Question>();
+
+	/**
+	 * 问题集合
+	 */
+	private List<String> listQuestion = new ArrayList<String>();
+
+	private List<String> problemList = new ArrayList<String>();
+	/**
+	 * 兼职的历史任务列表 包括完成和未完成的
+	 */
+	private List<Task> taskHistoryList = new ArrayList<Task>();
+	/**
+	 * 这个问题的list是给员工和管理员页面显示的
+	 */
+	private List<String> questionList = new ArrayList<String>();
+	
+
+	private Date plannedFinishedDate;
+
+	private Date currentDate = new Date();
+
+	public void setPlannedFinishedDate(Date plannedFinishedDate) {
+		this.plannedFinishedDate = plannedFinishedDate;
+	}
+
+	public Date getPlannedFinishedDate() {
+		return plannedFinishedDate;
+	}
+
+	public void setCurrentDate(Date currentDate) {
+		this.currentDate = currentDate;
+	}
+
+	public Date getCurrentDate() {
+		return currentDate;
+	}
+  
+
+
+	public List<Customer> getCustomerListForTaskMgt() {
+		return customerListForTaskMgt;
+	}
+
+	public void setCustomerListForTaskMgt(List<Customer> customerListForTaskMgt) {
+		this.customerListForTaskMgt = customerListForTaskMgt;
+	}
+
+	public List<Question> getQuestionListForTaskMgt() {
+		return questionListForTaskMgt;
+	}
+
+	public void setQuestionListForTaskMgt(List<Question> questionListForTaskMgt) {
+		this.questionListForTaskMgt = questionListForTaskMgt;
+	}
+
+	@PostConstruct
+	public void init() {
+		/* initAllList(taskService.findAll()); */
+		taskList = taskService.findAll();
+		initStatus();
+		 taskListForParttimeStaff = findTaskListForParttimeStaff(); 
+		
+		questionList = setQuestion();
+		session = (HttpSession) FacesContext.getCurrentInstance()
+				.getExternalContext().getSession(false);
+		initCustomizedTask();
+		/*customerListForTaskMgt=showCustomer();
+		questionListForTaskMgt=showQuestion();*/
+   
+	}
+
+	
+	  public List<Task> findTaskListForParttimeStaff() { 
+		  return customerView.findTasksByParttimeStaffId(); 
+		  }
+	    
+
+	public void deleteTask() {
+		if (task != null) {
+			taskService.deleteTask(task.getId());
+			unassignedTaskList.remove(task);
+			showResultTip("删除成功", FacesMessage.SEVERITY_INFO);
+			task = new Task();
+		} else {
+			showResultTip("删除失败", FacesMessage.SEVERITY_ERROR);
+		}
+	}
+
+	/**
+	 * 通过兼职的id得到相应的题目
+	 * 
+	 * @return
+	 */
+	public List<String> setQuestion() {
+		List<String> list = new ArrayList<String>();
+		long taskId = task.getId();
+		Task task = taskService.findById(taskId);
+		if (task != null) {
+			for (Question question : task.getQuestions()) {
+				list.add(question.getQuestionContent());
+			}
+		}
+		return list;
+	}
+
+	/**
+	 * 显示提示信息
+	 * 
+	 * @param tip
+	 *            提示信息
+	 * @param s
+	 */
+	public void showResultTip(String tip, FacesMessage.Severity s) {
+		String realText = null;
+		final int eachWordSize = 30;
+		if (s != null && s == FacesMessage.SEVERITY_ERROR) {
+			realText = "<div style='text-align:center;width:"
+					+ (tip.length() * eachWordSize)
+					+ "px;'><span style='color:red;font-size:18px;'>" + tip
+					+ "</span>";
+		} else if (s != null && s == FacesMessage.SEVERITY_INFO) {
+			realText = "<div style='text-align:center;width:"
+					+ (tip.length() * eachWordSize)
+					+ "px;'><span style='color:#003a6c;font-size:18px;'>" + tip
+					+ "</span>";
+		} else if (s != null && s == FacesMessage.SEVERITY_WARN) {
+			realText = "<div style='text-align:center;width:"
+					+ (tip.length() * eachWordSize)
+					+ "px;'><span style='color:orange;font-size:18px;'>" + tip
+					+ "</span>";
+		} else if (s != null && s == FacesMessage.SEVERITY_FATAL) {
+			realText = "<div style='text-align:center;width:"
+					+ (tip.length() * eachWordSize)
+					+ "px;'><span style='color:red;font-weight:bold;font-size:18px;'>"
+					+ tip + "</span>";
+		}
+		FacesMessage message = new FacesMessage(s, "提示", realText);
+		RequestContext.getCurrentInstance().showMessageInDialog(message);
+	}
+
+	public ITaskService getTaskService() {
+		return taskService;
+	}
+
+	public void setTaskService(ITaskService taskService) {
+		this.taskService = taskService;
+	}
+
+	public void setTask(Task task) {
+		this.task = task;
+	}
+
+	public Task getTask() {
+		return task;
+	}
+
+	public List<Task> getunassignedTaskList() {
+		return unassignedTaskList;
+	}
+
+	public void setunassignedTaskList(List<Task> unassignedTaskList) {
+		this.unassignedTaskList = unassignedTaskList;
+	}
+
+	public List<Task> getfilteredTaskList() {
+		return filteredTaskList;
+	}
+
+	public void setfilteredTaskList(List<Task> filteredTaskList) {
+		this.filteredTaskList = filteredTaskList;
+	}
+
+	public Task getNewTask() {
+		return newTask;
+	}
+
+	public void setNewTask(Task newTask) {
+		this.newTask = newTask;
+	}
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
+
+	public QuestionView getQuestionView() {
+		return questionView;
+	}
+
+	public void setQuestionView(QuestionView questionView) {
+		this.questionView = questionView;
+	}
+
+	public CustomerView getCustomerView() {
+		return customerView;
+	}
+
+	public void setCustomerView(CustomerView customerView) {
+		this.customerView = customerView;
+	}
+
+	public ParttimeStaffView getParttimeStaffView() {
+		return parttimeStaffView;
+	}
+
+	public void setParttimeStaffView(ParttimeStaffView parttimeStaffView) {
+		this.parttimeStaffView = parttimeStaffView;
+	}
+
+	public Task getTaskInfo() {
+		return taskInfo;
+	}
+
+	public void setTaskInfo(Task taskInfo) {
+		this.taskInfo = taskInfo;
+	}
+
+	public List<Task> getUnassignedTaskList() {
+		return unassignedTaskList;
+	}
+
+	public void setUnassignedTaskList(List<Task> unassignedTaskList) {
+		this.unassignedTaskList = unassignedTaskList;
+	}
+
+	public List<Task> getAssignedTaskList() {
+		return assignedTaskList;
+	}
+
+	public void setAssignedTaskList(List<Task> assignedTaskList) {
+		this.assignedTaskList = assignedTaskList;
+	}
+
+	public List<Task> getFinishedTaskList() {
+		return finishedTaskList;
+	}
+
+	public void setFinishedTaskList(List<Task> finishedTaskList) {
+		this.finishedTaskList = finishedTaskList;
+	}
+
+	public List<Task> getFilteredTaskList() {
+		return filteredTaskList;
+	}
+
+	public void setFilteredTaskList(List<Task> filteredTaskList) {
+		this.filteredTaskList = filteredTaskList;
+	}
+
+	public List<Task> getSelectedTaskList() {
+		return selectedTaskList;
+	}
+
+	public void setSelectedTaskList(List<Task> selectedTaskList) {
+		this.selectedTaskList = selectedTaskList;
+	}
+
+	public HttpSession getSession() {
+		return session;
+	}
+
+	public void setSession(HttpSession session) {
+		this.session = session;
+	}
+
+	public List<String> getListQuestion() {
+		return listQuestion;
+	}
+
+	public void setListQuestion(List<String> listQuestion) {
+		this.listQuestion = listQuestion;
+	}
+
+	public List<String> getProblemList() {
+		return problemList;
+	}
+
+	public void setProblemList(List<String> problemList) {
+		this.problemList = problemList;
+	}
+
+	public List<Task> getTaskListForParttimeStaff() {
+		return taskListForParttimeStaff;
+	}
+
+	public void setTaskListForParttimeStaff(List<Task> taskListForParttimeStaff) {
+		this.taskListForParttimeStaff = taskListForParttimeStaff;
+	}
+
+	public List<Task> getTaskHistoryList() {
+		return taskHistoryList;
+	}
+
+	public void setTaskHistoryList(List<Task> taskHistoryList) {
+		this.taskHistoryList = taskHistoryList;
+	}
+
+	public List<String> getquestionList() {
+		return questionList;
+	}
+
+	public void setquestionList(List<String> questionList) {
+		this.questionList = questionList;
+	}
+
+	private String evaluation;
+
+	private Integer rating = 0;
+
+	public void onrate(RateEvent rateEvent) {
+		// FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+		// "评论",
+		// "您评了" + ((Integer) rateEvent.getRating()).intValue() + "星");
+		// FacesContext.getCurrentInstance().addMessage(null, message);
+		setrating(null);
+	}
+
+	public void oncancel() {
+		setrating(0);
+		// FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+		// "评论重置", "评论重置了");
+		// FacesContext.getCurrentInstance().addMessage(null, message);
+	}
+
+	public Integer getrating() {
+		return rating;
+	}
+
+	public void setrating(Integer rating) {
+		this.rating = rating;
+	}
+
+	public String getEvaluation() {
+		return evaluation;
+	}
+
+	public void setEvaluation(String evaluation) {
+		this.evaluation = evaluation;
+	}
+
+	/**
+	 * 得到登录的员工的id
+	 * 
+	 * @return
+	 */
+	public long findTheStaffId() {
+		Object object = null;
+		Staff staff = null;
+		object = session.getAttribute("loginedUser");
+		if (object != null && object instanceof Staff) {
+			staff = (Staff) object;
+			return staff.getId();
+		}
+		return 0;
+	}
+
+	/**
+	 * 创建新任务
+	 */
+	/*
+	 * public void createTask() {
+	 * System.err.println("xxxxxxxx进入xxxxxxcreateTaskxxxx"); if (newTask !=
+	 * null) { System.err.println("xxxxxxxx进入xxxxxxcreateTaskxxxxifxxx");
+	 * List<Question> list = questionView.getNewQuestionList();
+	 * System.err.println("xxxxxx"+list.size()); if (list == null ||
+	 * allQuestionContentIsEmpty(list)) { showResultTip("任务至少要添加一个问题",
+	 * FacesMessage.SEVERITY_ERROR); return; } else {
+	 * System.err.println("进入xxxxxxxxxxelse"+list.size());
+	 * removeEmptyElementFromList(list);// 移除没有填写问题内容的元素
+	 * newTask.setQuestions(list);
+	 * newTask.setCreatedDate(DateUtil.dateToString(new Date())); if
+	 * (asTemplate) { newTask.setStatus(null); taskTemplates.add(newTask); }
+	 * else { unassignedTaskList.add(newTask); } taskService.addTask(newTask);
+	 * System.err.println(list.size()); showResultTip("添加成功",
+	 * FacesMessage.SEVERITY_INFO); questionView.getNewQuestionList().clear();
+	 * 在此之前，newTask已经保存到了数据库，但是，它对应的问题的没有保存到数据库
+	 * 
+	 * setTaskForNewQuestion(list, newTask);
+	 * 
+	 * questionView.getQuestionService().addBatch(list);
+	 * 
+	 * initNewTask();
+	 * 
+	 * asTemplate = false;
+	 * 
+	 * } } else { showResultTip("添加失败，请联系系统运维人员", FacesMessage.SEVERITY_ERROR);
+	 * } }
+	 */
+	/*******************************************************************************
+	 *                                 dxl      modify
+	 ********************************************************************************/
+  /**
+   * 查看任务详情
+   */
+	public void showTaskInfo(){
+		System.err.println("xxx进入showTaskinfo"+taskInfo);
+	    showCustomer();
+	    showQuestion();
+  }
+	
+	/**
+     * 查看任务里面的客户
+     */
+	public  List<Customer> showCustomer(){
+		customerListForTaskMgt.clear();
+		Set<Customer> customerSet=taskInfo.getCustomers();
+		if(customerSet!=null){
+			for(Customer customer:customerSet){
+				customerListForTaskMgt.add(customer);
+			}
+		}
+		return customerListForTaskMgt;
+	}
+	/**
+	 * 查看任务里面的问题
+	 */
+	public List<Question> showQuestion(){
+		questionListForTaskMgt.clear();
+		System.err.println("xxxx"+taskInfo);
+		Set<Question> questionSet=taskInfo.getQuestions();
+		if(questionSet!=null){
+			for(Question question:questionSet){
+				questionListForTaskMgt.add(question);
+			}
+		}
+		return questionListForTaskMgt;
+	}
+	
+	
+	/**
+	 * 创建任务
+	 */
+	public void createTask() {
+		Set<Question> questionSet=new HashSet<Question>();
+		if (null != newTask) {
+			String stage = questionView.getNewTask().getStage();
+			System.err.println("xxxxxxxxx" + stage);
+			List<Question> list = new ArrayList<Question>();
+			list = questionView.getNewQuestionList();
+			System.err.println("进入ifxxxxx" + list.toString());
+			if (list == null || allQuestionContentIsEmpty(list)) {
+				showResultTip("任务至少要添加一个问题", FacesMessage.SEVERITY_ERROR);
+				return;
+			} else {
+				System.err.println("进入xxxxxxxxxxelse" + list.size());
+				removeEmptyElementFromList(list);// 移除没有填写问题内容的元素
+				for(Question question:list){
+					questionSet.add(question);
+				newTask.setQuestions(questionSet);
+				}
+				newTask.setCreatedDate(DateUtil.dateToString(new Date()));
+				newTask.setStage(stage);
+
+				if (asTemplate) {
+					newTask.setStatus(null);
+					taskTemplates.add(newTask);
+				} else {
+					unassignedTaskList.add(newTask);
+					taskList.add(newTask);
+				}
+				taskService.addTask(newTask);
+				showResultTip("添加成功", FacesMessage.SEVERITY_INFO);
+				questionView.getNewQuestionList().clear();
+			}
+		} else {
+			showResultTip("添加失败，请联系系统运维人员", FacesMessage.SEVERITY_ERROR);
+		}
+	}
+
+	/***********************************************************************************
+	 * xxxxxxxxxdxlxxxxxendxxx
+	 *************************************************************************************/
+	/**
+	 * 从指定的问题list集合中移除没有填写问题内容的元素
+	 * 
+	 * @param list
+	 */
+	public void removeEmptyElementFromList(List<Question> list) {
+		if (list != null) {
+			Iterator<Question> iterator = list.iterator();
+			while (iterator.hasNext()) {
+				if (StringUtils.isBlank(iterator.next().getQuestionContent())) {
+					iterator.remove();
+				}
+			}
+		}
+	}
+
+	/**
+	 * 为新问题集合设置关联的任务
+	 * 
+	 * @param questions
+	 * @param task
+	 */
+	public void setTaskForNewQuestion(List<Question> questions, Task task) {
+		for (Question q : questions) {
+			System.err.println("xxxxxx" + q + "xxxx" + task);
+			// 过滤没有内容的问题。减少对newTask的引用
+			if (!StringUtils.isBlank(q.getQuestionContent())) {
+				System.err.println("xxxxxx" + q + "xxxx" + task);
+
+				// q.setTask(task);
+			}
+		}
+	}
+
+	/**
+	 * 判断所有的问题内容是否都是空
+	 * 
+	 * @param list
+	 * @return
+	 */
+	public boolean allQuestionContentIsEmpty(List<Question> list) {
+		if (list == null || list.isEmpty())
+			return false;
+		else {
+			int i = 0;
+			for (i = 0; i < list.size(); i++) {
+				if (!StringUtils.isBlank(list.get(i).getQuestionContent())) {
+					break;
+				}
+			}
+			if (i == list.size())
+				return true;
+			else
+				return false;
+		}
+
+	}
+
+	/**
+	 * 任务阶段集合。用于新建任务时的下拉框。
+	 */
+	private List<String> taskStages;
+
+	/**
+	 * 初始化新任务
+	 */
+	public void initNewTask() {
+		newTask = new Task();
+		newTask.setStatus(Task.UNASSIGNED);
+		questionView.init();
+		questionView.getNewQuestionList().clear();
+	}
+
+	/**
+	 * 初始化任务阶段集合。
+	 * 
+	 * @param taskStages
+	 */
+	public void initTaskStages() {
+		taskStages = new ArrayList<>();
+		taskStages.add(Task.FIRST_STAGE);
+		taskStages.add(Task.SECOND_STAGE);
+		taskStages.add(Task.THIRD_STAGE);
+		taskStages.add(Task.FOURTH_STAGE);
+	}
+
+	public List<String> getTaskStages() {
+		return taskStages;
+	}
+
+	public void setTaskStages(List<String> taskStages) {
+		this.taskStages = taskStages;
+	}
+
+	/**
+	 * 定制的任务
+	 */
+	private Task customizedTask;
+
+	public void setCustomizedTask(Task customizedTask) {
+		this.customizedTask = customizedTask;
+	}
+
+	public Task getCustomizedTask() {
+		return customizedTask;
+	}
+
+	public void onRowSelect(SelectEvent event) {
+		Object obj = event.getObject();
+		if (obj != null && obj instanceof ParttimeStaff) {
+			ParttimeStaff parttimeStaff = (ParttimeStaff) obj;
+			this.parttimeStaff = parttimeStaff;
+			selectedParttimeStaffInNotUsingTemplate = parttimeStaff;
+			customizedTask.setParttimeStaff(parttimeStaff);
+		} else {
+			customizedTask.setParttimeStaff(new ParttimeStaff());
+		}
+	}
+
+	/**
+	 * 初始化定制的任务
+	 */
+	public void initCustomizedTask() {
+		customizedTask = new Task();
+		customizedTask.setStatus(Task.UNASSIGNED);
+		customizedTask.setParttimeStaff(new ParttimeStaff());
+		this.parttimeStaff = new ParttimeStaff();
+		plannedFinishedDate = null;
+		questionView.init();
+		customerView.setSelectedCustomerList(new ArrayList<Customer>());
+	}
+
+	/**
+	 * 为特定的客户定制任务。即从客户管理页面进行分配任务
+	 */
+	public void createTaskForCustomer() {
+		List<Question> list = questionView.getNewQuestionList();
+		if (list == null || allQuestionContentIsEmpty(list)) {
+			showResultTip("任务至少要添加一个问题", FacesMessage.SEVERITY_ERROR);
+			return;
+		} else {
+			removeEmptyElementFromList(list);// 移除没有填写问题内容的元素
+			customizedTask.setStaff(getStaffFromSesson());
+			customizedTask.setCreatedDate(DateUtil.dateToString(new Date()));
+			customizedTask.setAssignedDate(DateUtil.dateToString(new Date()));
+			customizedTask.setPlannedFinishedDate(DateUtil
+					.dateToString(plannedFinishedDate));
+			customizedTask.setStatus(Task.ASSIGNED);
+			List<Customer> selectedCustomerList = customerView
+					.getSelectedCustomerList();
+			for (int i = 0; i < selectedCustomerList.size(); i++) {
+				Task t = Task.cloneTask(customizedTask);// 克隆任务
+				/* t.setCustomer(selectedCustomerList.get(i)); */
+				List<Question> ql = cloneList(list, t);
+				/*t.setQuestions(ql);*/
+				assignedTaskList.add(t);
+				taskService.addTask(t);
+				questionView.getQuestionService().addBatch(ql);
+			}
+			System.gc();
+			initCustomizedTask();
+			showResultTip("定制成功", FacesMessage.SEVERITY_INFO);
+		}
+	}
+
+	/**
+	 * 克隆集合
+	 * 
+	 * @param oringList
+	 *            源任务的集合
+	 * @param oringTask
+	 *            源任务
+	 * @return 被克隆的集合
+	 */
+	public List<Question> cloneList(List<Question> oringList, Task oringTask) {
+		List<Question> clonedList = new ArrayList<>();
+		if (oringList != null && !oringList.isEmpty()) {
+			for (Question q : oringList) {
+				Question clonedQuestion = Question.cloneQusetion(q);
+				// clonedQuestion.setTask(oringTask);
+				clonedList.add(clonedQuestion);
+			}
+		}
+		return clonedList;
+	}
+
+	/**
+	 * 从session中获得登录的员工
+	 * 
+	 * @return
+	 */
+	public Staff getStaffFromSesson() {
+		Staff staff = null;
+		Object obj = session.getAttribute("loginedUser");
+		if (obj instanceof Staff) {
+			staff = (Staff) obj;
+		}
+		return staff;
+	}
+
+	/**
+	 * 这个兼职比较特殊
+	 */
+	private ParttimeStaff parttimeStaff;
+
+	public void setParttimeStaff(ParttimeStaff parttimeStaff) {
+		this.parttimeStaff = parttimeStaff;
+	}
+
+	public ParttimeStaff getParttimeStaff() {
+		return parttimeStaff;
+	}
+
+
+	/**
+	 * 通过任务模板分配任务
+	 */
+	public void assignTaskByTaskTemplate() {
+		newTask.setAssignedDate(DateUtil.dateToString(new Date()));
+		newTask.setPlannedFinishedDate(DateUtil
+				.dateToString(plannedFinishedDate));
+		ParttimeStaff pts = parttimeStaffView.getParttimeStaff();
+		if (pts != null)
+			newTask.setParttimeStaff(pts);
+		List<Customer> list = customerView
+				.getSelectedCustomersForTaskTemplate();
+		if (list != null) {
+			newTask.setId(0);
+			/* newTask.setCustomer(list.get(0)); */
+			newTask.setStatus(Task.ASSIGNED);
+			removeEmptyElementFromList(questionView.getNewQuestionList());
+		/*	newTask.setQuestions(cloneList(questionView.getNewQuestionList(),
+					newTask));*/
+			taskService.updateTask(newTask);
+			assignedTaskList.add(newTask);
+			for (int i = 1; i < list.size(); i++) {
+				Task t = Task.cloneTask(newTask);
+				t.setStaff(findTheStaff());
+				/* t.setCustomer(list.get(i)); */
+				/*t.setQuestions(cloneList(newTask.getQuestions(), t));*/
+				taskService.updateTask(t);
+				assignedTaskList.add(t);
+				customerView.getCustomerList().remove(list.get(i));// 此行代码逻辑有问题
+			}
+			showResultTip("分配成功", FacesMessage.SEVERITY_INFO);
+			customerView.setSelectedCustomerList(new ArrayList<Customer>());
+			initNewTask();
+			System.gc();
+		}
+		plannedFinishedDate = null;
+	}
+
+	/**
+	 * 从任务管理页面分配任务时，验证员工是否选择了客户，如果没有，给出错误提示; 否则，执行JS函数，页面跳转。
+	 * model为模式，根据模式判断此时前端是在给由任务模板生成的任务分配客户还是在给指定的单个任务分配客户
+	 */
+	public void validateSelectedCustomerList(int model) {
+		List<Customer> list = null;
+		if (model == 1) {
+			list = customerView.getSelectedCustomerList();
+		} else if (model == 2) {
+			list = customerView.getSelectedCustomersForTaskTemplate();
+		}
+		if (list != null && !list.isEmpty()) {
+			if (model == 1) {
+				RequestContext.getCurrentInstance().execute(
+						"PF('dlg_assignCustomer').hide()");
+				RequestContext.getCurrentInstance().execute(
+						"PF('dlg_assignParttimeStaff').show()");
+			} else if (model == 2) {
+				RequestContext.getCurrentInstance().execute(
+						"PF('assignCustomer').hide()");
+				RequestContext.getCurrentInstance().execute(
+						"PF('assignParttimeStaff').show()");
+			}
+		} else {
+			showResultTip("请先选择客户", FacesMessage.SEVERITY_ERROR);
+		}
+	}
+
+	/**
+	 * 从兼职管理页面对指定的兼职分配任务时，被选中的任务
+	 */
+	private Task selectedTask;
+
+	public void setSelectedTask(Task selectedTask) {
+		this.selectedTask = selectedTask;
+	}
+
+	public Task getSelectedTask() {
+		return selectedTask;
+	}
+
+	/**
+	 * 检查员工是否选择了任务，如果没有，给出错误提示； 否则，调用JS函数，执行页面跳转
+	 */
+	public void validateSelectedTask() {
+		if (selectedTask != null && // selectedTask is null
+				!StringUtils.isBlank(selectedTask.getTaskDescription())) {// selectedTask
+																			// is
+																			// new.
+			RequestContext.getCurrentInstance().execute(
+					"PF('dlg_assignTask').hide()");
+			RequestContext.getCurrentInstance().execute(
+					"PF('dlg_assignCustomer').show()");
+		} else {
+			showResultTip("请先选择任务", FacesMessage.SEVERITY_ERROR);
+		}
+	}
+
+	/**
+	 * 从兼职管理页面对指定的兼职分配任务
+	 */
+	public void assignTaskByPts() {
+		ParttimeStaff pts = parttimeStaffView.getParttimeStaff();// 第一步得到的兼职
+																	// 第二步选中的任务是:selectedTask
+		List<Customer> list = customerView.getSelectedCustomerList();// 第三步选中的客户
+		if (pts == null || selectedTask == null || list == null
+				|| list.isEmpty()) {
+			showResultTip("分配失败,请联系系统管理员", FacesMessage.SEVERITY_ERROR);
+		} else {
+			unassignedTaskList.remove(selectedTask);
+			selectedTask.setAssignedDate(DateUtil.dateToString(new Date()));
+			selectedTask.setPlannedFinishedDate(DateUtil
+					.dateToString(plannedFinishedDate));
+			pts = parttimeStaffView.getParttimeStaff();
+			if (pts != null)
+				selectedTask.setParttimeStaff(pts);
+			/* selectedTask.setCustomer(list.get(0)); */
+			selectedTask.setStatus(Task.ASSIGNED);
+			taskService.updateTask(selectedTask);
+			assignedTaskList.add(selectedTask);
+			for (int i = 1; i < list.size(); i++) {
+				Task t = Task.cloneTask(selectedTask);
+				t.setId(0);
+				/* t.setCustomer(list.get(i)); */
+				/*t.setQuestions(cloneList(selectedTask.getQuestions(), t));*/
+				t.setStaff(findTheStaff());
+				taskService.updateTask(t);
+				assignedTaskList.add(t);
+				customerView.getCustomerList().remove(list.get(i));// 此行代码逻辑有问题
+			}
+			showResultTip("分配成功", FacesMessage.SEVERITY_INFO);
+			// selectedTask = null;
+			customerView.setSelectedCustomerList(new ArrayList<Customer>());
+		}
+
+	}
+
+	public void onSelectForPts(SelectEvent event) {
+		Object obj = event.getObject();
+		if (obj instanceof Task) {
+			selectedTask = (Task) obj;
+		}
+	}
+
+	/** ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
+	@ManagedProperty(value = "#{evaluationView}")
+	private EvaluationView evaluationView;
+
+	@ManagedProperty(value = "#{answerView}")
+	private AnswerView answerView;
+
+	/**
+	 * 兼职的历史交互任务中的问题的答案列表
+	 */
+	private List<String> answerList = new ArrayList<String>();
+	/**
+	 * 一个兼职的所有评价列表
+	 */
+	private List<Evaluation> evaluationList = new ArrayList<Evaluation>();
+
+	public List<String> getQuestionList() {
+		return questionList;
+	}
+
+	public void setQuestionList(List<String> questionList) {
+		this.questionList = questionList;
+	}
+
+	public Integer getRating() {
+		return rating;
+	}
+
+	public void setRating(Integer rating) {
+		this.rating = rating;
+	}
+
+	public EvaluationView getEvaluationView() {
+		return evaluationView;
+	}
+
+	public void setEvaluationView(EvaluationView evaluationView) {
+		this.evaluationView = evaluationView;
+	}
+
+	public AnswerView getAnswerView() {
+		return answerView;
+	}
+
+	public void setAnswerView(AnswerView answerView) {
+		this.answerView = answerView;
+	}
+
+	public List<String> getAnswerList() {
+		return answerList;
+	}
+
+	public void setAnswerList(List<String> answerList) {
+		this.answerList = answerList;
+	}
+
+	public List<Evaluation> getEvaluationList() {
+		return evaluationList;
+	}
+
+	public void setEvaluationList(List<Evaluation> evaluationList) {
+		this.evaluationList = evaluationList;
+	}
+
+	/**
+	 * 得到每个任务的相关试卷
+	 */
+	public void getQuestionListByTask() {
+		// ceshi++;
+		this.questionList.clear();
+		if (this.task != null) {
+			for (Question q : this.task.getQuestions())
+				this.questionList.add(q.getQuestionContent());
+		}
+		// System.err.println("调用了得到问题list的方法，此时测试为："+ceshi);
+	}
+
+	// hebing
+	/**
+	 * 得到每个任务的相关试卷的答案
+	 */
+	public void getAnswerListByTask() {
+		getQuestionListByTask();
+		int cnt = 0;// 用来优化的
+		this.answerList.clear();
+		if (this.task != null) {
+			for (Answer a : answerView.getAnswerService().findAllAnswers()) {
+				if (a.getTask_id() == this.task.getId()) {
+					cnt++;
+					answerList.add(a.getAnswerContent());
+				}
+				if (cnt == questionList.size())
+					break;
+			}
+		}
+	}
+
+	/**
+	 * 得到兼职的所有评价的详细信息
+	 */
+	public void getTheDeatailEvaluation() {
+		evaluationList.clear();
+		for (Evaluation e : evaluationView.getEvaluationService().findAll()) {
+			if (e.getEvaluatedObjectId() == parttimeStaffView
+					.getParttimeStaff().getId()
+					&& e.getType().equals(Evaluation.PARTTIMESTAFF)) {
+				this.evaluationList.add(e);
+			}
+		}
+	}
+
+	// hebing
+	public void initAllList(List<Task> list) {
+		disableds = new ArrayList<>();
+		java.util.Iterator<Task> iterator = list.iterator();
+		while (iterator.hasNext()) {
+			Task t = iterator.next();
+			if (t != null && Task.UNASSIGNED.equals(t.getStatus())) {
+				this.unassignedTaskList.add(t);
+			} else if (t != null && Task.ASSIGNED.equals(t.getStatus())) {
+				this.assignedTaskList.add(t);
+			} else if (t != null && Task.FINISHED.equals(t.getStatus())) {
+				this.finishedTaskList.add(t);
+				if (t.getIsAvaluated() == Task.AVALUATED) {
+					disableds.add(true);
+				} else {
+					disableds.add(false);
+				}
+			} else if (t != null && Task.UNREVISIT.equals(t.getStatus())) {
+				this.unrevisitTaskList.add(t);
+			} else if (t != null && t.getStatus() == null) {// 任务模板
+				this.taskTemplates.add(t);
+			}
+		}
+	}
+
+	private List<Boolean> disableds;
+
+	public void setDisableds(List<Boolean> disableds) {
+		this.disableds = disableds;
+	}
+
+	public List<Boolean> getDisableds() {
+		return disableds;
+	}
+
+	/**
+	 * 提交了没有回访的任务
+	 */
+	private List<Task> unrevisitTaskList = new ArrayList<Task>();
+
+	public void setUnrevisitTaskList(List<Task> unrevisitTaskList) {
+		this.unrevisitTaskList = unrevisitTaskList;
+	}
+
+	public List<Task> getUnrevisitTaskList() {
+		return unrevisitTaskList;
+	}
+
+	/** ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
+
+	/**
+	 * 通过兼职的id得到历史任务列表
+	 * 
+	 * @param id
+	 *            兼职的id
+	 * @return
+	 */
+	public List<Task> getHistoryListByPattimeStaffId(long id) {
+		/**
+		 * 所有的任务集合，但不包括未分配的
+		 */
+		List<Task> allTaskList = new ArrayList<>();
+		allTaskList.addAll(this.assignedTaskList);
+		allTaskList.addAll(this.unrevisitTaskList);
+		allTaskList.addAll(this.finishedTaskList);
+		List<Task> list = new ArrayList<Task>();
+		for (Task t : allTaskList) {
+			ParttimeStaff p = t.getParttimeStaff();
+			if (p != null && p.getId() == id)
+				list.add(t);
+		}
+		return list;
+	}
+
+	/**
+	 * 前端来调用
+	 */
+	public void getHistoryList() {
+		long id = parttimeStaffView.getParttimeStaff().getId();
+		taskHistoryList = getHistoryListByPattimeStaffId(id);
+	}
+
+	/*
+	 * ==================================FZH====================================
+	 * =============
+	 */
+	private ParttimeStaff revisiter;
+	private List<Task> selectedUnrevisitedTaskList;
+	@ManagedProperty(value = "#{parttimeStaffService}")
+	private IParttimeStaffService parttimeStaffService;
+	@ManagedProperty(value = "#{revisitService}")
+	private IRevisitService revisitService;
+	private Task unrevisitedTask;
+	/**
+	 * 创建任务时，选择是否需要将此任务作为任务模板
+	 */
+	private boolean asTemplate;
+	/**
+	 * 任务模板集合。从数据库中查出所有任务后，对于任务状态为null的任务， 它就是任务模板。存到此集合中。
+	 */
+	private List<Task> taskTemplates = new ArrayList<>();
+	private Task selectedTaskTemplate;
+
+	public void setSelectedUnrevisitedTaskList(
+			List<Task> selectedUnrevisitedTaskList) {
+		this.selectedUnrevisitedTaskList = selectedUnrevisitedTaskList;
+	}
+
+	public List<Task> getSelectedUnrevisitedTaskList() {
+		return selectedUnrevisitedTaskList;
+	}
+
+	public void setRevisiter(ParttimeStaff revisiter) {
+		this.revisiter = revisiter;
+	}
+
+	public ParttimeStaff getRevisiter() {
+		return revisiter;
+	}
+
+	public void setParttimeStaffService(
+			IParttimeStaffService parttimeStaffService) {
+		this.parttimeStaffService = parttimeStaffService;
+	}
+
+	public IParttimeStaffService getParttimeStaffService() {
+		return parttimeStaffService;
+	}
+
+	public void setRevisitService(IRevisitService revisitService) {
+		this.revisitService = revisitService;
+	}
+
+	public IRevisitService getRevisitService() {
+		return revisitService;
+	}
+
+	public void setUnrevisitedTask(Task unrevisitedTask) {
+		this.unrevisitedTask = unrevisitedTask;
+	}
+
+	public Task getUnrevisitedTask() {
+		return unrevisitedTask;
+	}
+
+	public void setAsTemplate(boolean asTemplate) {
+		this.asTemplate = asTemplate;
+	}
+
+	public boolean isAsTemplate() {
+		return asTemplate;
+	}
+
+	public void setTaskTemplates(List<Task> taskTemplates) {
+		this.taskTemplates = taskTemplates;
+	}
+
+	public List<Task> getTaskTemplates() {
+		return taskTemplates;
+	}
+
+	public void setSelectedTaskTemplate(Task selectedTaskTemplate) {
+		this.selectedTaskTemplate = selectedTaskTemplate;
+	}
+
+	public Task getSelectedTaskTemplate() {
+		return selectedTaskTemplate;
+	}
+
+	/**
+	 * 验证员工是否选择了要回访的任务
+	 */
+	public void validateSelectedUnrevisitedTaskList() {
+		if (selectedUnrevisitedTaskList != null
+				&& !selectedUnrevisitedTaskList.isEmpty()) {
+			unrevisitedTask = null;
+			RequestContext.getCurrentInstance().execute(
+					"PF('dlg_chooseRevisiter').show()");
+		} else {
+			showResultTip("请先选择要回访的任务", FacesMessage.SEVERITY_ERROR);
+		}
+	}
+
+	public void onChooseRevisiter(SelectEvent event) {
+		Object obj = event.getObject();
+		if (obj instanceof ParttimeStaff) {
+			this.revisiter = (ParttimeStaff) obj;
+		} else {
+			this.revisiter = new ParttimeStaff();
+		}
+	}
+
+	/**
+	 * 创建回访
+	 */
+	public void makeRevisit() {
+		if (unrevisitedTask == null) {
+			if (selectedUnrevisitedTaskList == null
+					|| selectedUnrevisitedTaskList.isEmpty()
+					|| revisiter == null) {
+				showResultTip("系统内部发生错误，请重新登录后重试", FacesMessage.SEVERITY_FATAL);
+			} else {
+				revisiter.setIdentifier(ParttimeStaff.REVISITER);
+				parttimeStaffService.updateParttimeStaff(revisiter);
+				for (Task task : selectedUnrevisitedTaskList) {
+					Revisit revisit = new Revisit();
+					revisit.setRevisiterId(revisiter.getId());
+					/* revisit.setCustomerId(task.getCustomer().getId()); */
+					revisit.setParttimeStaffId(task.getParttimeStaff().getId());
+					// zy
+					revisit.setTask_id(task.getId());
+					revisitService.addRevisitRecord(revisit);
+				}
+				showResultTip("分配成功", FacesMessage.SEVERITY_INFO);
+				this.unrevisitTaskList.removeAll(selectedUnrevisitedTaskList);
+				changeTaskStatus(selectedUnrevisitedTaskList);
+				System.gc();
+			}
+		} else {
+			revisiter.setIdentifier(ParttimeStaff.REVISITER);
+			parttimeStaffService.updateParttimeStaff(revisiter);
+			Revisit revisit = new Revisit();
+			revisit.setRevisiterId(revisiter.getId());
+			/* revisit.setCustomerId(unrevisitedTask.getCustomer().getId()); */
+			revisit.setParttimeStaffId(unrevisitedTask.getParttimeStaff()
+					.getId());
+			// zy
+			revisit.setTask_id(unrevisitedTask.getId());
+			revisitService.addRevisitRecord(revisit);
+			showResultTip("分配成功", FacesMessage.SEVERITY_INFO);
+			unrevisitedTask.setStatus("default");
+			this.unrevisitTaskList.remove(unrevisitedTask);
+			taskService.updateTask(unrevisitedTask);
+		}
+	}
+
+	/**
+	 * 改变任务的状态，同时更新到数据库
+	 * 
+	 * @param tasks
+	 */
+	public void changeTaskStatus(List<Task> tasks) {
+		if (tasks != null && !tasks.isEmpty()) {
+			Iterator<Task> iterator = tasks.iterator();
+			while (iterator.hasNext()) {
+				Task t = iterator.next();
+				t.setStatus("default");
+				taskService.updateTask(t);
+			}
+		}
+	}
+
+	public void onSelectTaskTemplate(SelectEvent event) {
+		Object obj = event.getObject();
+		if (obj instanceof Task) {
+			this.selectedTaskTemplate = (Task) obj;
+		}
+	}
+
+	/**
+	 * 检查员工是否选择了任务模板
+	 */
+	public void validateSelectedTaskTemplate() {
+		if (selectedTaskTemplate != null) {
+			initNewTask();
+			try {
+				BeanUtils.copyProperties(newTask, selectedTaskTemplate);
+				/*questionView.setNewQuestionList(cloneList(
+						selectedTaskTemplate.getQuestions(), newTask));*/
+				RequestContext.getCurrentInstance().execute(
+						"PF('chooseTaskTemplate').hide()");
+				RequestContext.getCurrentInstance().execute(
+						"PF('useTaskTemplate').show()");
+				selectedTaskTemplate = new Task();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+			showResultTip("请选择任务模板", FacesMessage.SEVERITY_ERROR);
+		}
+	}
+
+	public void onDateSelect(SelectEvent event) {
+		Object obj = event.getObject();
+		if (obj instanceof java.util.Date) {
+			plannedFinishedDate = (java.util.Date) obj;
+		}
+	}
+
+	/*
+	 * ==================================FZH====================================
+	 */
+	/* ★★★★★★★★★★★★★★★★★★★★★★★ZY★★★★★★★★★★★★★★★★★★★★★★ */
+	/**
+	 * 客户的历史任务列表
+	 */
+	private List<Task> historyTaskListOfCustomer = new ArrayList<Task>();
+
+	public List<Task> getHistoryTaskListOfCustomer() {
+		return historyTaskListOfCustomer;
+	}
+
+	public void setHistoryTaskListOfCustomer(
+			List<Task> historyTaskListOfCustomer) {
+		this.historyTaskListOfCustomer = historyTaskListOfCustomer;
+	}
+
+	/**
+	 * 通过客户的id得到客户所交互的所有任务信息
+	 * 
+	 * @param id
+	 */
+	public void findTheCustomerHistory(long id) {
+		this.historyTaskListOfCustomer.clear();
+		for (Task t : taskService.findAll()) {
+			/*
+			 * if (t.getCustomer() != null) { if (t.getCustomer().getId() == id)
+			 * historyTaskListOfCustomer.add(t); }
+			 */
+		}
+		System.err.println("最后history 的长度" + historyTaskListOfCustomer.size());
+	}
+
+	// zy
+	/**
+	 * 得到登录的员工
+	 * 
+	 * @return
+	 */
+	public Staff findTheStaff() {
+		Object object = null;
+		Staff staff = null;
+		object = session.getAttribute("loginedUser");
+		if (object != null && object instanceof Staff) {
+			staff = (Staff) object;
+			return staff;
+		}
+		return null;
+	}
+
+	/**
+	 * 员工评价兼职的方法
+	 */
+	public void evaluate() {
+		boolean isAvaliableToSaveEvaluation = false;
+		if (getrating() == null) {
+			setrating(0);
+		}
+		if (!evaluation.trim().equals(""))
+			isAvaliableToSaveEvaluation = true;
+		if (!isAvaliableToSaveEvaluation) {
+			isAvaliableToSaveEvaluation = false;
+			setEvaluation("");
+			setrating(0);
+			showResultTip("评价失败！文字内容为空！", FacesMessage.SEVERITY_ERROR);
+		} else {
+			// 进行相应的评价的保存
+			Evaluation eval = new Evaluation();
+			taskInfo.setIsAvaluated(Task.AVALUATED);
+
+			// zy
+			// finishedTaskList.indexOf(taskInfo))
+			// disableds.set((int) taskInfo.getId() - 1, true);
+			// zy
+			if (taskInfo != null && taskInfo.getParttimeStaff() != null) {
+				eval.setContent(this.evaluation);
+
+				// zy
+				eval.setEvaluatedObjectId(taskInfo.getParttimeStaff().getId());
+
+				eval.setType(Evaluation.PARTTIMESTAFF);
+				eval.setEvaluaterId(findTheStaff().getId());
+				eval.setGrade(getrating());
+				evaluationView.saveEvaluation(eval);
+				showResultTip("提交成功", FacesMessage.SEVERITY_INFO);
+				disableds.set(finishedTaskList.indexOf(taskInfo), true);
+				taskService.updateTask(taskInfo);
+			}
+		}
+		isAvaliableToSaveEvaluation = false;
+		setEvaluation("");
+		setrating(0);
+	}
+
+	/**
+	 * 不使用任务模板时的计划完成时间
+	 */
+	private Date plannedFiniedDateInNotUsingTemplate;
+	/**
+	 * 不使用任务模板时的选择的兼职
+	 */
+	private ParttimeStaff selectedParttimeStaffInNotUsingTemplate;
+
+	public void setPlannedFiniedDateInNotUsingTemplate(
+			Date plannedFiniedDateInNotUsingTemplate) {
+		this.plannedFiniedDateInNotUsingTemplate = plannedFiniedDateInNotUsingTemplate;
+	}
+
+	public Date getPlannedFiniedDateInNotUsingTemplate() {
+		return plannedFiniedDateInNotUsingTemplate;
+	}
+
+	public void setSelectedParttimeStaffInNotUsingTemplate(
+			ParttimeStaff selectedParttimeStaffInNotUsingTemplate) {
+		this.selectedParttimeStaffInNotUsingTemplate = selectedParttimeStaffInNotUsingTemplate;
+	}
+
+	public ParttimeStaff getSelectedParttimeStaffInNotUsingTemplate() {
+		return selectedParttimeStaffInNotUsingTemplate;
+	}
+
+	/* ★★★★★★★★★★★★★★★★★★★★★★★ZY★★★★★★★★★★★★★★★★★★★★★★ */
+
+	/* ***************************YLX************** */
+	public List<String> getStatusList() {
+		return statusList;
+	}
+
+	public void setStatusList(List<String> statusList) {
+		this.statusList = statusList;
+	}
+
+	public void setTaskList(List<Task> taskList) {
+		this.taskList = taskList;
+	}
+
+	public List<Task> getTaskList() {
+		return taskList;
+	}
+
+	public List<String> getSelectedStatusList() {
+		return selectedStatusList;
+	}
+
+	public void setSelectedStatusList(List<String> selectedStatusList) {
+		this.selectedStatusList = selectedStatusList;
+	}
+
+	public void initStatus() {
+		statusList = new ArrayList<String>();
+		statusList.add(Task.UNASSIGNED);
+		statusList.add(Task.ASSIGNED);
+		statusList.add(Task.UNREVISIT);
+		statusList.add(Task.FINISHED);
+	}
+
+	public void assignTasks() {
+		Set<Customer>customerSet=new HashSet<Customer>();
+		task.setAssignedDate(DateUtil.dateToString(new Date()));
+		task.setPlannedFinishedDate(DateUtil
+				.dateToString(plannedFiniedDateInNotUsingTemplate));
+		ParttimeStaff pts = selectedParttimeStaffInNotUsingTemplate;
+		if (pts != null)
+			task.setParttimeStaff(pts);
+		List<Customer> list = customerView.getSelectedCustomerList();
+		System.err.println("xxxxxxxx进入assignTask" + list.size());
+		if (list != null) {
+			for(Customer cuestoner:list){
+				customerSet.add(cuestoner);
+				task.setCustomers(customerSet);
+			}
+			
+			task.setStatus(Task.ASSIGNED);
+			 taskService.updateTask(task);
+			showResultTip("分配成功", FacesMessage.SEVERITY_INFO);
+			customerView.setSelectedCustomerList(new ArrayList<Customer>());
+			unassignedTaskList.remove(task);
+		}
+
+		plannedFinishedDate = null;
+	}
+
+}

@@ -1,0 +1,20 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+
+
+	<div id="div_1_1"></div>
+
+	<h:form>
+		<div id="top">
+			<p:commandButton id="top_btn_login" action="#{logoutView.logout}"
+				value="退出登录" style="margin-left:1%;float:right; margin-top:5px"
+				icon="fa fa-fw fa-power-off">
+			</p:commandButton>
+			<p:commandButton id="top_btn_registe"
+				action="#{personalCenterView.checkUserType}" value="个人中心"
+				style="float:right; margin-top:5px" icon="fa fa-user">
+			</p:commandButton>
+		</div>
+	</h:form>
+</f:view>

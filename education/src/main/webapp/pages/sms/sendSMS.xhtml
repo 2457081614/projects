@@ -1,0 +1,91 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<ui:composition template="../templates/basicPage.xhtml">
+		<ui:define name="content">
+			<p:tabView>
+				<p:tab title="单个发送">
+					<h:form>
+
+						<div class="ui-g">
+						  <div class="ui-g-2"></div>
+						  <div class="ui-g-8">
+							<div  class="ui-g">
+							    <div  class="ui-g-4">
+									<h:outputText value="学号" />
+									<p:inputText />
+								</div>
+								<div class="ui-g-4">
+									<h:outputText value="职工号:" />
+									<p:inputText />
+								</div>
+								<div class="ui-g-4">
+								    <p:commandButton value="查询" />
+								</div>
+							</div>	
+							
+						  </div>
+						   <div class="ui-g-2"></div>
+						</div>
+
+						<div class="ui-g">
+							<div class="ui-g-2" style="text-align: right;">收件人：</div>
+							<div class="ui-g-8">
+								<p:inputText style="width:99%" />
+							</div>
+							<div class="ui-g-2"></div>
+						</div>
+
+						<div class="ui-g">
+							<div class="ui-g-2" style="text-align: right;">内容：</div>
+							<div class="ui-g-8">
+								<p:editor height="400" />
+							</div>
+							<div class="ui-g-2"></div>
+						</div>
+
+					</h:form>
+				</p:tab>
+				<p:tab title="群发短信">
+					<h:form>
+						<table>
+							<tr>
+								<td><h:outputText value="院系" /></td>
+								<td><p:inputText /></td>
+								<td><h:outputText value="班级:" /></td>
+								<td><p:inputText /></td>
+							</tr>
+							<tr>
+								<td />
+								<td />
+								<td><p:commandButton value="查询" /></td>
+								<td></td>
+							</tr>
+						</table>
+
+						<div class="ui-g">
+							<div class="ui-g-2" style="text-align: right;">收件人：</div>
+							<div class="ui-g-8">
+								<p:inputText style="width:99%" />
+							</div>
+							<div class="ui-g-2"></div>
+						</div>
+
+						<div class="ui-g">
+							<div class="ui-g-2" style="text-align: right;">内容：</div>
+							<div class="ui-g-8">
+								<p:editor height="400" />
+							</div>
+							<div class="ui-g-2"></div>
+						</div>
+
+					</h:form>
+
+				</p:tab>
+			</p:tabView>
+		</ui:define>
+	</ui:composition>
+
+</f:view>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	
+	<ui:composition template="/pages/common/basicPage.xhtml">
+	<ui:param name="menuIndex" value="6" />
+	<ui:define name="content">
+	<script src="../../js/clock.js"></script>
+	<!-- 顶部标题 -->
+		<ui:include src="/pages/common/top.xhtml"></ui:include>
+		<div id="div_2_personal">
+		<div class="div_2_1_personal">
+		<!-- 	日历开始 -->
+				<div id="div_date_personal">
+					 
+             <!--     日历结束 -->
+				</div>
+		
+		</div>
+		<div class="div_2_2_personal">
+		
+		<p:tabView id="staffTab" scrollable="true" styleClass="tabs">
+			<p:tab title="修改密码">
+				<ui:include src="modifyPasswordStaff.xhtml"></ui:include>
+			 </p:tab>
+			<p:tab title="修改联系方式">
+				<ui:include src="modifyInfoStaff.xhtml"></ui:include>
+			</p:tab>
+		  <p:tab title="完善个人信息">
+		  <ui:include src="completeInfoStaff.xhtml"></ui:include>
+		  </p:tab>
+		</p:tabView>
+		</div>
+		</div>
+	</ui:define>
+	
+</ui:composition>
+</html>

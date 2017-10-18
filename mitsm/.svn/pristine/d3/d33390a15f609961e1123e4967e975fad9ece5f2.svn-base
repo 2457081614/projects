@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Error 403</title>
+<style>
+    body {
+        width: 35em;
+        margin: 100px auto;
+    }
+</style>
+</head>
+<body>
+<h1>Error 403</h1>
+<p style="font-size: 20px;">Sorry, you are forbidden to access this URL.</p>
+</body>
+</html>

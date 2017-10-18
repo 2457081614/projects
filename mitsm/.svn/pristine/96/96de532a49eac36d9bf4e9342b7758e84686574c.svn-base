@@ -1,0 +1,168 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	<script type="text/javascript">
+		$(document).ready(function($) {
+			$("[id='#{addOneCustomerPanel.clientId}']").hide();
+		});
+
+		function showInfoTable() {
+			$("[id='#{addCustomer.clientId}']").hide();
+			$("[id='#{addOneCustomerPanel.clientId}']").slideDown("slow");
+			return true;
+		}
+
+		function hideInfoTable() {
+			$("[id='#{addOneCustomerPanel.clientId}']").hide();
+			$("[id='#{addCustomer.clientId}']").slideDown("slow");
+			return true;
+		}
+	</script>
+
+	<h:form>
+		<p:outputPanel id="addCustomer" binding="#{addCustomer}">
+			<div style="margin-left: 30%; margin-top: 5%">
+				<h2 class="title" style="margin-left: 15%">新增客户</h2>
+				<p:commandButton value="单个输入" styleClass="btnClass" icon="fa fa-fw fa-edit"
+					onclick="showInfoTable()" />
+				<p:spacer width="100" />
+				<p:commandButton value="批量导入" styleClass="btnClass"
+					update="@form:fileUploadTag"
+					icon="fa fa-fw fa-align-justify" onclick="PF('dlg_chooseFile').show()" />
+			</div>
+		</p:outputPanel>
+		<p:outputPanel id="addOneCustomerPanel" binding="#{addOneCustomerPanel}">
+			<div style="border: solid DarkCyan 1px; width: 70%; margin-top: 5%">
+				<table id="addOneCustomerPanel" class="common_tab" style="width: 100%">
+					<tr>
+						<td colspan="4"
+							style="color: White; background-color: DarkCyan; font-size: 18px;">填写客户基本信息</td>
+					</tr>
+					<tr>
+						<!-- 第1行开始 -->
+						<th><span style="color: red;">*</span>姓名</th>
+						<td><p:inputText styleClass="inputTextClass" id="input_text_1"
+								placeholder="请输入客户姓名" value="#{customerView.customer.name}"
+								onblur="onLeave(this)">
+							</p:inputText></td>
+
+						<th><span style="color: red;">*</span>学校</th>
+						<td><p:inputText styleClass="inputTextClass" id="input_text_2"
+								placeholder="请输入客户所在学校" value="#{customerView.customer.school}"
+								onblur="onLeave(this)">
+							</p:inputText></td>
+					</tr>
+
+					<tr>
+						<!-- 	第2行开始 -->
+						<th><span style="color: red;">*</span>院系</th>
+						<td><p:inputText styleClass="inputTextClass" id="input_text_3"
+								placeholder="请输入客户院系" value="#{customerView.customer.academy}"
+								onblur="onLeave(this)">
+							</p:inputText></td>
+						<th><span style="color: red;">*</span>班级</th>
+						<td><p:inputText styleClass="inputTextClass" id="input_text_4"
+								placeholder="请输入客户班级" value="#{customerView.customer.className}"
+								onblur="onLeave(this)">
+							</p:inputText></td>
+
+					</tr>
+
+					<tr>
+						<!-- 第4行开始 -->
+						<th><span style="color: red;">*</span>联系电话</th>
+						<td><p:inputText styleClass="inputTextClass" id="input_text_5"
+								placeholder="请输入客户联系电话" value="#{customerView.customer.tel}"
+								onblur="onLeave(this)">
+							</p:inputText></td>
+						<th><span style="color: red;">*</span>QQ</th>
+						<td><p:inputText styleClass="inputTextClass" id="input_text_6"
+								placeholder="请输入客户QQ" value="#{customerView.customer.qq}"
+								onblur="onLeave(this)">
+							</p:inputText></td>
+					</tr>
+
+
+
+					<tr>
+						<!-- 第6行开始 -->
+						<th><span style="color: red;">*</span>住址</th>
+						<td><p:inputText styleClass="inputTextClass" id="input_text_7"
+								placeholder="请输入客户住址" value="#{customerView.customer.address}"
+								onblur="onLeave(this)">
+							</p:inputText></td>
+						<th><span style="color: red;">*</span>故乡</th>
+						<td><p:inputText styleClass="inputTextClass" id="input_text_9"
+								placeholder="请输入客户故乡" value="#{customerView.customer.hometown}"
+								onblur="onLeave(this)">
+							</p:inputText></td>
+
+					</tr>
+
+					<tr>
+						<th><span style="color: red;">*</span>兴趣</th>
+						<td><p:inputText styleClass="inputTextClass" id="input_text_10"
+								placeholder="请输入客户兴趣" value="#{customerView.customer.interest}"
+								onblur="onLeave(this)">
+							</p:inputText></td>
+						<th><span style="color: red;">*</span> 生日</th>
+						<td colspan="2"><p:calendar effect="blind" pattern="yyyy-MM-dd"
+								locale="zh_CN"
+								navigator="true" yearRange="c-60:c" lang="zh_CN"
+								value="#{customerView.customer.birthday}" readonlyInput="true" /></td>
+
+					</tr>
+
+
+				</table>
+				<p:separator />
+				<div style="margin-bottom: 10px; margin-top: 5px;">
+					<p:commandButton value="返回" id="returnBtnCustomer"
+						binding="#{returnBtnCustomer}" styleClass="btnClass"
+						style="width:100px;margin-left:30%;font-weight:normal;height:35px"
+						ajax="true" icon="ui-icon-arrowreturnthick-1-w" onclick="hideInfoTable()" />
+					<p:commandButton value="添加" id="confirmAddingCustomerBtn"
+						icon="ui-icon-check" styleClass="btnClass"
+						oncomplete="PF('dlg_confirmAddingCustomer').show()"
+						binding="#{confirmAddingCustomerBtn}"
+						style="width:100px;margin-left:15%;font-weight:normal;height:35px"
+						ajax="true" />
+				</div>
+
+				<!--  确认增加对话框	 -->
+				<p:dialog id="dlg_confirmAddingCustomer" header="请确认" appendTo="@(body)"
+					widgetVar="dlg_confirmAddingCustomer" modal="true" showEffect="bounce"
+					hideEffect="fade" resizable="false" width="200px">
+					<table>
+						<tr>
+							<h:outputText value="确认添加吗?" style="font-size:16px;color:#003a6c;" />
+						</tr>
+						<tr>
+							<td><p:commandButton value="Cancel"
+									oncomplete="PF('dlg_confirmAddingCustomer').hide()"
+									icon="ui-icon-cancel">
+								</p:commandButton></td>
+							<td><p:commandButton value="Ok" style="margin-left:10%;"
+									actionListener="#{customerView.addCustomer}"
+									oncomplete="PF('dlg_confirmAddingCustomer').hide(),hideInfoTable()"
+									icon="ui-icon-check">
+								</p:commandButton></td>
+						</tr>
+					</table>
+				</p:dialog>
+			</div>
+		</p:outputPanel>
+
+
+		<p:dialog id="dlg_chooseFile" header="选择文件" widgetVar="dlg_chooseFile"
+			width="520px" height="200px" showEffect="blind" hideEffect="clip">
+			<p:outputLabel style="color:red;" value="提示:可支持文件拖拽" />
+			<p:fileUpload fileUploadListener="#{customerView.addBatch}"
+				id="fileUploadTag"
+				label="选择" cancelLabel="取消" uploadLabel="上传"
+				style="margin-left:0px;" mode="advanced" dragDropSupport="true"
+				sizeLimit="1000000" allowTypes="/(\.|\/)(xls|xlsx)$/" fileLimit="1"
+				oncomplete="PF('dlg_chooseFile').hide()" />
+		</p:dialog>
+	</h:form>
+</f:view>

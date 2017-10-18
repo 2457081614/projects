@@ -1,0 +1,71 @@
+#modifyp_header {
+	border: 0px solid blue;
+	height: 40px;
+	width: 350px;
+	text-align: center;
+	line-height: 40px;
+	position: absolute;
+	color: #729fcf;
+	left: 100px;
+	top: 20px;
+	font-size: 35px;
+	font-family: monospace;
+	font-weight: 400;
+	font-style: oblique;
+	font-stretch: semi-condensed;
+}
+
+#modifyp_Info {
+	margin-left: 20px;
+	height: 250px;
+	width: 500px;
+	position: absolute;
+	top: 90px;
+	background: rgba(0, 0, 0, 0.3);
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-box-shadow: 0 0 13px 3px rgba(20, 4a, 87, .3);
+	-webkit-box-shadow: 0 0 13px 3px rgba(20, 4a, 87, .5);
+	border: solid DarkSlateGray 3px;
+	text-align: center;
+}
+
+#modifyp_top {
+	position: absolute;
+	left: 5%;
+	top: 80px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 25px;
+	background-color: SlateGray;
+	background-position: left top;
+	background-repeat: repeat;
+	padding: 20px;
+	height: 400px;
+	width: 550px;
+	-moz-box-shadow: 0 0 13px 3px rgba(0, 0, 0, .6);
+	-webkit-box-shadow: 0 0 13px 3px rgba(0, 0, 0, .5);
+	border: solid MediumAquaMarine 2px;
+}
+
+#modifyp_table {
+	color: #729fcf;
+}
+
+.modifyp {
+	width: 70%;
+	height: 60%;
+	margin-top: 30px;
+	margin-left: 70px;
+	font-size: 18px;
+	color: #729fcf;
+	font-size: 18px;
+}
+
+.button1 {
+	margin-left: 40px;
+}
+
+.button2 {
+	margin-left: 40px;
+}

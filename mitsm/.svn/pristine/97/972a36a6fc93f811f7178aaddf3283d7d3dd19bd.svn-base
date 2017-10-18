@@ -1,0 +1,148 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	<script type="text/javascript">
+		$(document).ready(function($) {
+			$("[id='#{addParttimeStaffPanel.clientId}']").hide();
+		});
+
+		function showInfoTable() {
+			$("[id='#{addParttimeStaff.clientId}']").hide();
+			$("[id='#{addParttimeStaffPanel.clientId}']").slideDown("slow");
+			return true;
+		}
+
+		function hideInfoTable() {
+			$("[id='#{addParttimeStaffPanel.clientId}']").fadeOut(0);
+			$("[id='#{addParttimeStaff.clientId}']").slideDown("slow");
+			return true;
+		}
+	</script>
+
+	<h:form>
+		<p:outputPanel id="addParttimeStaff" binding="#{addParttimeStaff}">
+			<div style="margin-left: 30%;">
+				<h2 class="title" style="margin-left: 10%">新增校园代理</h2>
+				<p:commandButton value="单个输入" styleClass="btnClass"
+					onclick="showInfoTable()" icon="fa fa-fw fa-edit" />
+				<p:spacer width="100" />
+				<p:commandButton value="批量导入" styleClass="btnClass"
+					update="@form:fileUploadTag"
+					icon="fa fa-fw fa-align-justify" onclick="PF('dlg_chooseFile').show()" />
+			</div>
+		</p:outputPanel>
+
+		<p:outputPanel id="addParttimeStaffPanel" binding="#{addParttimeStaffPanel}">
+			<div style="width: 70%; border: solid DarkCyan 1px; margin-top: 5%">
+
+				<table id="addParttimeTable1" class="common_tab" style="width: 100%;">
+					<tr>
+						<td colspan="4"
+							style="color: White; background-color: DarkCyan; font-size: 18px;">校园代理基本信息</td>
+					</tr>
+					<tr>
+						<!--第1行开始-->
+						<th><span style="color: red;">*</span>姓名</th>
+						<td><p:inputText styleClass="inputTextClass" id="input_text_11"
+								placeholder="请输入校园代理姓名"
+								value="#{parttimeStaffView.newParttimeStaff.name}"
+								onblur="onLeave(this)">
+							</p:inputText></td>
+						<th><span style="color: red;">*</span>学校</th>
+						<td><p:inputText styleClass="inputTextClass" id="input_text_9"
+								placeholder="请输入校园代理所在学校"
+								value="#{parttimeStaffView.newParttimeStaff.school}"
+								onblur="onLeave(this)">
+							</p:inputText></td>
+					</tr>
+
+
+					<tr>
+						<!--第2行开始-->
+						<th><span style="color: red;">*</span>联系电话</th>
+						<td><p:inputText styleClass="inputTextClass" id="input_text_8"
+								placeholder="请输入校园代理电话"
+								value="#{parttimeStaffView.newParttimeStaff.tel}" onblur="onLeave(this)">
+							</p:inputText></td>
+
+						<th><span style="color: red;">*</span>QQ</th>
+						<td><p:inputText styleClass="inputTextClass" id="input_text_5"
+								placeholder="请输入QQ" value="#{parttimeStaffView.newParttimeStaff.qq}"
+								onblur="onLeave(this)">
+							</p:inputText></td>
+					</tr>
+
+
+					<tr>
+						<!--第3行开始-->
+						<th><span style="color: red;">*</span>地址</th>
+						<td><p:inputText styleClass="inputTextClass" id="input_text_10"
+								placeholder="请输入校园里代理地址"
+								value="#{parttimeStaffView.newParttimeStaff.address}"
+								onblur="onLeave(this)">
+							</p:inputText></td>
+						<th><span style="color: red;">*</span>家乡</th>
+						<td><p:inputText styleClass="inputTextClass" placeholder="请输入校园代理家乡"
+								value="#{parttimeStaffView.newParttimeStaff.hometown}"
+								onblur="onLeave(this)">
+							</p:inputText></td>
+					</tr>
+					<tr>
+						<th><span style="color: red;">*</span>性别</th>
+						<td colspan="3"><p:selectOneRadio
+								value="#{parttimeStaffView.newParttimeStaff.gender}">
+								<f:selectItem itemLabel="男" itemValue="男" />
+								<f:selectItem itemLabel="女" itemValue="女" />
+							</p:selectOneRadio></td>
+					</tr>
+				</table>
+				<p:separator />
+				<div style="margin-bottom: 8px; width: 100%; margin-top: 5px">
+					<p:commandButton value="返回" id="returnBtnParttimeStaff"
+						binding="#{returnBtnparttimeSTaff}"
+						style="width:100px;margin-left:30%;font-weight:normal" ajax="true"
+						icon="ui-icon-arrowreturnthick-1-w" oncomplete="hideInfoTable() " />
+					<p:commandButton value="添加" id="confirmAddingParttimeStaffBtn"
+						icon="ui-icon-check" binding="#{confirmAddingParttimeStaffBtn}"
+						onclick="PF('dlg_confirmAddingParttimeStaff').show()"
+						style="width:100px;margin-left:10%;font-weight:normal" ajax="true" />
+				</div>
+
+			</div>
+		</p:outputPanel>
+
+		<!--    确认增加对话框-->
+		<p:dialog id="dlg_confirmAddingParttimeStaff" header="请确认" appendTo="@(body)"
+			widgetVar="dlg_confirmAddingParttimeStaff" modal="true" showEffect="bounce"
+			hideEffect="fade" resizable="false" width="200px">
+
+			<table>
+				<tr>
+					<h:outputText value="确认添加吗?" style="font-size:16px;color:#003a6c;" />
+				</tr>
+				<tr>
+					<td><p:commandButton value="Cancel"
+							oncomplete="PF('dlg_confirmAddingParttimeStaff').hide()"
+							icon="ui-icon-cancel">
+						</p:commandButton></td>
+					<td><p:commandButton value="Ok" style="margin-left:10%;"
+							actionListener="#{parttimeStaffView.addNewParttimeStaff}"
+							onclick="PF('dlg_confirmAddingParttimeStaff').hide(), showInfoTable() "
+							icon="ui-icon-check">
+						</p:commandButton></td>
+				</tr>
+			</table>
+
+		</p:dialog>
+		<p:dialog id="dlg_chooseFile" header="选择文件" widgetVar="dlg_chooseFile"
+			width="520px" height="200px" showEffect="blind" hideEffect="clip">
+			<p:outputLabel style="color:red;" value="提示:可支持文件拖拽" />
+			<p:fileUpload fileUploadListener="#{parttimeStaffView.addBatch}"
+				id="fileUploadTag"
+				label="选择" cancelLabel="取消" uploadLabel="上传"
+				style="margin-left:0px;" mode="advanced" dragDropSupport="true"
+				sizeLimit="1000000" allowTypes="/(\.|\/)(xls|xlsx)$/" fileLimit="1"
+				oncomplete="PF('dlg_chooseFile').hide()" />
+		</p:dialog>
+	</h:form>
+</f:view>

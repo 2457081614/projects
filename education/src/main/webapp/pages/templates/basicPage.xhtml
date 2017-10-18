@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<h:head>
+	<link rel="shortcut icon" href="/education/resources/img/meession.jpg" />
+	<title>XTU选课系统</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<!-- 引入 Bootstrap -->
+	<!-- 	<link href="/sms/resources/css/bootstrap.min.css" rel="stylesheet" /> -->
+	<h:outputStylesheet library="css" name="bootstrap.min.css" />
+	<!--     <h:outputStylesheet  library="css" name="all.min.css" />
+      <h:outputStylesheet  library="primefaces-vgc" name="themes.css" /> -->
+</h:head>
+<h:body>
+
+	<p:layout fullPage="true">
+		<!-- 顶部区域-->
+		<p:layoutUnit position="north" size="110">
+			<ui:insert name="topbar">
+				<ui:include src="topbar.xhtml" />
+			</ui:insert>
+		</p:layoutUnit>
+
+		<!-- 底部区域 -->
+		<p:layoutUnit position="south" size="100" style="text-algin:center">
+			<div class="row">
+				<div class="center-block" align="center" style="color:red;font-size: 20px;">版权......随便你乱翻版，反正我也没钱打官司</div>
+				<div class="center-block" align="center">Copyright ©2017-2017   http://www.runoob.com/   by zy and yl</div>
+			</div>
+		</p:layoutUnit>
+		<!-- 右边区域 -->
+		<p:layoutUnit position="east" size="200" header="Left"
+			resizable="true" closable="true" collapsible="true">
+			<p:calendar></p:calendar>
+		</p:layoutUnit>
+
+		<!-- 菜单区域 -->
+		<p:layoutUnit position="west" size="300" header="操作菜单"
+			resizable="true" collapsible="true" effect="drop">
+			<ui:insert name="menu">
+				<ui:include src="newMenu.xhtml" />
+			</ui:insert>
+		</p:layoutUnit>
+
+		<!-- 内容区域 -->
+		<p:layoutUnit position="center">
+			<ui:insert name="content">
+
+			</ui:insert>
+		</p:layoutUnit>
+	</p:layout>
+
+	<!--  新的dialog-->
+	<ui:insert name="dialog">
+
+	</ui:insert>
+
+	<p:confirmDialog global="true">
+		<p:commandButton value="Yes" type="button"
+			styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+		<p:commandButton value="No" type="button"
+			styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+	</p:confirmDialog>
+
+	<p:growl autoUpdate="true" life="10000" />
+
+	<p:ajaxStatus onstart="showLoader()" oncomplete="hideLoader()" />
+
+	<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+		closable="false" resizable="false" showHeader="false"
+		styleClass="loader">
+		<p:graphicImage value="/resources/img/ajax-loader.gif" width="48"
+			height="48" />
+	</p:dialog>
+
+	<script>
+		var loader = false;
+		function showLoader() {
+			loader = true;
+			setTimeout(function() {
+				if (loader) {
+					PF('statusDialog').show();
+				}
+			}, 300);
+		}
+		function hideLoader() {
+			loader = false;
+			PF('statusDialog').hide();
+		}
+	</script>
+	<script src="/sms/resources/js/bootstrap.min.js"></script>
+</h:body>
+</html>

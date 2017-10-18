@@ -1,0 +1,318 @@
+package com.meession.market.parttimestaff.entity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import org.apache.commons.beanutils.BeanUtils;
+
+import com.meession.market.common.RDU;
+import com.meession.market.task.entity.Task;
+
+/*
+ name
+ tel
+ qq
+ address
+ password
+ hometown
+ school
+ gender
+
+ * */
+
+/**
+ * 兼职
+ * 
+ * @author fzh
+ *
+ */
+@Entity
+@Table(name = "ParttimeStaff")
+public class ParttimeStaff {
+
+	/**
+	 * 普通兼职的身份标识符
+	 */
+	public static final int ORDINARY_PARTTIMESTAFF = 1;
+	/**
+	 * 负责回访兼职的身份标识符
+	 */
+	public static final int REVISITER = 2;;
+
+	/**
+	 * 数据库唯一标识符
+	 */
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "parttimeStaff_id")
+	private long id;
+
+	/**
+	 * 兼职身份标识符。<br/>
+	 * 如果是1，那么它就代表普通兼职；如果是2，代表回访兼职
+	 */
+	@Column(length = 1,columnDefinition = "INT default 1")
+	private int identifier;
+
+	/**
+	 * 姓名
+	 */
+	private String name;
+	/**
+	 * 电话号码
+	 */
+	@Column(length = 11, nullable = false, unique = true)
+	private String tel;
+	/**
+	 * 密码
+	 */
+	@Column(length = 30)
+	private String password;
+
+	/**
+	 * QQ
+	 */
+	@Column(length = 20)
+	private String qq;
+	/**
+	 * 兼职的住址
+	 */
+	private String address;
+
+	/**
+	 * 兼职的家乡
+	 */
+	private String hometown;
+
+	/**
+	 * 兼职所在学校
+	 */
+	private String school;
+
+	/**
+	 * 兼职性别
+	 */
+	private String gender;
+	/**
+	 * 是否已被删除.<br/>
+	 * 如果没有被删除，则这个值为0，否则为1.<br/>
+	 * <br/>
+	 */
+	@Column(name = "deleted", length = 1, nullable = false, columnDefinition = "INT default 0")
+	private int deleted;
+
+	/**
+	 * 兼职做过的任务
+	 */
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "parttimeStaff")
+	private List<Task> tasks;
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public String getQq() {
+		return qq;
+	}
+
+	public void setQq(String qq) {
+		this.qq = qq;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getHometown() {
+		return hometown;
+	}
+
+	public void setHometown(String hometown) {
+		this.hometown = hometown;
+	}
+
+	public String getSchool() {
+		return school;
+	}
+
+	public void setSchool(String school) {
+		this.school = school;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public List<Task> getTasks() {
+		return tasks;
+	}
+
+	public void setTasks(List<Task> tasks) {
+		this.tasks = tasks;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getTel() {
+		return tel;
+	}
+
+	public void setTel(String tel) {
+		this.tel = tel;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public int getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(int deleted) {
+		this.deleted = deleted;
+	}
+
+	public int getIdentifier() {
+		return identifier;
+	}
+
+	public void setIdentifier(int identifier) {
+		this.identifier = identifier;
+	}
+
+	public static ParttimeStaff mock() {
+		ParttimeStaff parttimeStaff = new ParttimeStaff();
+
+		parttimeStaff.setName(RDU.randomName());
+		parttimeStaff.setQq(RDU.randQq());
+		parttimeStaff.setPassword("666666");
+		parttimeStaff.setTel(RDU.randomCellPhoneNumber());
+		parttimeStaff.setAddress("琴湖1栋" + RDU.random(10) + RDU.random(10) + RDU.random(10));
+		parttimeStaff.setIdentifier(ParttimeStaff.ORDINARY_PARTTIMESTAFF);
+		parttimeStaff.setGender(RDU.randomGender());
+		parttimeStaff.setSchool(RDU.ranSchool());
+		parttimeStaff.setHometown(RDU.ranHometown());
+
+		return parttimeStaff;
+
+	}
+
+	public static ParttimeStaff mock1() {
+		ParttimeStaff parttimeStaff = new ParttimeStaff();
+
+		parttimeStaff.setName(RDU.randomName());
+		parttimeStaff.setQq(RDU.randQq());
+		parttimeStaff.setPassword("666666");
+		parttimeStaff.setTel(RDU.randomCellPhoneNumber());
+		parttimeStaff.setAddress("琴湖1栋" + RDU.random(10) + RDU.random(10) + RDU.random(10));
+		parttimeStaff.setIdentifier(ParttimeStaff.REVISITER);
+		parttimeStaff.setGender(RDU.randomGender());
+		parttimeStaff.setSchool(RDU.ranSchool());
+		parttimeStaff.setHometown(RDU.ranHometown());
+
+		return parttimeStaff;
+
+	}
+
+	public static List<ParttimeStaff> mock(int size) {
+		List<ParttimeStaff> pStaffs = new ArrayList<ParttimeStaff>();
+		for (int i = 0; i < size; i++) {
+			pStaffs.add(ParttimeStaff.mock());
+		}
+		return pStaffs;
+	}
+
+	public static List<ParttimeStaff> getParttimeStaffs(String[][] sourceData) {
+		List<ParttimeStaff> list = new ArrayList<>();
+
+		if (sourceData != null && sourceData.length > 0) {
+			int name = 0, tel = 0, qq = 0, address = 0;
+			int gender = 0, hometown = 0, school = 0;
+			for (int i = 0; i < sourceData[0].length; i++) {
+				String s = sourceData[0][i];
+				if (s != null && !"".equals(s.trim())) {
+					if (s.contains("姓名") || s.contains("名字"))
+						name = i;
+					else if (s.contains("电话") || s.contains("手机号码"))
+						tel = i;
+					else if (s.contains("QQ"))
+						qq = i;
+					else if (s.contains("住址") || s.contains("寝室") || s.contains("地址"))
+						address = i;
+					else if (s.contains("性别"))
+						gender = i;
+					else if (s.contains("家乡") || s.contains("籍贯"))
+						hometown = i;
+					else if (s.contains("学校") || s.contains("所在学校"))
+						school = i;
+				}
+			}
+			ParttimeStaff parttimeStaff = null;
+			for (int i = 1; i < sourceData.length; i++) {
+				parttimeStaff = new ParttimeStaff();
+				parttimeStaff.setName(sourceData[i][name]);
+				parttimeStaff.setTel(sourceData[i][tel]);
+				parttimeStaff.setQq(sourceData[i][qq]);
+				parttimeStaff.setAddress(sourceData[i][address]);
+				parttimeStaff.setGender(sourceData[i][gender]);
+				parttimeStaff.setHometown(sourceData[i][hometown]);
+				parttimeStaff.setSchool(sourceData[i][school]);
+				parttimeStaff.setPassword("666666");
+				list.add(parttimeStaff);
+			}
+		}
+
+		return list;
+	}
+
+	@Override
+	public String toString() {
+		return "ParttimeStaff [id=" + id + ", name=" + name + ", tel=" + tel + ", password=" + password + ", qq=" + qq
+				+ ", address=" + address + ", hometown=" + hometown + ", school=" + school + ", gender=" + gender
+				+ ", deleted=" + deleted + "]";
+	}
+	
+	public static ParttimeStaff cloneParttimeStaff(ParttimeStaff oringParttimeStaff){
+		ParttimeStaff parttimeStaff = new ParttimeStaff();
+		try {
+			BeanUtils.copyProperties(parttimeStaff, oringParttimeStaff);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return parttimeStaff;
+	}
+
+}

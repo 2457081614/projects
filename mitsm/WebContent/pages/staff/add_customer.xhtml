@@ -1,0 +1,443 @@
+
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+<style type="text/css">
+.state1 {
+	color: blue;
+	background: url(../../images/right.png) no-repeat;
+	width: 46%;
+	font-family: '微软雅黑';
+	font-size: 15px;
+	text-align: right;
+	padding-left: 20px;
+	margin-left: 0%;
+	float: left;
+}
+
+.state2 {
+	color: red;
+	background: url(../../images/error.png) no-repeat;
+	width: 48;
+	height: 200px;
+	font-family: '微软雅黑';
+	font-size: 15px;
+	padding-left: 20px;
+	text-align: left;
+	margin-left: -33px;
+}
+
+input {
+	width: 200px;
+	height: 25px;
+}
+</style>
+	<script type="text/javascript">
+		$(document).ready(function($) {
+			$("[id='#{confirmAddingCustomerBtn.clientId}']").attr({"disabled":"disabled"}); //禁止按钮
+			$("[id='#{addOneCustomerPanel.clientId}']").hide();
+		});
+
+		function showInfoTable() {
+			$("[id='#{addCustomer.clientId}']").hide();
+			$("[id='#{addOneCustomerPanel.clientId}']").slideDown("slow");
+			return true;
+		}
+
+		function hideInfoTable() {
+			$("[id='#{addOneCustomerPanel.clientId}']").hide();
+			$("[id='#{addCustomer.clientId}']").slideDown("slow");
+			return true;
+		}
+	</script>
+	<script type="text/javascript">
+		var m1,m2,m3,m4,m5,m6,m7,m8,m9=false;
+		
+		
+	   //姓名
+		$("[id='#{input_text_1.clientId}']").focus(function() {
+
+		}).blur(
+				function() {
+					if ($("[id='#{input_text_1.clientId}']").val() != '' &amp;&amp;$.trim($("[id='#{input_text_1.clientId}']").val())) {
+						$("#nameError").html("格式正确").addClass('state1').removeClass('state2');
+						m1=true;
+						 if(m1 &amp;&amp; m2 &amp;&amp; m3 &amp;&amp; m4 &amp;&amp; m5 &amp;&amp; m6 &amp;&amp; m7
+		                    &amp;&amp; m8 &amp;&amp; m9){
+		                    	$("[id='#{confirmAddingCustomerBtn.clientId}']").removeAttr("disabled");
+		                    }
+					} else {
+						$("#nameError").html("姓名不能为空").removeClass('state1')
+								.addClass('state2');
+						m1=false;
+						$("[id='#{confirmAddingCustomerBtn.clientId}']").attr({"disabled":"disabled"}); //禁止按钮
+					}
+
+				});
+		//学校
+		$("[id='#{input_text_2.clientId}']").focus(function() {
+        
+		}).blur(
+				function() {
+					if ($("[id='#{input_text_2.clientId}']").val() != '' &amp;&amp;$.trim($("[id='#{input_text_2.clientId}']").val())) {
+						$("#schoolError").html("格式正确").addClass('state1').removeClass('state2');
+						m2=true;
+						 if(m1 &amp;&amp; m2 &amp;&amp; m3 &amp;&amp; m4 &amp;&amp; m5 &amp;&amp; m6 &amp;&amp; m7
+		                    &amp;&amp; m8 &amp;&amp; m9 ){
+		                    	$("[id='#{confirmAddingCustomerBtn.clientId}']").removeAttr("disabled");
+		                    }
+						
+                        
+					} else {
+						$("#schoolError").html("学校不能为空").removeClass('state1')
+								.addClass('state2');
+						m2=false;
+						$("[id='#{confirmAddingCustomerBtn.clientId}']").attr({"disabled":"disabled"}); //禁止按钮
+					}
+
+				});
+		//院系
+		$("[id='#{input_text_3.clientId}']").focus(function() {
+
+		}).blur(
+				function() {
+					if ($("[id='#{input_text_3.clientId}']").val() != '' &amp;&amp;$.trim($("[id='#{input_text_3.clientId}']").val())) {
+						$("#academyError").html("格式正确").addClass('state1').removeClass('state2');
+                           m3=true;
+                           if(m1 &amp;&amp; m2 &amp;&amp; m3 &amp;&amp; m4 &amp;&amp; m5 &amp;&amp; m6 &amp;&amp; m7
+                           &amp;&amp; m8 &amp;&amp; m9 ){
+                           	$("[id='#{confirmAddingCustomerBtn.clientId}']").removeAttr("disabled");
+                           }
+					} else {
+						$("#academyError").html("院系不能为空").removeClass('state1')
+								.addClass('state2');
+					  m3=false;
+					  $("[id='#{confirmAddingCustomerBtn.clientId}']").attr({"disabled":"disabled"}); //禁止按钮
+					}
+
+				});
+		//班级
+		$("[id='#{input_text_4.clientId}']").focus(function() {
+
+		}).blur(
+				function() {
+
+					if ($("[id='#{input_text_4.clientId}']").val() != '' &amp;&amp;$.trim($("[id='#{input_text_4.clientId}']").val())) {
+						$("#classNameError").html("格式正确").addClass('state1').removeClass('state2');
+						m4=true;
+						 if(m1 &amp;&amp; m2 &amp;&amp; m3 &amp;&amp; m4 &amp;&amp; m5 &amp;&amp; m6 &amp;&amp; m7
+		                    &amp;&amp; m8 &amp;&amp; m9){
+		                    	$("[id='#{confirmAddingCustomerBtn.clientId}']").removeAttr("disabled");
+		                    }
+
+					} else {
+						$("#classNameError").html("班级不能为空").removeClass(
+								'state1').addClass('state2');
+					 m4=false;		
+					 $("[id='#{confirmAddingCustomerBtn.clientId}']").attr({"disabled":"disabled"}); //禁止按钮
+					 }
+
+				});
+		//电话
+		$("[id='#{input_text_5.clientId}']").focus(function() {
+
+		}).blur(
+				function() {
+					 
+					 var reg = /^1[3|4|5|8][0-9]\d{4,8}$/   //11数字验证
+						 if (!reg.test($("[id='#{input_text_5.clientId}']").val())) {
+						$("#telError").html("手机号码错误").addClass('state2').removeClass('state1');
+						m5=false;
+						$("[id='#{confirmAddingCustomerBtn.clientId}']").attr({"disabled":"disabled"}); //禁止按钮
+					}
+
+					else {
+						$("#telError").html("格式正确").removeClass('state2')
+								.addClass('state1');
+						m5=true;
+						 if(m1 &amp;&amp; m2 &amp;&amp; m3 &amp;&amp; m4 &amp;&amp; m5 &amp;&amp; m6 &amp;&amp; m7
+		                    &amp;&amp; m8 &amp;&amp; m9 ){
+		                    	$("[id='#{confirmAddingCustomerBtn.clientId}']").removeAttr("disabled");
+		                    }
+					}
+
+				});
+		//qq
+		$("[id='#{input_text_6.clientId}']").focus(function() {
+
+		}).blur(
+				function() {
+					var reg=/^[1-9]\d{4,9}$/;
+					if (!reg.test($("[id='#{input_text_6.clientId}']").val())) {
+						$("#qqError").html("QQ号码错误").addClass('state2').removeClass('state1');
+						 m6=false;
+						 $("[id='#{confirmAddingCustomerBtn.clientId}']").attr({"disabled":"disabled"}); //禁止按钮
+
+					} else {
+						$("#qqError").html("格式正确").removeClass('state2')
+								.addClass('state1');
+						m6=true;
+						 if(m1 &amp;&amp; m2 &amp;&amp; m3 &amp;&amp; m4 &amp;&amp; m5 &amp;&amp; m6 &amp;&amp; m7
+		                    &amp;&amp; m8 &amp;&amp; m9 ){
+		                    	$("[id='#{confirmAddingCustomerBtn.clientId}']").removeAttr("disabled");
+		                    }
+					}
+
+				});
+		//地址
+		$("[id='#{input_text_7.clientId}']").focus(function() {
+
+		}).blur(
+				function() {
+					if ($("[id='#{input_text_7.clientId}']").val() != '' &amp;&amp;$.trim($("[id='#{input_text_7.clientId}']").val())) {
+						$("#addressError").html("格式正确").addClass('state1').removeClass('state2');
+						m7=true;
+						 if(m1 &amp;&amp; m2 &amp;&amp; m3 &amp;&amp; m4 &amp;&amp; m5 &amp;&amp; m6 &amp;&amp; m7
+		                    &amp;&amp; m8 &amp;&amp; m9 ){
+		                    	$("[id='#{confirmAddingCustomerBtn.clientId}']").removeAttr("disabled");
+		                    }
+
+					} else {
+						$("#addressError").html("地址不能为空").removeClass('state1')
+								.addClass('state2');
+					  m7=false;
+					  $("[id='#{confirmAddingCustomerBtn.clientId}']").attr({"disabled":"disabled"}); //禁止按钮
+					}
+
+				});
+		//故乡
+		$("[id='#{input_text_9.clientId}']").focus(function() {
+
+		}).blur(
+				function() {
+					if ($("[id='#{input_text_9.clientId}']").val() != '' &amp;&amp;$.trim($("[id='#{input_text_9.clientId}']").val())) {
+						$("#hometownError").html("格式正确").addClass('state1').removeClass('state2');
+                         m8=true;
+                         if(m1 &amp;&amp; m2 &amp;&amp; m3 &amp;&amp; m4 &amp;&amp; m5 &amp;&amp; m6 &amp;&amp; m7
+                         &amp;&amp; m8 &amp;&amp; m9 ){
+                         	$("[id='#{confirmAddingCustomerBtn.clientId}']").removeAttr("disabled");
+                         }
+					} else {
+						$("#hometownError").html("故乡不能为空")
+								.removeClass('state1').addClass('state2');
+						m8=false;
+						$("[id='#{confirmAddingCustomerBtn.clientId}']").attr({"disabled":"disabled"}); //禁止按钮
+					}
+
+				});
+		//兴趣
+		$("[id='#{input_text_10.clientId}']").focus(function() {
+
+		}).blur(
+				function() {
+					if ($("[id='#{input_text_10.clientId}']").val() != '' &amp;&amp;$.trim($("[id='#{input_text_10.clientId}']").val())) {
+						$("#interestError").html("格式正确").addClass('state1').removeClass('state2');
+                         m9=true;
+                         if(m1 &amp;&amp; m2 &amp;&amp; m3 &amp;&amp; m4 &amp;&amp; m5 &amp;&amp; m6 &amp;&amp; m7
+                         &amp;&amp; m8 &amp;&amp; m9 ){
+                         	$("[id='#{confirmAddingCustomerBtn.clientId}']").removeAttr("disabled");
+                         }
+					} else {
+						$("#interestError").html("兴趣不能为空")
+								.removeClass('state1').addClass('state2');
+						m9=false;
+						$("[id='#{confirmAddingCustomerBtn.clientId}']").attr({"disabled":"disabled"}); //禁止按钮
+					}
+
+				});
+		//生日
+		/* $("[id='#{birth.clientId}_input']").focus(function() {
+
+		}).blur(
+				function() {
+					if ($("[id='#{birth.clientId}_input']").val() !="") {
+						$("#birthError").html("格式正确").addClass('state1').removeClass('state2');
+						m10=true;
+						if(m1 &amp;&amp; m2 &amp;&amp; m3 &amp;&amp; m4 &amp;&amp; m5 &amp;&amp; m6 &amp;&amp; m7
+	                    &amp;&amp; m8 &amp;&amp; m9 &amp;&amp; m10){
+	                    	$("[id='#{confirmAddingCustomerBtn.clientId}']").removeAttr("disabled");
+	                    }
+
+					} else {
+						$("#birthError").html("生日不能为空").removeClass('state1')
+								.addClass('state2');
+						
+						m10=false;
+						$("[id='#{confirmAddingCustomerBtn.clientId}']").attr({"disabled":"disabled"}); //禁止按钮
+					}
+                    
+				});
+		function check(){
+			
+		
+		if(m1 &amp;&amp; m2 &amp;&amp; m3 &amp;&amp; m4 &amp;&amp; m5 &amp;&amp; m6 &amp;&amp; m7
+        &amp;&amp; m8 &amp;&amp; m9 &amp;&amp; m10){
+        	$("[id='#{confirmAddingCustomerBtn.clientId}']").removeAttr("disabled");
+        }
+		} */
+	</script>
+
+	<h:form>
+		<p:outputPanel id="addCustomer" binding="#{addCustomer}">
+			<div style="margin-left: 30%; margin-top: 5%">
+				<h2 class="title" style="margin-left: 15%">新增客户</h2>
+				<p:commandButton value="单个输入" styleClass="btnClass" icon="fa fa-fw fa-edit"
+					onclick="showInfoTable()" />
+				<p:spacer width="100" />
+				<p:commandButton value="批量导入" styleClass="btnClass"
+					update="@form:fileUploadTag" icon="fa fa-fw fa-align-justify"
+					onclick="PF('dlg_chooseFile').show()" />
+			</div>
+		</p:outputPanel>
+		<p:outputPanel id="addOneCustomerPanel" binding="#{addOneCustomerPanel}">
+			<div style="border: solid DarkCyan 1px; width: 86%; margin-top: 5%">
+				<table id="addOneCustomerPanel" class="common_tab" style="width: 100%">
+					<tr>
+						<td colspan="6"
+							style="color: White; background-color: DarkCyan; font-size: 18px;">填写客户基本信息</td>
+					</tr>
+					<tr>
+						<!-- 第1行开始 -->
+						<th width="14%"><span style="color: red;">*</span>姓名</th>
+						<td width="20%"><p:inputText styleClass="inputTextClass"
+								id="input_text_1" placeholder="请输入客户姓名"
+								value="#{customerView.customer.name}" onblur="onLeave(this)"
+								binding="#{input_text_1}">
+							</p:inputText></td>
+						<td width="16%"><span id="nameError" binding="#{nameError}"></span></td>
+
+						<th width="14%"><span style="color: red;">*</span>学校</th>
+						<td width="20%"><p:inputText styleClass="inputTextClass"
+								id="input_text_2" placeholder="请输入客户所在学校"
+								value="#{customerView.customer.school}" onblur="onLeave(this)"
+								binding="#{input_text_2}">
+							</p:inputText></td>
+						<td width="16%"><span id="schoolError"></span></td>
+					</tr>
+
+					<tr>
+						<!-- 	第2行开始 -->
+						<th><span style="color: red;">*</span>院系</th>
+						<td><p:inputText styleClass="inputTextClass" id="input_text_3"
+								placeholder="请输入客户院系" value="#{customerView.customer.academy}"
+								onblur="onLeave(this)" binding="#{input_text_3}">
+							</p:inputText></td>
+						<td><span id="academyError"></span></td>
+						<th><span style="color: red;">*</span>班级</th>
+						<td><p:inputText styleClass="inputTextClass" id="input_text_4"
+								placeholder="请输入客户班级" value="#{customerView.customer.className}"
+								onblur="onLeave(this)" binding="#{input_text_4}">
+							</p:inputText></td>
+						<td><span id="classNameError"></span></td>
+
+					</tr>
+
+					<tr>
+						<!-- 第4行开始 -->
+						<th><span style="color: red;">*</span>联系电话</th>
+						<td><p:inputText styleClass="inputTextClass" id="input_text_5"
+								placeholder="请输入客户联系电话" value="#{customerView.customer.tel}"
+								onblur="onLeave(this)" binding="#{input_text_5}">
+							</p:inputText></td>
+						<td><span id="telError"></span></td>
+						<th><span style="color: red;">*</span>QQ</th>
+						<td><p:inputText styleClass="inputTextClass" id="input_text_6"
+								placeholder="请输入客户QQ" value="#{customerView.customer.qq}"
+								onblur="onLeave(this)" binding="#{input_text_6}">
+							</p:inputText></td>
+						<td><span id="qqError"></span></td>
+					</tr>
+
+
+
+					<tr>
+						<!-- 第6行开始 -->
+						<th><span style="color: red;">*</span>住址</th>
+						<td><p:inputText styleClass="inputTextClass" id="input_text_7"
+								placeholder="请输入客户住址" value="#{customerView.customer.address}"
+								onblur="onLeave(this)" binding="#{input_text_7}">
+							</p:inputText></td>
+						<td><span id="addressError"></span></td>
+						<th><span style="color: red;">*</span>故乡</th>
+						<td><p:inputText styleClass="inputTextClass" id="input_text_9"
+								placeholder="请输入客户故乡" value="#{customerView.customer.hometown}"
+								onblur="onLeave(this)" binding="#{input_text_9}">
+							</p:inputText></td>
+						<td><span id="hometownError"></span></td>
+
+					</tr>
+
+					<tr>
+						<th><span style="color: red;">*</span>兴趣</th>
+						<td colspan="1" style="padding-left: opx;"><p:inputText
+								styleClass="inputTextClass" id="input_text_10" placeholder="请输入客户兴趣"
+								value="#{customerView.customer.interest}" onblur="onLeave(this)"
+								binding="#{input_text_10}">
+							</p:inputText></td>
+						<td><span id="interestError"></span></td>
+
+						<th><span style="color: red;">*</span> 生日</th>
+						<td colspan="1" width="20%"><p:calendar effect="blind"
+								pattern="yyyy-MM-dd" navigator="true" yearRange="c-60:c" lang="zh_CN"
+								id="birth" immediate="true" value="#{customerView.customer.birthday}"
+								readonlyInput="true" binding="#{birth}" /></td>
+						<td></td>
+
+
+
+					</tr>
+
+
+				</table>
+				<p:separator />
+				<div style="margin-bottom: 10px; margin-top: 20px;">
+					<p:commandButton value="返回" id="returnBtnCustomer"
+						binding="#{returnBtnCustomer}" styleClass="btnClass"
+						style="width:100px;margin-left:30%;font-weight:normal;height:35px"
+						ajax="true" icon="ui-icon-arrowreturnthick-1-w" onclick="hideInfoTable()" />
+					<p:commandButton value="添加" id="confirmAddingCustomerBtn"
+						icon="ui-icon-check" styleClass="btnClass"
+						oncomplete="PF('dlg_confirmAddingCustomer').show()"
+						binding="#{confirmAddingCustomerBtn}"
+						style="width:100px;margin-left:15%;font-weight:normal;height:35px"
+						ajax="true" />
+
+				</div>
+
+				<!--  确认增加对话框	 -->
+				<p:dialog id="dlg_confirmAddingCustomer" header="请确认" appendTo="@(body)"
+					widgetVar="dlg_confirmAddingCustomer" modal="true" showEffect="bounce"
+					hideEffect="fade" resizable="false" width="200px">
+					<table>
+						<tr>
+							<h:outputText value="确认添加吗?" style="font-size:16px;color:#003a6c;" />
+						</tr>
+						<tr>
+							<td><p:commandButton value="Cancel"
+									oncomplete="PF('dlg_confirmAddingCustomer').hide()"
+									icon="ui-icon-cancel">
+								</p:commandButton></td>
+							<td><p:commandButton value="Ok" style="margin-left:10%;"
+									actionListener="#{customerView.addCustomer}"
+									oncomplete="PF('dlg_confirmAddingCustomer').hide(),hideInfoTable()"
+									icon="ui-icon-check">
+								</p:commandButton></td>
+						</tr>
+					</table>
+				</p:dialog>
+			</div>
+		</p:outputPanel>
+
+
+		<p:dialog id="dlg_chooseFile" header="选择文件" widgetVar="dlg_chooseFile"
+			width="520px" height="200px" showEffect="blind" hideEffect="clip">
+			<p:outputLabel style="color:red;" value="提示:可支持文件拖拽" />
+			<p:fileUpload fileUploadListener="#{customerView.addBatch}"
+				id="fileUploadTag" style="margin-left:0px;" mode="advanced"
+				dragDropSupport="true" sizeLimit="1000000" allowTypes="/(\.|\/)(xls|xlsx)$/"
+				fileLimit="1" oncomplete="PF('dlg_chooseFile').hide()" />
+		</p:dialog>
+	</h:form>
+</f:view>

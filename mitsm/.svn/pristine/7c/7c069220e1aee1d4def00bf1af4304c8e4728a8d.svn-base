@@ -1,0 +1,101 @@
+<!DOCTYPE html [
+<!ENTITY nbsp "&#160;"> 
+]>
+
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:ui="http://java.sun.com/jsf/facelets">
+	
+	<br />
+	<div>
+		<h:form>
+			<p:dataTable id="latestBulletinListTable" var="latestBulletin"
+				binding="#{latestBulletinListTable}"
+				value="#{bulletinView.publishedBulletinList}" rows="7"
+				sortBy="#{latestBulletin.publishedDate}" sortOrder="descending"
+				paginatorPosition="bottom" paginator="true" rowsPerPageTemplate="7,10,15,20"
+				paginatorTemplate="{CurrentPageReport} 
+											{FirstPageLink}
+											{PreviousPageLink}
+											{PageLinks}
+											{NextPageLink}
+											{LastPageLink}
+											{RowsPerPageDropdown}"
+				currentPageReportTemplate="{totalRecords}
+									 ({currentPage} of {totalPages})"
+				widgetVar="latestBulletinListTable" rowKey="#{latestBulletin.id}">
+
+				<p:column filterable="false" headerText="标题" filterMatchMode="contains"
+					style="text-align:left;font-size:16px;">
+
+					<p:commandLink value="#{latestBulletin.messageHead}"
+						action="#{bulletinView.setBulletin(latestBulletin)}"
+						update="@form:bulletinDetailPanel" onclick="showBulletinDetail()"
+						ajax="true" styleClass="bulletinHead" onmousemove="move(this)"
+						onmouseout="out(this)" style="font-size:16px;text-decoration: underline;">
+					</p:commandLink>
+					<sup style="color: red;">new</sup>
+
+					<h:outputText style="float:right;"
+						value="发布日期:#{latestBulletin.publishedDate}" />
+				</p:column>
+			</p:dataTable>
+
+			<p:outputPanel id="bulletinDetailPanel" binding="#{bulletinDetailPanel}">
+				<div style="text-align: left;">
+					<p:commandButton value="返&nbsp;&nbsp;&nbsp;回" id="myReturnBtn"
+						binding="#{myReturnBtn}"
+						style="width:100px;font-weight:normal;-webkit-border-radius: 5px;"
+						ajax="true" icon="fa fa-fw fa-arrow-left"
+						oncomplete="hideBulletinDetail()" />
+				</div>
+				<div style="text-align: center;">
+					<p:outputLabel value="#{bulletinView.bulletin.messageHead}"
+						style="font-size:32px;font-weight:bold;" />
+				</div>
+				<br />
+				<br />
+				<br />
+				<p:outputPanel style="text-align:center;">
+					<p:outputLabel value="发布者:#{bulletinView.bulletin.maker.name}"
+						style="font-size:16px;" />
+				&nbsp;&nbsp;
+				<p:outputLabel value="发布时间:#{bulletinView.bulletin.publishedDate}"
+						style="font-size:16px;" />
+				&nbsp;&nbsp;
+				<p:outputLabel value="点击量:32423"
+						style="font-size:16px;" />
+				&nbsp;&nbsp;
+				</p:outputPanel>
+				<br />
+				<h:outputText id="hidedText" binding="#{hidedText}"
+					value="#{bulletinView.bulletin.messageBody}" escape="false" />
+			</p:outputPanel>
+			<br />
+			<!-- This is a hided button,which wouldn't be displayed on any page.
+				And it's function is to update dataTable here when it is clicked by jQuery. -->
+			<p:commandButton id="hidedBtn" binding="#{hidedBtn}"
+				update="@form:latestBulletinListTable" />
+		</h:form>
+	</div>
+	
+	<script type="text/javascript">
+		$(document).ready(function($) {
+			$("[id='#{bulletinDetailPanel.clientId}']").hide();
+			$("[id='#{hidedBtn.clientId}']").hide();
+			$("[id='#{hidedBtn.clientId}']").click();
+		});
+
+		function showBulletinDetail() {
+			$("[id='#{latestBulletinListTable.clientId}']").hide();
+			$("[id='#{bulletinDetailPanel.clientId}']").slideDown("slow");
+			return true;
+		}
+
+		function hideBulletinDetail() {
+			$("[id='#{bulletinDetailPanel.clientId}']").fadeOut(0);
+			$("[id='#{latestBulletinListTable.clientId}']").slideDown("slow");
+			return true;
+		}
+	</script>
+</f:view>

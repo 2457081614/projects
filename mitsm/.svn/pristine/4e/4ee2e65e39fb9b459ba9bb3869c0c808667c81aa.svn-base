@@ -1,0 +1,247 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<link href="staff_management.css" rel="stylesheet" type="text/css"></link>
+
+	<!-- 员工管理标签 -->
+	<h2 class="title">员工管理</h2>
+	<div style="width: 100%" id="div1">
+		<!-- 底部信息显示 -->
+		<h:form>
+		<p:dataTable id="staffListTable" var="staff" value="#{staffView.staffList}"
+			rows="6" binding="#{staffListTable}" sortBy="#{staff.name}"
+			filteredValue="#{staffView.filteredStaffList}" paginatorPosition="bottom"
+			paginator="true" rowsPerPageTemplate="6,10,15,20"
+			paginatorTemplate="{CurrentPageReport} 
+											{FirstPageLink}
+											{PreviousPageLink}
+											{PageLinks}
+											{NextPageLink}
+											{LastPageLink}
+											{RowsPerPageDropdown}"
+			currentPageReportTemplate="{totalRecords}
+				({currentPage} of {totalPages})"
+			rowKey="#{staff.id}" selection="#{staffView.selectedStaffList}"
+			widgetVar="staffListTable" rowSelectMode="add">
+
+
+			<!-- 头部信息显示 -->
+			<f:facet name="header">
+				<p:outputPanel style="text-align:left;font-weight:normal">
+					<h:outputText value="过滤:请输入关键字：" />
+					<p:inputText id="globalFilter" onkeyup="PF('staffListTable').filter()"
+						style="width:150px" placeholder="姓名/性别/电话/邮件......" />
+				</p:outputPanel>
+			</f:facet>
+
+			<!-- 员工信息字段行-->
+			<!-- 员工信息字段行-->
+			<!-- 员工信息字段行-->
+			<!-- 员工信息字段行-->
+			<!-- 员工信息字段行-->
+			<!--  姓名 -->
+			<p:column filterBy="#{staff.name}" filterable="false" headerText="姓名"
+				filterMatchMode="contains" styleClass="nameColumn">
+				<p:commandLink title="点击查看员工更多信息" value="#{staff.name}"
+					style="color:#003a6c;text-decoration: underline;"
+					update="@form:dlg_staffDetails:detail,@form:staffListTable" icon="ui-icon-search"
+					oncomplete="PF('dlg_staffDetails').show()" immediate="true">
+					<f:setPropertyActionListener value="#{staff}" target="#{staffView.staff}" />
+				</p:commandLink>
+			</p:column>
+			<!-- 性别 -->
+			<p:column filterBy="#{staff.gender}" filterable="false" headerText="性别"
+				filterMatchMode="contains">
+				<h:outputText value="#{staff.gender}"></h:outputText>
+			</p:column>
+			<!-- 电话 -->
+			<p:column filterBy="#{staff.tel}" filterable="false" headerText="电话"
+				filterMatchMode="contains">
+				<h:outputText value="#{staff.tel}"></h:outputText>
+			</p:column>
+			<p:column filterBy="#{staff.email}" filterable="false" headerText="邮件"
+				filterMatchMode="contains" styleClass="emailColumn">
+				<h:outputText value="#{staff.email }"></h:outputText>
+			</p:column>
+			<p:column filterBy="#{staff.birthday}" filterable="false" headerText="生日"
+				filterMatchMode="contains" styleClass="dateColumn">
+				<h:outputText value="#{staff.birthday }"></h:outputText>
+			</p:column>
+			<p:column filterBy="#{staff.idCardNumber}" filterable="false" headerText="身份证号"
+				filterMatchMode="contains" styleClass="academyColumn">
+				<h:outputText value="#{staff.idCardNumber}"></h:outputText>
+			</p:column>
+
+			<p:column headerText="修改员工信息" styleClass="modificationColumn">
+				<p:commandButton title="修改员工信息" value="修改"
+					update="@form:dlg_updateStaff" process="@this" immediate="true"
+					oncomplete="PF('dlg_updateStaff').show()" icon="fa fa-fw fa-edit">
+					<f:setPropertyActionListener value="#{staff}" target="#{staffView.staff}"/>
+				</p:commandButton>
+			</p:column>
+
+
+			<p:column headerText="删除员工" styleClass="modificationColumn">
+				<p:commandButton title="删除此员工" value="删除" process="@this" icon="ui-icon-trash"
+					oncomplete="PF('dlg_confirmToDelete').show()" immediate="true">
+					<f:setPropertyActionListener value="#{staff}" target="#{staffView.staff}"/>
+				</p:commandButton>
+			</p:column>
+		</p:dataTable>
+
+
+		<!-- 查看员工信息对话框 -->
+		<!-- 查看员工信息对话框 -->
+		<!-- 查看员工信息对话框 -->
+		<!-- 查看员工信息对话框 -->
+		<!-- 查看员工信息对话框 -->
+		<p:dialog id="dlg_staffDetails" header="详细信息" widgetVar="dlg_staffDetails"
+			modal="true" showEffect="size" hideEffect="size" resizable="false">
+			<p:outputPanel style="text-align:center;" id="detail">
+				<p:panelGrid rendered="#{not empty staffView.staff}">
+					<table class="common_market_tab" id="staffInfoTable" style="width:400px;">
+						<tr>
+							<th>姓名</th>
+							<td colspan="2"><h:outputText value="#{staffView.staff.name}" /></td>
+							<td rowspan="4">
+								<div class="photo_div">
+									<p:graphicImage value="/images/monkey.jpg" height="100%"
+										width="100%" />
+								</div>
+							</td>
+						</tr>
+
+						<tr>
+							<th>号码</th>
+							<td colspan="2"><h:outputText value="#{staffView.staff.tel}" /></td>
+						</tr>
+
+						<tr>
+							<th>性别</th>
+							<td colspan="2"><h:outputText value="#{staffView.staff.gender}" /></td>
+						</tr>
+
+						<tr>
+							<th>生日</th>
+							<td colspan="2"><h:outputText value="#{staffView.staff.birthday}" /></td>
+						</tr>
+
+						<tr>
+							<th>邮件</th>
+							<td colspan="4"><h:outputText value="#{staffView.staff.email}" /></td>
+						</tr>
+
+						<tr>
+							<th>身份证号码</th>
+							<td colspan="4"><h:outputText
+									value="#{staffView.staff.idCardNumber}" /></td>
+						</tr>
+					</table>
+				</p:panelGrid>
+			</p:outputPanel>
+		</p:dialog>
+
+
+
+		<!-- 修改员工信息对话框 -->
+		<!-- 修改员工信息对话框 -->
+		<!-- 修改员工信息对话框 -->
+		<!-- 修改员工信息对话框 -->
+		<!-- 修改员工信息对话框 -->
+		<p:dialog header="修改员工信息" widgetVar="dlg_updateStaff" modal="true"
+			id="dlg_updateStaff" showEffect="size" hideEffect="size" resizable="false">
+			<p:outputPanel style="text-align:center;" id="staff">
+				<p:panelGrid>
+					<table class="common_market_tab" style="width:500px;">
+						<tr>
+							<th>姓名</th>
+							<td colspan="2"><h:inputText value="#{staffView.staff.name}"
+									styleClass="inputText-class" /></td>
+							<td rowspan="4">
+								<div class="photo_div">
+									<p:graphicImage value="../../images/monkey.jpg" height="100%"
+										width="100%" />
+								</div>
+							</td>
+						</tr>
+
+						<tr>
+							<th>性别</th>
+							<td colspan="2"><p:selectOneRadio value="#{staffView.staff.gender}">
+									<f:selectItem itemLabel="男" itemValue="男" />
+									<f:selectItem itemLabel="女" itemValue="女" />
+								</p:selectOneRadio></td>
+
+						</tr>
+
+
+
+						<tr>
+							<th>身份证号码</th>
+							<td colspan="2"><h:inputText value="#{staffView.staff.idCardNumber}"
+									styleClass="inputText-class" disabled="true" /></td>
+						</tr>
+
+						<tr>
+							<th>生日</th>
+							<td colspan="2"><p:calendar effect="blind" pattern="yyyy-MM-dd"
+											locale="zh_CN"
+											navigator="true" yearRange="c-60:c"
+											lang="zh_CN" value="#{staffView.birthday}" readonlyInput="true"
+											showOn="button" maxdate="#{staffView.currentDate}"/></td>
+						</tr>
+						<tr>
+							<th>住址</th>
+							<td colspan="6"><h:inputText
+									value="#{staffView.staff.address}" /></td>
+						</tr>
+						<tr>
+							<th>电话号码</th>
+							<td colspan="6"><h:inputText value="#{staffView.staff.tel}" /></td>
+						</tr>
+						<tr>
+							<th>邮件</th>
+							<td colspan="6"><h:inputText  value="#{staffView.staff.email}" /></td>
+						</tr>
+					</table>
+
+					<p:commandButton value="取消" oncomplete="PF('dlg_updateStaff').hide()"
+						update="@form:dlg_updateStaff:staff" icon="fa fa-fw fa-remove">
+					</p:commandButton>
+					<p:commandButton value="确定" style="margin-left:30%;"
+						action="#{staffView.updateStaffInfo}"	 oncomplete="PF('dlg_updateStaff').hide()"
+						update="@form:staffListTable" icon="ui-icon-check">
+					</p:commandButton>
+				</p:panelGrid>
+			</p:outputPanel>
+		</p:dialog>
+
+		<!-- 确认删除对话框 -->
+		<!-- 确认删除对话框 -->
+		<!-- 确认删除对话框 -->
+		<!-- 确认删除对话框 -->
+		<p:dialog id="dlg_confirmToDelete" header="请确认"
+			widgetVar="dlg_confirmToDelete" modal="true" showEffect="bounce"
+			hideEffect="fade" resizable="false" width="230" height="60">
+			<table>
+				<tr>
+					<h:outputText value="确认删除吗?"
+						style="font-size:20px;color:#003a6c;text-align:center;" />
+				</tr>
+				<tr>
+					<td><p:commandButton value="Cancel"
+							onclick="PF('dlg_confirmToDelete').hide()" icon="fa fa-fw fa-remove" 
+							immediate="true"/></td>
+					<td><p:commandButton value="Ok" style="margin-left:15%;"
+							action="#{staffView.discardToRecycleBin}" 
+							update="@form:staffListTable" process="@this"
+							oncomplete="PF('dlg_confirmToDelete').hide()" icon="ui-icon-check" /></td>
+				</tr>
+			</table>
+		</p:dialog>
+		
+</h:form>
+	</div>
+
+</f:view>

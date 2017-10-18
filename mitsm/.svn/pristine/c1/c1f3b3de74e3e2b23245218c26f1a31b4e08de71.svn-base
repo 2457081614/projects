@@ -1,0 +1,214 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	<p:tabView scrollable="true" styleClass="tabs">
+		<p:tab title="修改个人信息">
+			<h:form>
+				<p:outputPanel id="modifyInfo" binding="#{modifyInfo}">
+					<div
+						style="margin-left: 15%; border: solid #33667C 1px; width: 60%; margin-top: 8%;">
+						<table class="common_tab" style="width: 100%; font-size: 16px;">
+							<tr>
+								<td colspan="2"
+									style="color: White; background-color: #33667C; font-size: 18px;">修改个人信息</td>
+							</tr>
+							<tr>
+								<th>电话号码</th>
+								<td><p:inputText value="#{personalCenterView.staff.tel}"
+										placeholder="请输入您的电话号码" /></td>
+							</tr>
+							<tr>
+								<th>邮箱:</th>
+								<td><p:inputText value="#{personalCenterView.staff.email}"
+										placeholder="请输入您的邮箱" /></td>
+							</tr>
+							<tr>
+								<th>修改住址:</th>
+								<td><p:inputText value="#{personalCenterView.staff.address}"
+										placeholder="请输入您的住址" /></td>
+							</tr>
+						</table>
+						<p:separator />
+						<div style="margin-bottom: 10px; margin-top: 5px;">
+							<p:commandButton value="重置" styleClass="btnClass"
+								style="width:100px;margin-left:30%;font-weight:normal;height:30px"
+								action="#{personalCenterView.initUsers}" update="@form:modifyInfo"
+								ajax="true" icon="fa fa-fw fa-repeat" />
+							<p:commandButton value="提交" icon="ui-icon-check" styleClass="btnClass"
+								oncomplete="PF('dlg_confirmModifyInfo').show()"
+								style="width:100px;margin-left:15%;font-weight:normal;height:30px"
+								ajax="true" />
+						</div>
+					</div>
+				</p:outputPanel>
+
+				<!-- 确认修改个人信息对话框 -->
+				<!-- 确认修改个人信息对话框 -->
+				<!-- 确认修改个人信息对话框 -->
+				<!-- 确认修改个人信息对话框 -->
+				<p:dialog id="dlg_confirmModifyInfo" header="请确认"
+					widgetVar="dlg_confirmModifyInfo" modal="true" showEffect="bounce"
+					hideEffect="fade" resizable="false" width="200px">
+					<table>
+						<tr>
+							<h:outputText value="确认修改吗?" style="font-size:16px;color:#003a6c;" />
+						</tr>
+						<tr>
+							<td><p:commandButton value="Cancel"
+									oncomplete="PF('dlg_confirmModifyInfo').hide()" icon="ui-icon-cancel">
+								</p:commandButton></td>
+							<td><p:commandButton value="Ok" style="margin-left:10%;"
+									action="#{personalCenterView.modifyInfo}"
+									oncomplete="PF('dlg_confirmModifyInfo').hide()" icon="ui-icon-check">
+								</p:commandButton></td>
+						</tr>
+					</table>
+				</p:dialog>
+			</h:form>
+		</p:tab>
+		<p:tab title="修改密码">
+			<h:form id="modifyPasswdForm" binding="#{modifyPasswdForm}" prependId="false">
+				<p:outputPanel id="modifyPassword" binding="#{modifyPassword}">
+					<div
+						style="margin-left: 15%; border: solid #33667C 1px; width: 60%; margin-top: 8%">
+						<table class="common_tab" style="width: 100%; font-size: 16px;">
+							<tr>
+								<td colspan="2"
+									style="color: White; background-color: #33667C; font-size: 18px;">修改密码</td>
+							</tr>
+							<tr>
+								<th>原密码</th>
+								<td><p:password placeholder="请输入原密码" id="originalPassword"
+										binding="#{originalPassword}"
+										value="#{personalCenterView.originalPassword}">
+									</p:password> <p:graphicImage value="/icons/right_validation.png"
+										id="right_validation1" binding="#{right_validation1}" /> <p:graphicImage
+										value="/icons/wrong_validation.png" id="wrong_validation1"
+										binding="#{wrong_validation1}" /></td>
+
+							</tr>
+							<tr>
+								<th>新密码</th>
+								<td><p:password placeholder="请输入新密码" id="newPassword" feedback="true"
+										promptLabel="请输入密码" weakLabel="弱" goodLabel="中" strongLabel="强"
+										binding="#{newPassword}" value="#{personalCenterView.newPassword}">
+									</p:password> 
+										<p:graphicImage value="/icons/right_validation.png"
+										id="right_validation2" binding="#{right_validation2}" /> 
+										<p:graphicImage
+										value="/icons/wrong_validation.png" id="wrong_validation2"
+										binding="#{wrong_validation2}" /></td>
+							</tr>
+							<tr>
+								<th>确认密码</th>
+								<td><p:password placeholder="请再次输入新密码" id="repeatedNewPassword"
+										binding="#{repeatedNewPassword}"
+										value="#{personalCenterView.repeatedNewPassword}">
+									</p:password> <p:graphicImage value="/icons/right_validation.png"
+										id="right_validation3" binding="#{right_validation3}" /> <p:graphicImage
+										value="/icons/wrong_validation.png" id="wrong_validation3"
+										binding="#{wrong_validation3}" /></td>
+							</tr>
+						</table>
+						<p:separator />
+						<div style="margin-bottom: 10px; margin-top: 5px;">
+							<p:commandButton value="重置" styleClass="btnClass"
+								style="width:100px;margin-left:30%;font-weight:normal;height:30px"
+								action="#{personalCenterView.initAllPassword}"
+								type="reset"
+								update="@form:modifyPassword" ajax="false" icon="fa fa-fw fa-repeat" />
+							<p:commandButton value="提交" icon="ui-icon-check" styleClass="btnClass"
+								oncomplete="PF('dlg_confirmModifyPassword').show()"
+								style="width:100px;margin-left:15%;font-weight:normal;height:30px"
+								ajax="true" />
+						</div>
+					</div>
+				</p:outputPanel>
+
+				<!-- 确认修改个人密码对话框 -->
+				<!-- 确认修改个人密码对话框 -->
+				<!-- 确认修改个人密码对话框 -->
+				<p:dialog id="dlg_confirmModifyPassword" header="请确认"
+					widgetVar="dlg_confirmModifyPassword" modal="true" showEffect="bounce"
+					hideEffect="fade" resizable="false" width="200px">
+					<table>
+						<tr>
+							<h:outputText value="确认修改密码吗?" style="font-size:16px;color:#003a6c;" />
+						</tr>
+						<tr>
+							<td><p:commandButton value="Cancel"
+									oncomplete="PF('dlg_confirmModifyPassword').hide()"
+									icon="ui-icon-cancel" immediate="true">
+								</p:commandButton></td>
+							<td><p:commandButton value="Ok" style="margin-left:10%;"
+									action="#{personalCenterView.modifyPassword}"
+									type="submit" process="@form" ajax="true"
+									update="@form:modifyPassword"
+									oncomplete="PF('dlg_confirmModifyPassword').hide()"
+									icon="ui-icon-check">
+								</p:commandButton></td>
+						</tr>
+					</table>
+				</p:dialog>
+			</h:form>
+
+			<script type="text/javascript">
+				$(document).ready(function(){
+					hideRightValidationPngs();
+				});
+				
+				function hideRightValidationPngs(){
+					$("[id='#{right_validation1.clientId}']").hide();
+					$("[id='#{right_validation2.clientId}']").hide();
+					$("[id='#{right_validation3.clientId}']").hide();
+				}
+				
+				function hideWrongValidationPngs(){
+					$("[id='#{wrong_validation1.clientId}']").hide();
+					$("[id='#{wrong_validation2.clientId}']").hide();
+					$("[id='#{wrong_validation3.clientId}']").hide();
+				}
+				
+				
+				$("[id='#{originalPassword.clientId}']").keyup(function(){
+					var originalPassword = $("[id='#{originalPassword.clientId}']").val();
+					var length = originalPassword.length;
+					if(length &lt; 6 || length &gt; 18){
+						$("[id='#{right_validation1.clientId}']").hide();
+						$("[id='#{wrong_validation1.clientId}']").show();
+					}
+					else{
+						$("[id='#{wrong_validation1.clientId}']").hide();
+						$("[id='#{right_validation1.clientId}']").show();
+					}
+				});
+				$("[id='#{newPassword.clientId}']").keyup(function(){
+					var newPassword = $("[id='#{newPassword.clientId}']").val();
+					var length = newPassword.length;
+					if(length &lt; 6 || length &gt; 18){
+						$("[id='#{right_validation2.clientId}']").hide();
+						$("[id='#{wrong_validation2.clientId}']").show();
+					}
+					else{
+						$("[id='#{wrong_validation2.clientId}']").hide();
+						$("[id='#{right_validation2.clientId}']").show();
+					}
+				});
+				$("[id='#{repeatedNewPassword.clientId}']").keyup(function(){
+					var repeatedNewPassword = $("[id='#{repeatedNewPassword.clientId}']").val();
+					var newPassword = $("[id='#{newPassword.clientId}']").val();
+					var length = repeatedNewPassword.length;
+					if(length &lt; 6 || length &gt; 18 
+						|| repeatedNewPassword != newPassword){
+						$("[id='#{right_validation3.clientId}']").hide();
+						$("[id='#{wrong_validation3.clientId}']").show();
+					}
+					else{
+						$("[id='#{wrong_validation3.clientId}']").hide();
+						$("[id='#{right_validation3.clientId}']").show();
+					}
+				});
+			</script>
+		</p:tab>
+	</p:tabView>
+</f:view>

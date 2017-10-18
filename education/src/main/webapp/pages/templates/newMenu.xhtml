@@ -1,0 +1,76 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<h:form>
+
+		<p:panelMenu style="width:100%">
+
+			<c:if test="#{menuView.roleManager}">
+				<p:submenu label="学生管理">
+					<p:menuitem value="查看所有学生" icon="fa fa-search"  
+						url="/pages/orga/manager/studentManagement/showAllStudent.xhtml" />
+					<p:menuitem value="添加学生" icon="fa fa-user-plus"
+						url="/pages/orga/manager/studentManagement/importStudent.xhtml" />
+				</p:submenu>
+
+				<p:submenu label="教师管理">
+					<p:menuitem value="查看所有老师" icon="fa fa-user-plus"
+						url="/pages/orga/manager/teacherManagement/showAllTeacher.xhtml" />
+
+					<p:menuitem value="分配课程" icon="fa fa-user-plus"
+						url="/pages/orga/manager/teacherManagement/courseAssign.xhtml" />
+
+					<p:menuitem value="添加老师" icon="fa fa-user-plus"
+						url="/pages/orga/manager/teacherManagement/importTeacher.xhtml" />
+				</p:submenu>
+
+				<p:submenu label="课程管理">
+					<p:menuitem value="查看所有课程" icon="fa fa-search"
+						url="/pages/orga/manager/courseManagement/showAllCourse.xhtml" />
+					<p:menuitem value="添加课程" icon="fa fa-user-plus"
+						url="/pages/orga/manager/courseManagement/importCourse.xhtml" />
+				</p:submenu>
+				<p:submenu label="所有用户">
+					<p:menuitem value="查看所有用户基本信息" icon="fa fa-search"
+						url="/pages/orga/manager/allUser.xhtml" />
+				</p:submenu>
+
+			</c:if>
+
+
+
+
+			<c:if test="#{menuView.roleTeacher}">
+				<p:submenu label="课程查看">
+					<p:menuitem value="查看所教课程" icon="fa fa-search"
+						url="/pages/orga/teacher/courseForTheTeacher.xhtml" />
+				</p:submenu>
+				<p:submenu label="学生打分">
+					<p:menuitem value="学生评分" icon="fa fa-search"
+						url="/pages/orga/teacher/gradeStudent.xhtml" />
+				</p:submenu>
+			</c:if>
+
+
+
+
+			<c:if test="#{menuView.roleStudent}">
+				<p:submenu label="选课">
+					<p:menuitem value="课程选课" icon="fa fa-search"
+						url="/pages/orga/student/course.xhtml" />
+						<p:menuitem value="已选课程" icon="fa fa-search"
+						url="/pages/orga/student/selectedCourse.xhtml" />
+				</p:submenu>
+
+				<p:submenu label="成绩">
+					<p:menuitem value="成绩查看" icon="fa fa-search"
+						url="/pages/orga/student/grade.xhtml" />
+				</p:submenu>
+			</c:if>
+
+		</p:panelMenu>
+	</h:form>
+</f:view>

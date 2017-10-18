@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	
+	xmlns:p="http://primefaces.org/ui"
+	>
+       	 <SCRIPT  language="Javascript">
+           function modify(){
+        	var password1= document.getElementById("pwd1").value();
+        	var password2=document.getElementById("pwd2").value();
+        	if(password1!==password2){
+        		document.getElementById("erro").innerHTML="新密码和确认密码不同，请重新输入！"
+        	}
+           }
+            </SCRIPT>
+
+		<div id="modifyp_top">
+		<h:form id="modifyPS_form" style="border:0px solid red;left:36%;top:100px" >
+			<p:growl id="modifyPS_growl" showDetail="true" sticky="true" />
+			<div id="modifyp_header">
+			修改密码
+			</div>
+			
+			<div id="modifyp_Info" >
+			<div class="modifyp" >
+         
+           <p:messages id="messages" showDetail="true" autoUpdate="true" />
+           <h:panelGrid columns="2" id="matchGrid" cellpadding="5">   
+                  
+              <h:outputText value="旧密码:" />
+            <p:password id="nonFeedback" value="旧密码"  />
+           
+            <h:outputLabel for="pwd1" value="新密码:" />
+           <p:password id="pwd1" value="新密码:" ></p:password>
+            
+         <h:outputLabel for="pwd2" value="确认密码:" />
+        <p:password  id="pwd2" value="确认密码"  />
+        
+         </h:panelGrid>
+      
+          </div>
+       
+      <SPAN class="button1">     
+        	<p:commandButton onclick="modifyp" value="确认"   icon="ui-icon-check" update="modifyPS_growl"/>
+    </SPAN> 
+    <SPAN class="button2">
+            	<p:commandButton value="返回" action="1" icon="ui-icon-close" />
+       </SPAN> 
+             
+			</div>
+		   </h:form>
+		  <DIV id="erro" style="color: red"></DIV> 
+		</div>
+</html>

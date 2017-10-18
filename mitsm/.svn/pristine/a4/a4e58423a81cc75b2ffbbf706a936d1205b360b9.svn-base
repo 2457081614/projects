@@ -1,0 +1,74 @@
+<!DOCTYPE html [
+<!ENTITY nbsp "&#160;"> 
+]>
+
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<br />
+	<div>
+		<h:form>
+			<p:dataTable id="latestTaskListTable" var="latestTask"
+				binding="#{latestTaskListTable}"
+				value="#{taskView.taskListForParttimeStaff}" rows="7"
+				paginatorPosition="bottom" paginator="true"
+				rowsPerPageTemplate="5,7,10" sortBy="#{latestTask.assignedDate}"
+				paginatorTemplate="{CurrentPageReport} 
+											{FirstPageLink}
+											{PreviousPageLink}
+											{PageLinks}
+											{NextPageLink}
+											{LastPageLink}
+											{RowsPerPageDropdown}"
+				currentPageReportTemplate="{totalRecords}
+									 ({currentPage} of {totalPages})"
+				widgetVar="latestTaskListTable"	rowKey="#{latestTask.id}">
+
+				<p:column filterable="false" headerText="任务描述"
+					filterMatchMode="contains" style="text-align:left;font-size:16px;">
+
+					<p:commandLink value="#{latestTask.taskDescription}"
+						update="@form:taskDetailPanel" onclick="showTaskDetail()"
+						ajax="true" onmousemove="move(this)" onmouseout="out(this)"
+						style="font-size:16px;">
+					</p:commandLink>
+					<sup style="color: red;">new</sup>
+				</p:column>
+			</p:dataTable>
+
+			<p:outputPanel id="taskDetailPanel" binding="#{taskDetailPanel}">
+				<div style="text-align: left;">
+					<p:commandButton value="返&nbsp;&nbsp;&nbsp;回" id="myReturnBtn"
+						binding="#{myReturnBtn}"
+						style="width:100px;font-weight:normal;-webkit-border-radius: 5px;"
+						ajax="true" icon="fa fa-fw fa-arrow-left"
+						oncomplete="hideTaskDetail()" />
+				</div>
+				<br/>
+				<div style="text-align: center;">
+					<h:outputText value="这个人很低调，什么也没留下"/>
+				</div>
+		</h:form>
+	</div>
+
+
+	<script type="text/javascript">
+		$(document).ready(function($) {
+			$("[id='#{taskDetailPanel.clientId}']").hide();
+		});
+
+		function showTaskDetail() {
+			$("[id='#{latestTaskListTable.clientId}']").hide();
+			$("[id='#{taskDetailPanel.clientId}']").slideDown("slow");
+			return true;
+		}
+
+		function hideTaskDetail() {
+			$("[id='#{taskDetailPanel.clientId}']").fadeOut(0);
+			$("[id='#{latestTaskListTable.clientId}']").slideDown("slow");
+			return true;
+		}
+	</script>
+</f:view>

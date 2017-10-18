@@ -1,0 +1,12 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h2 class="title">更多</h2>
+	
+	<div style="margin-left:35%;">
+		<p:graphicImage value="/images/encoding.gif" /><br/>
+		<p:outputLabel value="攻城狮努力施工中......尽请期待" style="font-size:20px;color:red;"/>
+	</div>
+</f:view>

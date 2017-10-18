@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Error 404</title>
+<style>
+    body {
+        width: 35em;
+        margin: 100px auto;
+    }
+</style>
+</head>
+<body>
+<h1>Error 404</h1>
+<p style="font-size: 20px;">The requested URL was not found on this server.</p>
+</body>
+</html>

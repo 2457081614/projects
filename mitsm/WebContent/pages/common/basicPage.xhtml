@@ -1,0 +1,86 @@
+<!DOCTYPE html [
+<!ENTITY nbsp "&#160;"> 
+]>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	>
+<h:head>
+	<link rel="shortcut icon" href="/mitsm/images/management_system.png"/>
+	<title>人力资源管理系统</title>
+	<link rel="stylesheet" href="/mitsm/css/all.min.css" />
+	<link rel="stylesheet" href="/mitsm/css/teacher.css" />
+	<link rel="stylesheet" href="/mitsm/css/top.css" />
+	
+	
+	<!-- From DXL -->
+	<link rel="stylesheet" href="/mitsm/css/login.css"/>
+	<link rel="stylesheet" href="/mitsm/css/register.css"/>
+	<link rel="stylesheet" href="/mitsm/css/modifyPassword.css"/> 
+	<!-- <link rel="stylesheet" href="/mitsm/css/personalTop.css"/>  -->
+	<link rel="stylesheet" href="/mitsm/css/completeInfo.css"/> 
+	<link rel="stylesheet" href="/mitsm/css/modifyInfo.css"/> 
+	<!-- From DXL -->
+
+	
+	<!-- From FZH -->
+	<!-- 控制dataTable列宽 -->
+	<link rel="stylesheet" href="/mitsm/css/column_width.css"/>
+	<!-- 设置增加XXX时的按钮的样式 -->
+	<link rel="stylesheet" href="/mitsm/css/add_xxx.css"/>
+	<!-- 左边主菜单的样式 -->
+	<link rel="stylesheet" href="/mitsm/css/menu.css"/>
+	<script src="/mitsm/js/menu.js" />
+	<script src="/mitsm/js/calendar_translation.js"/>
+	<script src="/mitsm/js/jquery.validate.min.js"/>
+	<script src="/mitsm/js/additional-methods.min.js"/>
+	<link rel="stylesheet" href="/mitsm/css/all_button.css"/>
+	<!-- From FZH -->
+</h:head>
+<body>
+	
+	<div class="content">
+		<div class="detailPane">
+			<div class="page"  style="background-color: #CCCCCC;">
+				<div class="container">
+					<ui:insert name="content">
+					</ui:insert>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+
+	<p:confirmDialog global="true">
+		<p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+		<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+	</p:confirmDialog>
+
+	<p:growl autoUpdate="true" life="10000" />
+	
+	<p:ajaxStatus onstart="showLoader()" oncomplete="hideLoader()" />
+
+	<p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false" styleClass="loader">
+		<p:graphicImage value="/images/ajax-loader.gif" width="48" height="48" />
+	</p:dialog>
+	<script>
+		var loader = false;
+		function showLoader() {
+			loader = true;
+			setTimeout(function(){
+				if(loader) {
+					PF('statusDialog').show();
+				}
+			}, 300);
+		}
+		function hideLoader() {
+			loader = false;
+			PF('statusDialog').hide();
+		}
+		
+		
+	</script>
+</body>
+</html>

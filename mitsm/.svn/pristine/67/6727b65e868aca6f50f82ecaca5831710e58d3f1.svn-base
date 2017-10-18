@@ -1,0 +1,114 @@
+body{background-image:url("../images/loginBK2.jpg");filter:alpha(opacity=30);background-size:100%;}
+#header{
+	border:0px solid blue;height: 15%;
+	width:80% ;
+	text-align:center;
+	line-height: 40px;
+	position:absolute;
+	color:#729fcf;
+	left:8%;
+	top:5%;
+	font-size: 35px;
+	font-family: monospace;
+	font-weight: 400; 
+	
+}
+#loginInfo{
+	border:0px solid blue;
+	height: 65%;width: 90%;
+	position: absolute;
+	top:20%;
+	left: 5%;
+	background: rgba(0, 0, 0, 0.3); 
+	-moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-box-shadow: 0 0 13px 3px rgba(20, 4a, 87,.3);
+    -webkit-box-shadow: 0 0 13px 3px rgba(20, 4a, 87,.5);
+	
+}
+#loginTop{
+	border:0px solid black;
+	position: absolute;
+	left:33%;
+	top:10%;
+	-moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+	height:60%;
+	width:40%;
+	background: rgba(0, 0, 0, 0.5); 
+    -moz-box-shadow: 0 0 13px 3px rgba(0,0,0,.6);
+    -webkit-box-shadow: 0 0 13px 3px rgba(0,0,0,.5);
+}
+#username{
+	margin-top:8%;
+	border:0px solid green;
+	margin-left:6%;
+	width:20%;
+	font-size: 22px;font-family: monospace; font-weight: 400; 
+	height:10%;
+	color:#729fcf;
+	float: left;
+	clear:both;
+	text-align:right;
+	line-height: 30px;
+}
+#inputname{
+	border:0px solid red;
+	position:absolute;
+	right: 12%;
+	color:#729fcf;
+	margin-top:6%;
+	margin-left:2%;
+	width:60%;
+	height:12%;
+	text-align:left;
+	line-height: 30px;
+}
+
+#pwd{
+	margin-top:8%;
+	border:0px solid green;
+	margin-left:6%;
+	width:20%;
+	font-size: 22px;font-family: monospace; font-weight: 400; 
+	height:10%;
+	color:#729fcf;
+	
+	float: left;
+	clear:both;
+	text-align:right;
+	line-height: 30px;
+}
+#inputpwd{
+	border:0px solid red;
+	position:absolute;
+	right: 12%;
+    margin-top:20%;
+	
+	width:60%;
+	height:12%;
+	text-align:left;
+	line-height: 30px;
+}
+#add{
+	margin-top:10%;
+	border:0px solid green;
+	margin-left:11%;
+	width:80%;
+	height:15%;
+	float: left;
+	clear:both;
+	text-align:center;
+	line-height: 30px;
+}
+#reset{
+	border:0px solid red;
+	position:absolute;
+	right: 80px;
+	margin-top:158.5px;
+	margin-left:20px;
+	width:130px;
+	height:30px;
+	text-align:center;
+	line-height: 30px;
+}

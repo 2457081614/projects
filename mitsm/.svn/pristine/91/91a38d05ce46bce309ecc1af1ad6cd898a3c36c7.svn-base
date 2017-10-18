@@ -1,0 +1,64 @@
+#complementInfoP_header{
+	border:0px solid blue;height: 40px;width: 350px;
+	text-align:center;
+	line-height: 40px;
+	position:absolute;
+	color:#729fcf;
+	left:100px;
+	top:20px;
+	font-size: 35px;font-family: monospace; font-weight: 400; 
+	
+}
+#complementInfoP_Info{
+	border:0px solid blue;
+	height: 250px;width: 500px;
+	position: absolute;top:90px;left: 23px;
+	background: rgba(0, 0, 0, 0.3); 
+	-moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-box-shadow: 0 0 13px 3px rgba(20, 4a, 87,.3);
+    -webkit-box-shadow: 0 0 13px 3px rgba(20, 4a, 87,.5);
+	border: solid  DarkSlateGray  3px;
+}
+#complementInfoP_top{
+	border:0px solid black;
+	position: absolute;
+	left:5%;
+	top:80px;
+	-moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+	height:400px;width:550px;
+	background: rgba(0, 0, 0, 0.5); 
+    -moz-box-shadow: 0 0 13px 3px rgba(0,0,0,.6);
+    -webkit-box-shadow: 0 0 13px 3px rgba(0,0,0,.5);
+    border: solid  MediumAquaMarine   2px;
+}
+#complementInfoP_table{
+	color:#729fcf;
+}
+
+#complementInfoP{
+	    margin-top:30px;
+	    margin-left:100px;
+	   font-size:18px;
+		color:#729fcf;
+	
+}
+#button1{
+	margin-left:200px;
+	margin-top: 20px;
+}
+#button3{
+	color: orange;
+	background-color: graytext;
+	font-size: 16px;
+	width: 35px;
+	height: 70px;
+}
+#button2{
+	margin: 30px;
+	color: orange;
+	background-color: graytext;
+	width: 35px;
+	height: 70px;
+}

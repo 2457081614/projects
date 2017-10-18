@@ -1,0 +1,341 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	<script type="text/javascript">
+	$(document).ready(function($) {
+		$("[id='#{addParttimeStaffPanel.clientId}']").hide();
+		$("[id='#{confirmAddingParttimeStaffBtn.clientId}']").attr({"disabled":"disabled"}); //禁止按钮
+		
+	});
+
+		function showInfoTable() {
+			$("[id='#{addParttimeStaff.clientId}']").hide();
+			$("[id='#{addParttimeStaffPanel.clientId}']").slideDown("slow");
+			return true;
+		}
+
+		function hideInfoTable() {
+			$("[id='#{addParttimeStaffPanel.clientId}']").fadeOut(0);
+			$("[id='#{addParttimeStaff.clientId}']").slideDown("slow");
+			return true;
+		}
+	</script>
+	<!-- 表单验证 -->
+	<!-- 表单验证 -->
+	<!-- 表单验证 -->
+	<!-- 表单验证 -->
+	<style type="text/css">
+.state1 {
+	color: blue;
+	background: url(../../images/right.png) no-repeat;
+	width: 46%;
+	font-family: '微软雅黑';
+	font-size: 15px;
+	text-align: right;
+	padding-left: 20px;
+	margin-left: 0%;
+	float: left;
+}
+
+.state2 {
+	color: red;
+	background: url(../../images/error.png) no-repeat;
+	width: 48;
+	height: 200px;
+	font-family: '微软雅黑';
+	font-size: 15px;
+	padding-left: 20px;
+	text-align: left;
+	margin-left: -33px;
+}
+
+input {
+	width: 200px;
+	height: 25px;
+}
+</style>
+	<script type="text/javascript">
+	var m1,m2,m3,m4,m5,m6=false;
+	$(document).ready(function($) {
+		$("[id='#{confirmAddingParttimeStaffBtn.clientId}']").attr({"disabled":"disabled"}); //禁止按钮
+		
+	});
+		//姓名
+		$("[id='#{input_text_11.clientId}']").focus(function() {
+
+		}).blur(
+				function() {
+					if ($("[id='#{input_text_11.clientId}']").val() != ''&amp;&amp;$.trim($("[id='#{input_text_11.clientId}']").val())) {
+						$("#nameError").html("格式正确").addClass('state1').removeClass('state2');
+                         m1=true;
+                     	
+     					if(m1 &amp;&amp; m2 &amp;&amp; m3 &amp;&amp; m4 &amp;&amp; m5 &amp;&amp; m6
+                        ){
+                         	$("[id='#{confirmAddingParttimeStaffBtn.clientId}']").removeAttr("disabled");
+                         }
+					} else {
+						$("#nameError").html("姓名不能为空").removeClass('state1')
+								.addClass('state2');
+						m1=false;
+						$("[id='#{confirmAddingParttimeStaffBtn.clientId}']").attr({"disabled":"disabled"}); //禁止按钮
+					}
+
+				});
+		//学校
+		$("[id='#{input_text_9.clientId}']").focus(function() {
+
+		}).blur(
+				function() {
+					if ($("[id='#{input_text_9.clientId}']").val() != ''&amp;&amp;$.trim($("[id='#{input_text_9.clientId}']").val())) {
+						$("#schoolError").html("格式正确").addClass('state1').removeClass('state2');
+						m2=true;
+						
+						if(m1 &amp;&amp; m2 &amp;&amp; m3 &amp;&amp; m4 &amp;&amp; m5 &amp;&amp; m6
+	                   ){
+	                    	$("[id='#{confirmAddingParttimeStaffBtn.clientId}']").removeAttr("disabled");
+	                    }
+
+					} else {
+						$("#schoolError").html("学校不能为空").removeClass('state1')
+								.addClass('state2');
+						m2=false;
+						$("[id='#{confirmAddingParttimeStaffBtn.clientId}']").attr({"disabled":"disabled"}); //禁止按钮
+					}
+
+				});
+		//电话
+		$("[id='#{input_text_8.clientId}']").focus(function() {
+
+		}).blur(
+				function() {
+
+					var reg = /^1[3|4|5|8][0-9]\d{4,8}$/ //11数字验证
+					if (!reg.test($("[id='#{input_text_8.clientId}']").val())) {
+						$("#telError").html("手机号码错误").addClass('state2').removeClass('state1');
+						m3=false;
+						$("[id='#{confirmAddingParttimeStaffBtn.clientId}']").attr({"disabled":"disabled"}); //禁止按钮
+
+					}
+
+					else {
+						$("#telError").html("格式正确").removeClass('state2')
+								.addClass('state1');
+						m3=true;
+						
+						if(m1 &amp;&amp; m2 &amp;&amp; m3 &amp;&amp; m4 &amp;&amp; m5 &amp;&amp; m6
+	                   ){
+	                    	$("[id='#{confirmAddingParttimeStaffBtn.clientId}']").removeAttr("disabled");
+	                    }
+					}
+
+				});
+		//qq
+		$("[id='#{input_text_5.clientId}']").focus(function() {
+
+		}).blur(
+				function() {
+					var reg=/^[1-9]\d{4,9}$/;
+					if (!reg.test($("[id='#{input_text_5.clientId}']").val())) {
+						$("#qqError").html("QQ号码错误").addClass('state2').removeClass('state1');
+						m4=false;
+						$("[id='#{confirmAddingParttimeStaffBtn.clientId}']").attr({"disabled":"disabled"}); //禁止按钮
+
+					} else {
+						$("#qqError").html("格式正确").removeClass('state2')
+								.addClass('state1');
+						m4=true;
+						
+						if(m1 &amp;&amp; m2 &amp;&amp; m3 &amp;&amp; m4 &amp;&amp; m5 &amp;&amp; m6
+	                   ){
+	                    	$("[id='#{confirmAddingParttimeStaffBtn.clientId}']").removeAttr("disabled");
+	                    }
+					}
+
+				});
+		//地址
+		$("[id='#{input_text_10.clientId}']").focus(function() {
+
+		}).blur(
+				function() {
+					if ($("[id='#{input_text_10.clientId}']").val() != ''&amp;&amp;$.trim($("[id='#{input_text_10.clientId}']").val())) {
+						$("#addressError").html("格式正确").addClass('state1').removeClass('state2');
+						m5=true;
+						
+						if(m1 &amp;&amp; m2 &amp;&amp; m3 &amp;&amp; m4 &amp;&amp; m5 &amp;&amp; m6
+	                   ){
+	                    	$("[id='#{confirmAddingParttimeStaffBtn.clientId}']").removeAttr("disabled");
+	                    }
+
+					} else {
+						$("#addressError").html("地址不能为空").removeClass('state1')
+								.addClass('state2');
+						m5=false;
+						$("[id='#{confirmAddingParttimeStaffBtn.clientId}']").attr({"disabled":"disabled"}); //禁止按钮
+					}
+
+				});
+		//故乡
+		$("[id='#{input_text_12.clientId}']").focus(function() {
+
+		}).blur(
+				function() {
+					if ($("[id='#{input_text_12.clientId}']").val() != ''&amp;&amp;$.trim($("[id='#{input_text_12.clientId}']").val())) {
+						$("#hometownError").html("格式正确").addClass('state1').removeClass('state2');
+						m6=true;
+						if(m1 &amp;&amp; m2 &amp;&amp; m3 &amp;&amp; m4 &amp;&amp; m5 &amp;&amp; m6
+		                   ){
+		                    	$("[id='#{confirmAddingParttimeStaffBtn.clientId}']").removeAttr("disabled");
+		                    }
+
+
+					} else {
+						$("#hometownError").html("故乡不能为空")
+								.removeClass('state1').addClass('state2');
+						m6=false;
+						$("[id='#{confirmAddingParttimeStaffBtn.clientId}']").attr({"disabled":"disabled"}); //禁止按钮
+					}
+					
+					
+				});
+	</script>
+
+
+	<h:form>
+		<p:outputPanel id="addParttimeStaff" binding="#{addParttimeStaff}">
+			<div style="margin-left: 30%;">
+				<h2 class="title" style="margin-left: 10%">新增校园代理</h2>
+				<p:commandButton value="单个输入" styleClass="btnClass"
+					onclick="showInfoTable()" icon="fa fa-fw fa-edit" />
+				<p:spacer width="100" />
+				<p:commandButton value="批量导入" styleClass="btnClass"
+					update="@form:fileUploadTag" icon="fa fa-fw fa-align-justify"
+					onclick="PF('dlg_chooseFile').show()" />
+			</div>
+		</p:outputPanel>
+
+		<p:outputPanel id="addParttimeStaffPanel"
+			binding="#{addParttimeStaffPanel}">
+			<div style="width: 86%; border: solid DarkCyan 1px; margin-top: 5%">
+
+				<table id="addParttimeTable1" class="common_tab"
+					style="width: 100%;">
+					<tr>
+						<td colspan="6"
+							style="color: White; background-color: DarkCyan; font-size: 18px;">校园代理基本信息</td>
+					</tr>
+					<tr>
+
+						<th width="14%"><span style="color: red;">*</span>姓名</th>
+						<td width="20%"><p:inputText styleClass="inputTextClass"
+								id="input_text_11" placeholder="请输入校园代理姓名"
+								value="#{parttimeStaffView.newParttimeStaff.name}"
+								onblur="onLeave(this)" binding="#{input_text_11}">
+							</p:inputText></td>
+							<td width="16%"><span id="nameError"></span></td>
+						<th width="14%"><span style="color: red;">*</span>学校</th>
+						<td width="20%"><p:inputText styleClass="inputTextClass"
+								id="input_text_9" placeholder="请输入校园代理所在学校"
+								value="#{parttimeStaffView.newParttimeStaff.school}"
+								onblur="onLeave(this)" binding="#{input_text_9}">
+							</p:inputText></td>
+							<td width="16%"><span id="schoolError"></span></td>
+					</tr>
+
+
+					<tr>
+
+						<th><span style="color: red;">*</span>联系电话</th>
+						<td><p:inputText styleClass="inputTextClass"
+								id="input_text_8" placeholder="请输入校园代理电话"
+								value="#{parttimeStaffView.newParttimeStaff.tel}"
+								onblur="onLeave(this)" binding="#{input_text_8}">
+							</p:inputText></td>
+							<td><span id="telError"></span></td>
+
+						<th><span style="color: red;">*</span>QQ</th>
+						<td><p:inputText styleClass="inputTextClass"
+								id="input_text_5" placeholder="请输入QQ"
+								value="#{parttimeStaffView.newParttimeStaff.qq}"
+								onblur="onLeave(this)" binding="#{input_text_5}">
+							</p:inputText></td>
+							<td><span id="qqError"></span></td>
+					</tr>
+
+
+					<tr>
+						<!--第3行开始-->
+						<th><span style="color: red;">*</span>地址</th>
+						<td><p:inputText styleClass="inputTextClass"
+								id="input_text_10" placeholder="请输入校园里代理地址"
+								value="#{parttimeStaffView.newParttimeStaff.address}"
+								onblur="onLeave(this)" binding="#{input_text_10}">
+							</p:inputText></td>
+							<td><span id="addressError"></span></td>
+						<th><span style="color: red;">*</span>家乡</th>
+						<td><p:inputText styleClass="inputTextClass"
+								placeholder="请输入校园代理家乡" id="input_text_12"
+								value="#{parttimeStaffView.newParttimeStaff.hometown}"
+								onblur="onLeave(this)" binding="#{input_text_12}">
+							</p:inputText></td>
+							<td><span id="hometownError"></span></td>
+					</tr>
+					<tr>
+						<th><span style="color: red;">*</span>性别</th>
+						<td colspan="1"><p:selectOneRadio
+								value="#{parttimeStaffView.newParttimeStaff.gender}">
+								<f:selectItem itemLabel="男" itemValue="男"  />
+								<f:selectItem itemLabel="女" itemValue="女" />
+							</p:selectOneRadio></td>
+					</tr>
+				</table>
+				<p:separator />
+				<div style="margin-bottom: 8px; width: 100%; margin-top:20px">
+					<p:commandButton value="返回" id="returnBtnParttimeStaff"
+						binding="#{returnBtnparttimeSTaff}"
+						style="width:100px;margin-left:30%;font-weight:normal;height:35px" ajax="true"
+						icon="ui-icon-arrowreturnthick-1-w" oncomplete="hideInfoTable() " />
+					<p:commandButton value="添加" id="confirmAddingParttimeStaffBtn"
+						icon="ui-icon-check" binding="#{confirmAddingParttimeStaffBtn}"
+						onclick="PF('dlg_confirmAddingParttimeStaff').show()"
+						style="width:100px;margin-left:10%;font-weight:normal;height:35px" ajax="true" />
+				</div>
+
+			</div>
+		</p:outputPanel>
+
+		<!--    确认增加对话框-->
+		<p:dialog id="dlg_confirmAddingParttimeStaff" header="请确认"
+			appendTo="@(body)" widgetVar="dlg_confirmAddingParttimeStaff"
+			modal="true" showEffect="bounce" hideEffect="fade" resizable="false"
+			width="200px">
+
+			<table>
+				<tr>
+					<h:outputText value="确认添加吗?" style="font-size:16px;color:#003a6c;" />
+				</tr>
+				<tr>
+					<td><p:commandButton value="Cancel"
+							oncomplete="PF('dlg_confirmAddingParttimeStaff').hide()"
+							icon="ui-icon-cancel">
+						</p:commandButton></td>
+					<td><p:commandButton value="Ok" style="margin-left:10%;"
+							actionListener="#{parttimeStaffView.addNewParttimeStaff}"
+							onclick="PF('dlg_confirmAddingParttimeStaff').hide(), showInfoTable() "
+							icon="ui-icon-check">
+						</p:commandButton></td>
+				</tr>
+			</table>
+
+		</p:dialog>
+		<p:dialog id="dlg_chooseFile" header="选择文件" widgetVar="dlg_chooseFile"
+			width="520px" height="200px" showEffect="blind" hideEffect="clip">
+			<p:outputLabel style="color:red;" value="提示:可支持文件拖拽" />
+			<p:fileUpload fileUploadListener="#{parttimeStaffView.addBatch}"
+				id="fileUploadTag" style="margin-left:0px;" mode="advanced"
+				dragDropSupport="true" sizeLimit="1000000"
+				allowTypes="/(\.|\/)(xls|xlsx)$/" fileLimit="1"
+				oncomplete="PF('dlg_chooseFile').hide()" />
+		</p:dialog>
+	</h:form>
+</f:view>

@@ -1,0 +1,139 @@
+<!DOCTYPE html [
+<!ENTITY nbsp "&#160;"> 
+]>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<ui:composition template="/pages/common/basicPage.xhtml">
+	<ui:param name="menuIndex" value="6" />
+	<ui:define name="content">
+		<!-- 顶部标题 -->
+		<ui:include src="/pages/common/top.xhtml"></ui:include>
+		<h:form id="mainForm" binding="#{mainForm}">
+			<script type="text/javascript">
+				$(document).ready(function() {
+					$("[id='#{hidedButton.clientId}']").hide();
+					$("[id='#{hidedButton.clientId}']").click();
+				});
+			</script>
+			<p:commandButton value=" " id="hidedButton" binding="#{hidedButton}"
+				action="#{pagesView.changePage('welcome')}" update="mainOutputPanel" />
+			<br />
+			<div class="div_2_1">
+				<p:accordionPanel multiple="false" dynamic="true">
+					<p:tab titleStyleClass="titleStyle">
+						<f:facet name="title">
+							<p:graphicImage value="/icons/loudspeaker.png" />
+							<h:outputText value="通知公告" />
+						</f:facet>
+						<p:graphicImage style="margin-left:20%;" value="/icons/bulletin.png" />
+						<p:commandLink value="通知公告" styleClass="menuStyle"
+							action="#{pagesView.changePage('bulletin')}" onmousemove="move(this)"
+							onmouseout="out(this)" update="mainOutputPanel" />
+					</p:tab>
+
+					<p:tab titleStyleClass="titleStyle">
+						<f:facet name="title">
+							<p:graphicImage value="/icons/customer.png" />
+							<h:outputText value="客户管理" />
+						</f:facet>
+						<p:graphicImage style="margin-left:20%;"
+							value="/icons/customer_management.png" />
+						<p:commandLink value="现有客户管理" styleClass="menuStyle"
+							action="#{pagesView.changePage('customer_management')}"
+							onmousemove="move(this)" onmouseout="out(this)" update="mainOutputPanel" />
+						<br />
+						<br />
+						<p:graphicImage style="margin-left:20%;" value="/icons/add_customer.png" />
+						<p:commandLink value="新增客户" styleClass="menuStyle"
+							action="#{pagesView.changePage('add_customer')}" onmousemove="move(this)"
+							onmouseout="out(this)" update="mainOutputPanel" />
+					</p:tab>
+
+					<p:tab titleStyleClass="titleStyle">
+						<f:facet name="title">
+							<p:graphicImage value="/icons/parttimeStaff.png" />
+							<h:outputText value="兼职管理" />
+						</f:facet>
+						<p:graphicImage style="margin-left:20%;"
+							value="/icons/parttimeStaff_management.png" />
+						<p:commandLink value="现有兼职管理" styleClass="menuStyle"
+							action="#{pagesView.changePage('parttimeStaff_management')}"
+							onmousemove="move(this)" onmouseout="out(this)" update="mainOutputPanel" />
+						<br />
+						<br />
+						<p:graphicImage style="margin-left:20%;"
+							value="/icons/add_parttimeStaff.png" />
+						<p:commandLink value="新增兼职" styleClass="menuStyle"
+							action="#{pagesView.changePage('add_parttimeStaff')}"
+							onmousemove="move(this)" onmouseout="out(this)" update="mainOutputPanel" />
+					</p:tab>
+					<p:tab titleStyleClass="titleStyle">
+						<f:facet name="title">
+							<p:graphicImage value="/icons/task_management_b.png" />
+							<h:outputText value="任务管理" />
+						</f:facet>
+						<p:graphicImage style="margin-left:20%;"
+							value="/icons/task_management_s.png" />
+						<p:commandLink value="现有任务管理" styleClass="menuStyle"
+							action="#{pagesView.changePage('task_management')}"
+							onmousemove="move(this)" onmouseout="out(this)" update="mainOutputPanel" />
+						<br />
+						<br />
+						<p:graphicImage style="margin-left:20%;" value="/icons/write.png" />
+						<p:commandLink value="创建新任务" styleClass="menuStyle"
+							action="#{pagesView.changePage('create_task')}" onmousemove="move(this)"
+							onmouseout="out(this)" update="mainOutputPanel" />
+					</p:tab>
+					<p:tab titleStyleClass="titleStyle">
+						<f:facet name="title">
+							<p:graphicImage value="/icons/question_management_b.png" />
+							<h:outputText value="问题管理" />
+						</f:facet>
+						<p:graphicImage style="margin-left:20%;"
+							value="/icons/question_management_s.png" />
+						<p:commandLink value="现有问题管理" styleClass="menuStyle"
+							action="#{pagesView.changePage('question_management')}"
+							onmousemove="move(this)" onmouseout="out(this)" update="mainOutputPanel" />
+						<br />
+						<br />
+						<p:graphicImage style="margin-left:20%;" value="/icons/add_question.png" />
+						<p:commandLink value="创建新问题" styleClass="menuStyle"
+							action="#{pagesView.changePage('create_question')}"
+							onmousemove="move(this)" onmouseout="out(this)" update="mainOutputPanel" />
+					</p:tab>
+					<p:tab titleStyleClass="titleStyle">
+						<f:facet name="title">
+							<p:graphicImage value="/icons/dustbin.png" />
+							<h:outputText value="回收站" />
+						</f:facet>
+						<p:graphicImage style="margin-left:20%;" value="/icons/humanCache.png" />
+						<p:commandLink value="回收已删除的人员" styleClass="menuStyle"
+							action="#{pagesView.changePage('recycle_bin')}" onmousemove="move(this)"
+							onmouseout="out(this)" update="mainOutputPanel" />
+					</p:tab>
+
+					<p:tab title="更多" titleStyleClass="titleStyle">
+						<f:facet name="title">
+							<p:graphicImage value="/icons/more.png" />
+							<h:outputText value="更多" />
+						</f:facet>
+						<p:graphicImage style="margin-left:20%;" value="/icons/new_version.png" />
+						<p:commandLink value="新版预览" styleClass="menuStyle"
+							action="#{pagesView.changePage('more')}" onmousemove="move(this)"
+							onmouseout="out(this)" update="mainOutputPanel" />
+					</p:tab>
+				</p:accordionPanel>
+			</div>
+		</h:form>
+		<div class="div_2_2">
+			<p:outputPanel id="mainOutputPanel">
+				<ui:include src="#{pagesView.dynamicaPagesInclude}" />
+			</p:outputPanel>
+		</div>
+	</ui:define>
+</ui:composition>
+
+</html>

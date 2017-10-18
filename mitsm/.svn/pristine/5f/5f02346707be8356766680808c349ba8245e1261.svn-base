@@ -1,0 +1,21 @@
+# Needed to manage cluster instances
+org.quartz.scheduler.instanceName=MY_JOB_SCHEDULER
+org.quartz.scheduler.instanceId=AUTO
+org.quartz.threadPool.class=org.quartz.simpl.SimpleThreadPool
+org.quartz.threadPool.threadCount=10
+org.quartz.threadPool.threadPriority=5
+org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread=true
+org.quartz.jobStore.misfireThreshold=60000
+org.quartz.jobStore.maxMisfiresToHandleAtATime=10
+org.quartz.jobStore.clusterCheckinInterval=20000
+org.quartz.jobStore.tablePrefix=qrtz_
+org.quartz.jobStore.isClustered=true
+org.quartz.jobStore.class=org.quartz.impl.jdbcjobstore.JobStoreTX
+#org.quartz.jobStore.driverDelegateClass=org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+
+# Spring uses LocalDataSourceJobStore extension of JobStoreCMT
+org.quartz.jobStore.useProperties=true 
+# Change this to match your DB vendor
+org.quartz.jobStore.driverDelegateClass = org.quartz.impl.jdbcjobstore.oracle.OracleDelegate
+org.quartz.scheduler.rmi.export = false
+org.quartz.scheduler.rmi.proxy = false

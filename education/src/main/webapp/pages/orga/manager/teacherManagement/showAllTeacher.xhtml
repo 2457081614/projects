@@ -1,0 +1,166 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition template="../../../templates/basicPage.xhtml">
+		<ui:define name="content">
+			<h:form>
+				<p:dataTable id="teacherListTable" var="teacher"
+					value="#{teacherView.teacherList}" rows="6" 
+					binding="#{teacherListTable}" sortBy="#{teacher.workerNo}"
+					filteredValue="#{teacherView.filteredTeacherList}"
+					paginatorPosition="bottom" paginator="true"
+					rowsPerPageTemplate="6,10,15,20"
+					paginatorTemplate="{CurrentPageReport} 
+											{FirstPageLink}
+											{PreviousPageLink}
+											{PageLinks}
+											{NextPageLink}
+											{LastPageLink}
+											{RowsPerPageDropdown}"
+					currentPageReportTemplate="{totalRecords}
+									 ({currentPage} of {totalPages})"
+					rowKey="#{teacher.workerNo}" widgetVar="teacherListTable"
+					emptyMessage="No items.">
+
+					<f:facet name="header">
+						<p:outputPanel style="text-align: left;font-weight:normal">
+							<h:outputText value="请输入过滤关键字：" />
+							<p:inputText id="globalFilter"
+								onkeyup="PF('teacherListTable').filter()" style="width:150px"
+								placeholder="关键字" />
+						</p:outputPanel>
+					</f:facet>
+
+					<p:column headerText="姓名" filterBy="#{teacher.name}"
+						filterable="false" filterMatchMode="contains"
+						styleClass="nameColumn">
+						<p:commandLink title="点击查看教师更多信息" value="#{teacher.name}"
+							style="color:#003a6c;text-decoration: underline;" process="@this"
+							icon="ui-icon-search"
+							oncomplete="PF('dlg_teacherDetails').show()"
+							update="@form:@parent:dlg_teacherDetails:detail" immediate="true"
+							action="#{teacherView.delete}">
+							<f:setPropertyActionListener value="#{teacher}"
+								target="#{teacherView.teacher}" />
+						</p:commandLink>
+					</p:column>
+
+					<p:column headerText="职工号" filterBy="#{teacher.workerNo}"
+						filterable="false" filterMatchMode="contains">
+						<h:outputText value="#{teacher.workerNo}" />
+					</p:column>
+
+					<p:column headerText="联系电话" filterBy="#{teacher.cellPhone}"
+						filterMatchMode="contains" filterable="false"
+						styleClass="telColumn">
+						<h:outputText value="#{teacher.cellPhone}" />
+					</p:column>
+
+					<p:column headerText="邮箱" filterBy="#{teacher.email}"
+						filterMatchMode="contains" filterable="false"
+						styleClass="emailColumn">
+						<h:outputText value="#{teacher.email}" />
+					</p:column>
+
+					<p:column headerText="职称" filterBy="#{teacher.title}"
+						filterMatchMode="contains" filterable="false"
+						styleClass="titleColumn">
+						<h:outputText value="#{teacher.title}" />
+					</p:column>
+
+					<p:column headerText="删除教师" styleClass="deletionColumn">
+						<p:commandButton title="删除此教师" value="删除" icon="ui-icon-trash"
+							ajax="true" oncomplete="PF('dlg_confirmToDeleteOne').show()"
+							immediate="true">
+							<f:setPropertyActionListener value="#{teacher}"
+								target="#{teacherView.teacher}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+			</h:form>
+		</ui:define>
+
+		<ui:define name="dialog">
+			<!-- 查看教师信息对话框 -->
+			<!-- 查看教师信息对话框 -->
+			<!-- 查看教师信息对话框 -->
+			<p:dialog id="dlg_teacherDetails" header="详细信息"
+				widgetVar="dlg_teacherDetails" modal="true" showEffect="size"
+				hideEffect="size" resizable="false" width="400px">
+				<p:outputPanel style="text-align:center;" id="detail">
+					<p:panelGrid rendered="#{not empty teacherView.teacher}">
+						<table class="common_market_tab">
+							<tr>
+								<th>姓名</th>
+								<td colspan="3"><h:outputText
+										value="#{teacherView.teacher.name}" /></td>
+								<th>职工号</th>
+								<td colspan="3"><h:outputText
+										value="#{teacherView.teacher.workerNo}" /></td>
+							</tr>
+
+							<tr>
+								<th>职称</th>
+								<td colspan="3"><h:outputText
+										value="#{teacherView.teacher.title}" /></td>
+								<th>邮箱地址</th>
+								<td colspan="3"><h:outputText
+										value="#{teacherView.teacher.email}" /></td>
+							</tr>
+							<tr>
+								<th>电话号码</th>
+								<td colspan="3"><h:outputText
+										value="#{teacherView.teacher.cellPhone}" /></td>
+								<th>家庭住址</th>
+								<td colspan="3"><h:outputText
+										value="#{teacherView.teacher.homeAddress}" /></td>
+							</tr>
+
+
+							<tr>
+								<th>QQ</th>
+								<td colspan="3"><h:outputText
+										value="#{teacherView.teacher.qq}" /></td>
+								<th>备注信息</th>
+								<td colspan="3"><h:outputText
+										value="#{teacherView.teacher.remark}" /></td>
+							</tr>
+
+
+						</table>
+					</p:panelGrid>
+				</p:outputPanel>
+			</p:dialog>
+
+
+			<!-- 确认删除一个教师的对话框 -->
+			<p:dialog id="dlg_confirmToDeleteOne" header="请确认"
+				widgetVar="dlg_confirmToDeleteOne" modal="true" showEffect="bounce"
+				hideEffect="fade" resizable="false" width="230" height="60">
+				<table>
+					<tr>
+						<h:outputText value="确认删除吗?"
+							style="font-size:20px;color:#003a6c;text-align:center;" />
+					</tr>
+					<tr>
+						<td><p:commandButton value="Cancel"
+								oncomplete="PF('dlg_confirmToDeleteOne').hide()"
+								icon="fa fa-fw fa-remove" immediate="true">
+							</p:commandButton></td>
+						<td><p:commandButton value="OK" style="margin-left:15%;"
+								action="#{teacherView.delete}"
+								oncomplete="PF('dlg_confirmToDeleteOne').hide()"
+								icon="ui-icon-check" process="@this">
+							</p:commandButton></td>
+					</tr>
+				</table>
+			</p:dialog>
+		</ui:define>
+
+	</ui:composition>
+
+</f:view>

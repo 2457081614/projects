@@ -1,0 +1,23 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form>
+		<div class="ui-g">
+			<div class="ui-g-4 " style="padding: 0; margin: 0">
+				<p:graphicImage value="/resources/img/logo.jpg" height="90px" />
+				XTU选课系统
+			</div>
+			<div class="ui-g-6"></div>
+			<div class="ui-g-2">
+
+				<!-- <p:commandButton value="退出" action="/education/login.jsp"
+					icon="fa fa-sign-out" style="float:right" /> -->
+
+				<a class="fa fa_sin-out btn btn-primary" style="float: right"
+					href="#{menuView.logoutUrl()}"> 退出</a>
+			</div>
+		</div>
+	</h:form>
+</f:view>

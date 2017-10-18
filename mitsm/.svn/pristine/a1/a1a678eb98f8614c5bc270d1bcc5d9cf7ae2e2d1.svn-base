@@ -1,0 +1,1213 @@
+<!DOCTYPE html [
+<!ENTITY nbsp "&#160;"> 
+]>
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<br />
+	<br />
+	<div style="width: 100%" id="div">
+		<p:accordionPanel id="accordionPanel" onTabShow="updateList()">
+			<p:tab title="已创建，未下达" id="unassignedTask">
+				<h:form id="taskForm1">
+					<p:commandButton id="hidedBtn" binding="#{hidedBtn}"
+						update="@form:unassignedTaskListTable" />
+					<p:dataTable id="unassignedTaskListTable" var="taskInfo"
+						value="#{taskView.unassignedTaskList}" rows="5"
+						binding="#{unassignedTaskListTable}"
+						sortBy="#{taskInfo.createdDate}"
+						filteredValue="#{taskView.filteredTaskList}"
+						paginatorPosition="bottom" paginator="true"
+						rowsPerPageTemplate="5,10,15,20"
+						paginatorTemplate="{CurrentPageReport} 
+											{FirstPageLink}
+											{PreviousPageLink}
+											{PageLinks}
+											{NextPageLink}
+											{LastPageLink}
+											{RowsPerPageDropdown}"
+						currentPageReportTemplate="{totalRecords}
+									 ({currentPage} of {totalPages})"
+						rowKey="#{taskInfo.id}" selection="#{taskView.selectedTaskList}"
+						widgetVar="unassignedTaskListTable" rowSelectMode="add">
+
+						<p:column selectionMode="multiple"
+							style="width:16px;text-align:center" />
+
+						<f:facet name="header">
+							<p:outputPanel style="text-align: left;font-weight:normal">
+								<h:outputText value="请输入过滤条件：" />
+								<p:inputText id="globalFilter"
+									onkeyup="PF('unassignedTaskListTable').filter()"
+									style="width:150px" placeholder="过滤" />
+								<p:commandButton value="使用模板" immediate="true"
+									oncomplete="PF('chooseTaskTemplate').show()"
+									update="@form:chooseTaskTemplate"
+									icon="fa fa-fw fa-file-text-o" style="margin-left:2%;">
+								</p:commandButton>
+							</p:outputPanel>
+						</f:facet>
+
+						<p:column headerText="任务描述" filterBy="#{taskInfo.taskDescription}"
+							filterable="false" filterMatchMode="contains"
+							style="width:450px;">
+							<p:commandLink title="点击查看此任务的所有问题"
+								value="#{taskInfo.taskDescription}"
+								style="color:#003a6c;text-decoration: underline;"
+								process="@this" oncomplete="alert('待完善...')" immediate="true">
+								<f:setPropertyActionListener value="#{taskInfo}"
+									target="#{taskView.taskInfo}" />
+							</p:commandLink>
+						</p:column>
+
+
+						<p:column headerText="创建时间" filterBy="#{taskInfo.createdDate}"
+							filterMatchMode="contains" filterable="false">
+							<h:outputText value="#{taskInfo.createdDate}" />
+						</p:column>
+
+						<p:column headerText="任务阶段" filterBy="#{taskInfo.stage}"
+							filterMatchMode="contains" filterable="false">
+							<h:outputText value="#{taskInfo.stage}" />
+						</p:column>
+
+						<p:column headerText="分配客户">
+							<p:commandButton title="给任务分配客户" value="分配客户"
+								oncomplete="PF('dlg_assignCustomer').show()"
+								icon="fa fa-fw fa-user-plus" update="@form:dlg_assignCustomer">
+								<f:setPropertyActionListener value="#{taskInfo}"
+									target="#{taskView.task}" />
+							</p:commandButton>
+						</p:column>
+
+						<p:column headerText="删除任务">
+							<p:commandButton title="删除此任务" value="删除" icon="ui-icon-trash"
+								ajax="true" oncomplete="PF('dlg_confirmToDeleteOne').show()">
+								<f:setPropertyActionListener value="#{taskInfo}"
+									target="#{taskView.task}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+
+
+					<!-- 确认删除对话框 -->
+					<!-- 确认删除对话框 -->
+					<!-- 确认删除对话框 -->
+					<!-- 确认删除对话框 -->
+					<!-- 确认删除对话框 -->
+					<p:dialog id="dlg_confirmToDeleteOne" header="请确认"
+						widgetVar="dlg_confirmToDeleteOne" modal="true"
+						showEffect="bounce" hideEffect="fade" resizable="false"
+						width="250" height="60">
+
+						<table>
+							<tr>
+								<h:outputText value="确认删除吗?"
+									style="font-size:20px;color:#003a6c;text-align:center;" />
+							</tr>
+							<tr>
+								<td><p:commandButton value="Cancel"
+										oncomplete="PF('dlg_confirmToDeleteOne').hide()"
+										icon="fa fa-fw fa-remove" immediate="true">
+									</p:commandButton></td>
+								<td><p:commandButton value="OK" style="margin-left:13%;"
+										action="#{taskView.deleteTask}"
+										update="@form:unassignedTaskListTable"
+										oncomplete="PF('dlg_confirmToDeleteOne').hide()"
+										icon="ui-icon-check">
+									</p:commandButton></td>
+							</tr>
+						</table>
+					</p:dialog>
+					<!--    分配客户 -->
+					<!--    分配客户 -->
+					<!--    分配客户 -->
+					<!--    分配客户 -->
+					<!--    分配客户 -->
+					<p:dialog header="分配客户" widgetVar="dlg_assignCustomer" modal="true"
+						id="dlg_assignCustomer" showEffect="blind" hideEffect="clip"
+						resizable="false" width="50%">
+						<p:dataTable id="assignCustomerListTable" var="customer"
+							value="#{customerView.customerList}" rows="7"
+							binding="#{assignCustomerListTable}" sortBy="#{customer.id}"
+							filteredValue="#{customerView.filteredCustomerList}"
+							paginatorPosition="bottom" paginator="true"
+							rowsPerPageTemplate="5,10,15,20"
+							paginatorTemplate="{CurrentPageReport} 
+											{FirstPageLink}
+											{PreviousPageLink}
+											{PageLinks}
+											{NextPageLink}
+											{LastPageLink}
+											{RowsPerPageDropdown}"
+							currentPageReportTemplate="{totalRecords}
+									 ({currentPage} of {totalPages})"
+							rowKey="#{customer.id}"
+							selection="#{customerView.selectedCustomerList}"
+							widgetVar="assignCustomerListTable" rowSelectMode="add">
+
+							<p:column selectionMode="multiple"
+								style="width:16px;text-align:center" />
+
+							<f:facet name="header">
+								<p:outputPanel style="text-align: left;font-weight:normal">
+									<h:outputText value="请输入过滤条件：" />
+									<p:inputText id="globalFilter"
+										onkeyup="PF('assignCustomerListTable').filter()"
+										style="width:150px" placeholder="过滤" />
+								</p:outputPanel>
+							</f:facet>
+							<p:column headerText="姓名" filterBy="#{customer.name}"
+								filterMatchMode="contains" filterable="false">
+								<h:outputText value="#{customer.name}" />
+							</p:column>
+							<p:column headerText="学院" filterBy="#{customer.academy}"
+								filterMatchMode="contains" filterable="false">
+								<h:outputText value="#{customer.academy}" />
+							</p:column>
+							<p:column headerText="地址" filterBy="#{customer.address}"
+								filterMatchMode="contains" filterable="false">
+								<h:outputText value="#{customer.address}" />
+							</p:column>
+						</p:dataTable>
+						<br />
+						<p:separator />
+
+						<p:commandButton value="返回" icon="ui-icon-arrowreturnthick-1-w"
+							oncomplete="PF('dlg_assignCustomer').hide()"
+							style="margin-left: 30%" />
+						<p:commandButton value="下一步" icon="ui-icon-arrowthick-1-s"
+							iconPos="right"
+							action="#{taskView.validateSelectedCustomerList(1)}"
+							update="@form:dlg_assignParttimeStaff" style="margin-left:18%" />
+					</p:dialog>
+					<!-- 	分配兼职 -->
+					<!-- 	分配兼职 -->
+					<!-- 	分配兼职 -->
+					<!-- 	分配兼职 -->
+					<!-- 	分配兼职 -->
+					<p:dialog header="分配兼职" widgetVar="dlg_assignParttimeStaff"
+						modal="true" id="dlg_assignParttimeStaff" showEffect="blind"
+						hideEffect="size" resizable="false" width="50%">
+						<p:dataTable id="assignParttimeStaffListTable" var="parttimeStaff"
+							value="#{parttimeStaffView.parttimeStaffList}" rows="5"
+							binding="#{assignParttimeStaffListTable}"
+							sortBy="#{parttimeStaff.id}"
+							filteredValue="#{parttimeStaffView.filteredParttimeStaffList}"
+							paginatorPosition="bottom" paginator="true"
+							rowsPerPageTemplate="5,10,15,20"
+							paginatorTemplate="{CurrentPageReport} 
+											{FirstPageLink}
+											{PreviousPageLink}
+											{PageLinks}
+											{NextPageLink}
+											{LastPageLink}
+											{RowsPerPageDropdown}"
+							currentPageReportTemplate="{totalRecords}
+									 ({currentPage} of {totalPages})"
+							rowKey="#{parttimeStaff.id}"
+							selection="#{taskView.selectedParttimeStaffInNotUsingTemplate}"
+							widgetVar="assignParttimeStaffListTable" selectionMode="single">
+
+							<p:ajax event="rowSelect" listener="#{taskView.onRowSelect}"
+								update="@form:assignParttimeStaffListTable" />
+
+							<p:column selectionMode="single"
+								style="width:16px;text-align:center" />
+
+							<f:facet name="header">
+								<p:outputPanel style="text-align: left;font-weight:normal">
+									<h:outputText value="请输入过滤条件：" />
+									<p:inputText id="globalFilter"
+										onkeyup="PF('assignParttimeStaffListTable').filter()"
+										style="width:150px" placeholder="过滤" />
+
+								</p:outputPanel>
+							</f:facet>
+							<p:column headerText="姓名" filterBy="#{parttimeStaff.name}"
+								filterMatchMode="contains" filterable="false">
+								<h:outputText value="#{parttimeStaff.name}" />
+							</p:column>
+							<p:column headerText="联系电话" filterBy="#{parttimeStaff.tel}"
+								filterMatchMode="contains" filterable="false">
+								<h:outputText value="#{parttimeStaff.tel}" />
+							</p:column>
+
+							<p:column headerText="QQ" filterBy="#{parttimeStaff.qq}"
+								filterMatchMode="contains" filterable="false">
+								<h:outputText value="#{parttimeStaff.qq}" />
+							</p:column>
+
+							<p:column headerText="住址" filterBy="#{parttimeStaff.address}"
+								filterMatchMode="contains" filterable="false">
+								<h:outputText value="#{parttimeStaff.address}" />
+							</p:column>
+						</p:dataTable>
+						<br />
+						<div id="div_plannedFinishedDate"
+							style="margin-left: 50%; margin-top: 2%;">
+							<h:outputText style="color:#003a6c;font-size:16px;"
+								value="计划完成日期:" />
+							<p:calendar effect="blind" style="font-size:16px;"
+								placeholder="点击选择日期" locale="zh_CN"
+								mindate="#{taskView.currentDate}" pattern="yyyy-MM-dd"
+								navigator="true" yearRange="c:c+5" lang="zh_CN"
+								value="#{taskView.plannedFiniedDateInNotUsingTemplate}"
+								readonlyInput="true" immediate="true">
+							</p:calendar>
+						</div>
+						<p:separator />
+						<br />
+						<p:commandButton value="上一步" icon="ui-icon-arrowthick-1-n"
+							oncomplete="PF('dlg_assignParttimeStaff').hide(),PF('dlg_assignCustomer').show()"
+							style="margin-left: 30%" />
+						<p:commandButton value="确认" icon="ui-icon-check"
+							oncomplete="PF('dlg_confirmAssign').show()"
+							style="margin-left: 18%" />
+					</p:dialog>
+
+
+					<!-- 一次性分配多个客户和一个兼职 -->
+					<p:dialog id="dlg_confirmAssign" header="请确认"
+						widgetVar="dlg_confirmAssign" modal="true" showEffect="bounce"
+						hideEffect="fade" resizable="false" width="230" height="60">
+						<table>
+							<tr>
+								<h:outputText value="确认分配任务吗?"
+									style="font-size:20px;color:#003a6c;text-align:center;" />
+							</tr>
+							<tr>
+								<td><p:commandButton value="Cancel"
+										oncomplete="PF('dlg_confirmAssign').hide()"
+										icon="ui-icon-cancel">
+									</p:commandButton></td>
+								<td><p:commandButton value="OK" style="margin-left:15%;"
+										action="#{taskView.assignTasks}"
+										update="@form:unassignedTaskListTable"
+										oncomplete="PF('dlg_confirmAssign').hide(),PF('dlg_assignParttimeStaff').hide()"
+										icon="ui-icon-check">
+									</p:commandButton></td>
+							</tr>
+						</table>
+					</p:dialog>
+
+					<!-- 选择任务模板对话框 -->
+					<!-- 选择任务模板对话框 -->
+					<!-- 选择任务模板对话框 -->
+					<!-- 选择任务模板对话框 -->
+					<p:dialog id="chooseTaskTemplate" header="请选择任务模板"
+						widgetVar="chooseTaskTemplate" modal="true" showEffect="blind"
+						hideEffect="clip" resizable="false" width="800px">
+						<p:dataTable id="taskTemplatesTable" var="taskTemplate"
+							value="#{taskView.taskTemplates}" rows="5"
+							binding="#{taskTemplatesTable}"
+							sortBy="#{taskTemplate.createdDate}"
+							filteredValue="#{taskView.filteredTaskList}"
+							paginatorPosition="bottom" paginator="true"
+							rowsPerPageTemplate="5,10,15,20"
+							paginatorTemplate="{CurrentPageReport} 
+											{FirstPageLink}
+											{PreviousPageLink}
+											{PageLinks}
+											{NextPageLink}
+											{LastPageLink}
+											{RowsPerPageDropdown}"
+							currentPageReportTemplate="{totalRecords}
+									 ({currentPage} of {totalPages})"
+							rowKey="#{taskTemplate.id}" selectionMode="single"
+							widgetVar="taskTemplatesTable">
+
+							<p:ajax event="rowSelect"
+								listener="#{taskView.onSelectTaskTemplate}"
+								update="@form:taskTemplatesTable" />
+
+							<p:column selectionMode="single"
+								style="width:16px;text-align:center" />
+
+							<f:facet name="header">
+								<p:outputPanel style="text-align: left;font-weight:normal">
+									<h:outputText value="请输入过滤条件：" />
+									<p:inputText id="globalFilter"
+										onkeyup="PF('taskTemplatesTable').filter()"
+										style="width:150px" placeholder="过滤" />
+								</p:outputPanel>
+							</f:facet>
+
+							<p:column headerText="任务描述"
+								filterBy="#{taskTemplate.taskDescription}" filterable="false"
+								filterMatchMode="contains" style="width:450px;">
+								<h:outputText value="#{taskTemplate.taskDescription}"
+									style="color:#003a6c;" process="@this" />
+							</p:column>
+
+							<p:column headerText="任务阶段" filterBy="#{taskTemplate.stage}"
+								filterMatchMode="contains" filterable="false">
+								<h:outputText value="#{taskTemplate.stage}" />
+							</p:column>
+
+							<p:column headerText="创建时间"
+								filterBy="#{taskTemplate.createdDate}"
+								filterMatchMode="contains" filterable="false">
+								<h:outputText value="#{taskTemplate.createdDate}" />
+							</p:column>
+							<p:column headerText="任务模板的问题">
+								<p:commandButton value="查看" icon="ui-icon-search">
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+						<br />
+						<p:separator />
+						<p:commandButton value="返回" icon="ui-icon-arrowreturnthick-1-w"
+							oncomplete="PF('chooseTaskTemplate').hide()"
+							style="margin-left: 30%;margin-top:2%;" />
+						<p:commandButton value="下一步" icon="ui-icon-arrowthick-1-s"
+							iconPos="right" action="#{taskView.validateSelectedTaskTemplate}"
+							update="@form:useTaskTemplate" style="margin-left:18%" />
+					</p:dialog>
+
+					<!-- 使用任务模板对话框 -->
+					<!-- 使用任务模板对话框 -->
+					<!-- 使用任务模板对话框 -->
+					<p:dialog id="useTaskTemplate" widgetVar="useTaskTemplate"
+						modal="true" showEffect="blind" hideEffect="clip"
+						resizable="false" width="740" height="500" header="正在使用任务模板...">
+						<h:outputText
+							style="float:left;margin-left:2%;color:red;font-size:14px;"
+							value="温馨提示:可在任务模板的基础上进行修改，修改不会对任务模板造成影响" />
+						<br />
+						<p:outputPanel id="task_description" style="margin-top:10px;">
+							<table class="common_tab">
+								<tr>
+									<th
+										style="width: 15%; float: left; margin-left: 2%; border-radius: 5px;"><span
+										style="font-size: 16px;">任务描述:</span></th>
+								</tr>
+								<tr>
+									<td><p:inputTextarea rows="4" placeholder="请输入对任务的描述"
+											value="#{taskView.newTask.taskDescription}"
+											style="font-size:16px;margin-left:2%; border: solid Dark 1px;border-radius:5px; width:95%;" />
+									</td>
+								</tr>
+							</table>
+						</p:outputPanel>
+
+						<p:outputPanel id="add_question">
+							<br />
+							<br />
+							<table class="common_tab">
+								<tr>
+									<th
+										style="width: 15%; float: left; margin-left: 2%; border-radius: 5px;"><span
+										style="font-size: 16px;">添加问题:</span></th>
+								</tr>
+							</table>
+							<p:dataTable id="newQuestionListTableInTm" var="question"
+								value="#{questionView.newQuestionList}"
+								rows="#{questionView.newQuestionList.size()}"
+								binding="#{newQuestionListTableInTm}" paginator="false"
+								widgetVar="newQuestionListTableInTm" style="width:96%;">
+								<p:column headerText="题号" styleClass="nameColumn">
+									<h:outputText
+										value="#{questionView.newQuestionList.indexOf(question)+1}" />
+								</p:column>
+								<p:column headerText="问题内容">
+									<p:inputTextarea rows="2" autoResize="false"
+										style="width:100%;font-size:16px;"
+										placeholder="请输入问题#{questionView.newQuestionList.indexOf(question)+1}的内容,若要手动编辑，可在选择问题后，按退格键删除问题内容，然后编辑"
+										value="#{question.questionContent}"
+										onfocus="showTable(this),passQuestionNo('#{questionView.newQuestionList.indexOf(question)}')" />
+									<p:remoteCommand name="getParams"
+										actionListener="#{questionView.getParams}" />
+								</p:column>
+								<p:column headerText="清除问题内容" styleClass="modificationColumn">
+									<p:commandButton value="清除" style="border-radius:3px;"
+										process="@this" update="@form:newQuestionListTableInTm"
+										icon="ui-icon-trash"
+										action="#{questionView.clearQuestionContent}">
+										<f:setPropertyActionListener value="#{question}"
+											target="#{questionView.newQuestion}" />
+									</p:commandButton>
+								</p:column>
+							</p:dataTable>
+							<table style="border: 1px;">
+								<tr>
+									<p:graphicImage value="/images/plus.png"
+										onclick="lengthenTable()" />
+								</tr>
+								<p:remoteCommand name="lengthenList"
+									update="@form:newQuestionListTableInTm"
+									actionListener="#{questionView.lengthenList}" />
+							</table>
+						</p:outputPanel>
+						<br />
+						<p:separator style="width:100%; margin-top:10px;" />
+						<div style="margin-top: 20px; margin-bottom: 10px;">
+							<p:commandButton value="上一步" icon="ui-icon-arrowthick-1-n"
+								immediate="true"
+								oncomplete="PF('useTaskTemplate').hide(),PF('chooseTaskTemplate').show()"
+								style="height:35px;width:100px;border-radius:3px;margin-left:30%">
+							</p:commandButton>
+							<p:commandButton value="下一步" id="comfirmTaskBtn"
+								icon="ui-icon-arrowthick-1-s" immediate="true"
+								update="@form:assignCustomer"
+								oncomplete="PF('useTaskTemplate').hide(),PF('assignCustomer').show()"
+								style="height:35px;width:100px;margin-left:10%;border-radius:3px;">
+							</p:commandButton>
+						</div>
+					</p:dialog>
+
+					<!--使用任务模板第三步，选择客户-->
+					<!--使用任务模板第三步，选择客户-->
+					<!--使用任务模板第三步，选择客户-->
+					<!--使用任务模板第三步，选择客户-->
+					<p:dialog header="分配客户" widgetVar="assignCustomer" modal="true"
+						id="assignCustomer" showEffect="blind" hideEffect="clip"
+						resizable="false" width="50%">
+						<p:dataTable id="assignCustomerListTable2" var="customer"
+							value="#{customerView.customerList}" rows="7"
+							binding="#{assignCustomerListTable2}" sortBy="#{customer.id}"
+							filteredValue="#{customerView.filteredCustomerList}"
+							paginatorPosition="bottom" paginator="true"
+							rowsPerPageTemplate="5,10,15,20"
+							paginatorTemplate="{CurrentPageReport} 
+											{FirstPageLink}
+											{PreviousPageLink}
+											{PageLinks}
+											{NextPageLink}
+											{LastPageLink}
+											{RowsPerPageDropdown}"
+							currentPageReportTemplate="{totalRecords}
+									 ({currentPage} of {totalPages})"
+							rowKey="#{customer.id}"
+							selection="#{customerView.selectedCustomersForTaskTemplate}"
+							widgetVar="assignCustomerListTable2" rowSelectMode="add">
+
+							<p:column selectionMode="multiple"
+								style="width:16px;text-align:center" />
+
+							<f:facet name="header">
+								<p:outputPanel style="text-align: left;font-weight:normal">
+									<h:outputText value="请输入过滤条件：" />
+									<p:inputText id="globalFilter"
+										onkeyup="PF('assignCustomerListTable2').filter()"
+										style="width:150px" placeholder="过滤" />
+								</p:outputPanel>
+							</f:facet>
+							<p:column headerText="姓名" filterBy="#{customer.name}"
+								filterMatchMode="contains" filterable="false">
+								<h:outputText value="#{customer.name}" />
+							</p:column>
+							<p:column headerText="学院" filterBy="#{customer.academy}"
+								filterMatchMode="contains" filterable="false">
+								<h:outputText value="#{customer.academy}" />
+							</p:column>
+							<p:column headerText="地址" filterBy="#{customer.address}"
+								filterMatchMode="contains" filterable="false">
+								<h:outputText value="#{customer.address}" />
+							</p:column>
+						</p:dataTable>
+						<br />
+						<p:separator />
+
+						<p:commandButton value="上一步" icon="ui-icon-arrowthick-1-n"
+							oncomplete="PF('assignCustomer').hide(),PF('useTaskTemplate').show()"
+							style="margin-left: 30%" />
+						<p:commandButton value="下一步" icon="ui-icon-arrowthick-1-s"
+							iconPos="right"
+							action="#{taskView.validateSelectedCustomerList(2)}"
+							update="@form:assignParttimeStaff" style="margin-left:18%" />
+					</p:dialog>
+
+					<!--使用任务模板第四步，选择兼职-->
+					<!--使用任务模板第四步，选择兼职-->
+					<!--使用任务模板第四步，选择兼职-->
+					<p:dialog header="分配兼职" widgetVar="assignParttimeStaff"
+						modal="true" id="assignParttimeStaff" showEffect="blind"
+						hideEffect="size" resizable="false" width="50%">
+						<p:dataTable id="assignParttimeStaffListTable2"
+							var="parttimeStaff"
+							value="#{parttimeStaffView.parttimeStaffList}" rows="5"
+							binding="#{assignParttimeStaffListTable2}"
+							sortBy="#{parttimeStaff.id}"
+							filteredValue="#{parttimeStaffView.filteredParttimeStaffList}"
+							paginatorPosition="bottom" paginator="true"
+							rowsPerPageTemplate="5,10,15,20"
+							paginatorTemplate="{CurrentPageReport} 
+											{FirstPageLink}
+											{PreviousPageLink}
+											{PageLinks}
+											{NextPageLink}
+											{LastPageLink}
+											{RowsPerPageDropdown}"
+							currentPageReportTemplate="{totalRecords}
+									 ({currentPage} of {totalPages})"
+							rowKey="#{parttimeStaff.id}"
+							selection="#{parttimeStaffView.parttimeStaff}"
+							widgetVar="assignParttimeStaffListTable2" selectionMode="single">
+
+							<p:ajax event="rowSelect" listener="#{taskView.onRowSelect}"
+								update="@form:assignParttimeStaffListTable2" />
+
+							<p:column selectionMode="single"
+								style="width:16px;text-align:center" />
+
+							<f:facet name="header">
+								<p:outputPanel style="text-align: left;font-weight:normal">
+									<h:outputText value="请输入过滤条件：" />
+									<p:inputText id="globalFilter"
+										onkeyup="PF('assignParttimeStaffListTable2').filter()"
+										style="width:150px" placeholder="过滤" />
+
+								</p:outputPanel>
+							</f:facet>
+							<p:column headerText="姓名" filterBy="#{parttimeStaff.name}"
+								filterMatchMode="contains" filterable="false">
+								<h:outputText value="#{parttimeStaff.name}" />
+							</p:column>
+							<p:column headerText="联系电话" filterBy="#{parttimeStaff.tel}"
+								filterMatchMode="contains" filterable="false">
+								<h:outputText value="#{parttimeStaff.tel}" />
+							</p:column>
+
+							<p:column headerText="QQ" filterBy="#{parttimeStaff.qq}"
+								filterMatchMode="contains" filterable="false">
+								<h:outputText value="#{parttimeStaff.qq}" />
+							</p:column>
+
+							<p:column headerText="住址" filterBy="#{parttimeStaff.address}"
+								filterMatchMode="contains" filterable="false">
+								<h:outputText value="#{parttimeStaff.address}" />
+							</p:column>
+						</p:dataTable>
+						<br />
+						<h:outputText
+							style="margin-left: 50%; margin-top: 2%;color:#003a6c;font-size:16px;"
+							value="计划完成日期:" />
+						<p:calendar effect="blind" style="font-size:16px;"
+							placeholder="点击选择日期" mindate="#{taskView.currentDate}"
+							pattern="yyyy-MM-dd" navigator="true" yearRange="c:c+5"
+							lang="zh_CN" value="#{taskView.plannedFinishedDate}"
+							readonlyInput="true" immediate="true">
+						</p:calendar>
+						<p:separator />
+						<br />
+						<p:commandButton value="上一步" icon="ui-icon-arrowthick-1-n"
+							oncomplete="PF('assignParttimeStaff').hide(),PF('assignCustomer').show()"
+							style="margin-left: 30%" />
+						<p:commandButton value="确认" icon="ui-icon-check"
+							oncomplete="PF('confirmToAssign').show()"
+							style="margin-left: 18%" />
+					</p:dialog>
+
+
+					<!-- 确认使用模板任务进行分配对话框 -->
+					<!-- 确认使用模板任务进行分配对话框 -->
+					<!-- 确认使用模板任务进行分配对话框 -->
+					<p:dialog id="confirmToAssign" header="请确认"
+						widgetVar="confirmToAssign" modal="true" showEffect="bounce"
+						hideEffect="fade" resizable="false" width="230" height="60">
+						<table>
+							<tr>
+								<h:outputText value="确认分配任务吗?"
+									style="font-size:20px;color:#003a6c;text-align:center;" />
+							</tr>
+							<tr>
+								<td><p:commandButton value="Cancel"
+										oncomplete="PF('confirmToAssign').hide()"
+										icon="ui-icon-cancel">
+									</p:commandButton></td>
+								<td><p:commandButton value="OK" style="margin-left:15%;"
+										action="#{taskView.assignTaskByTaskTemplate}" process="@this"
+										oncomplete="PF('confirmToAssign').hide(),PF('assignParttimeStaff').hide()"
+										icon="ui-icon-check">
+									</p:commandButton></td>
+							</tr>
+						</table>
+					</p:dialog>
+
+					<!--选择问题-->
+					<!--选择问题-->
+					<!--选择问题-->
+					<p:dialog header="选择问题" widgetVar="dlg_chooseQuestionInTm"
+						modal="true" id="dlg_chooseQuestionInTm" showEffect="blind"
+						hideEffect="size" resizable="false" width="50%">
+						<p:commandButton id="hiddenBtn" binding="#{hiddenBtn}"
+							update="@form:chooseQuestionListTable" />
+						<p:dataTable id="chooseQuestionListTable" var="question"
+							value="#{questionView.questionList}" rows="5"
+							binding="#{chooseQuestionListTable}" sortBy="#{question.id}"
+							filteredValue="#{questionView.filteredQuestionList}"
+							paginatorPosition="bottom" paginator="true"
+							paginatorTemplate="{CurrentPageReport} 
+											{FirstPageLink}
+											{PreviousPageLink}
+											{PageLinks}
+											{NextPageLink}
+											{LastPageLink}
+											{RowsPerPageDropdown}"
+							currentPageReportTemplate="{totalRecords}
+									 ({currentPage} of {totalPages})"
+							rowKey="#{question.id}" selection="#{questionView.newQuestion}"
+							widgetVar="chooseQuestionListTable" selectionMode="single">
+
+							<p:ajax event="rowSelect" listener="#{questionView.onRowSelect}"
+								update="@form:chooseQuestionListTable" />
+
+							<p:column selectionMode="single"
+								style="width:16px;text-align:center" />
+
+							<f:facet name="header">
+								<p:outputPanel style="text-align: left;font-weight:normal">
+									<h:outputText value="请输入过滤条件：" />
+									<p:inputText id="globalFilter"
+										onkeyup="PF('chooseQuestionListTable').filter()"
+										style="width:150px" placeholder="过滤" />
+								</p:outputPanel>
+							</f:facet>
+							<p:column headerText="问题内容"
+								filterBy="#{question.questionContent}"
+								filterMatchMode="contains" filterable="false">
+								<h:outputText value="#{question.questionContent}" />
+							</p:column>
+							<p:column headerText="问题意图" filterBy="#{question.purpose}"
+								filterMatchMode="contains" filterable="false">
+								<h:outputText value="#{question.purpose}" />
+							</p:column>
+							<p:column headerText="问题阶段" filterBy="#{question.stage}"
+								filterMatchMode="contains" filterable="false"
+								styleClass="nameColumn">
+								<h:outputText value="#{question.stage}" />
+							</p:column>
+						</p:dataTable>
+						<br />
+						<p:separator />
+						<p:commandButton value="返回" icon="ui-icon-arrowreturnthick-1-w"
+							oncomplete="PF('dlg_chooseQuestionInTm').hide()"
+							style="margin-left: 30%" immediate="true" />
+						<p:commandButton value="确认" icon="ui-icon-check"
+							action="#{questionView.chooseQuestion}" process="@this"
+							update="@form:newQuestionListTableInTm"
+							oncomplete="PF('dlg_chooseQuestionInTm').hide()"
+							style="margin-left:18%" />
+					</p:dialog>
+				</h:form>
+			</p:tab>
+			<p:tab title="已下达，未提交" id="assignedTask">
+				<h:form id="taskForm2">
+					<p:commandButton id="hidedBtn2" binding="#{hidedBtn2}"
+						update="@form:assignedTaskListTable" />
+					<p:dataTable id="assignedTaskListTable" var="taskInfo"
+						value="#{taskView.assignedTaskList}" rows="5"
+						binding="#{assignedTaskListTable1}"
+						sortBy="#{taskInfo.plannedFinishedDate}"
+						filteredValue="#{taskView.filteredTaskList}"
+						paginatorPosition="bottom" paginator="true"
+						rowsPerPageTemplate="5,8,10"
+						paginatorTemplate="{CurrentPageReport} 
+											{FirstPageLink}
+											{PreviousPageLink}
+											{PageLinks}
+											{NextPageLink}
+											{LastPageLink}
+											{RowsPerPageDropdown}"
+						currentPageReportTemplate="{totalRecords}
+									 ({currentPage} of {totalPages})"
+						rowKey="#{taskInfo.id}" widgetVar="assignedTaskListTable">
+
+						<f:facet name="header">
+							<p:outputPanel style="text-align: left;font-weight:normal">
+								<h:outputText value="请输入过滤条件：" />
+								<p:inputText id="globalFilter"
+									onkeyup="PF('assignedTaskListTable').filter()"
+									style="width:150px" placeholder="过滤" />
+							</p:outputPanel>
+						</f:facet>
+
+						<p:column headerText="任务描述" filterBy="#{taskInfo.taskDescription}"
+							filterable="false" filterMatchMode="contains"
+							style="width:450px;">
+							<h:outputText value="#{taskInfo.taskDescription}" />
+						</p:column>
+						<p:column headerText="创建时间" filterBy="#{taskInfo.createdDate}"
+							filterMatchMode="contains" filterable="false">
+							<h:outputText value="#{taskInfo. createdDate}" />
+						</p:column>
+						<p:column headerText="下达时间" filterBy="#{taskInfo. assignedDate}"
+							filterMatchMode="contains" filterable="false">
+							<h:outputText value="#{taskInfo. assignedDate}" />
+						</p:column>
+						<p:column headerText="计划完成时间"
+							filterBy="#{taskInfo.plannedFinishedDate}"
+							filterMatchMode="contains" filterable="false">
+							<h:outputText value="#{taskInfo.plannedFinishedDate}" />
+						</p:column>
+						<p:column headerText="客户对象" filterBy="#{taskInfo.customer}"
+							filterMatchMode="contains" filterable="false">
+							<h:outputText style="color:red;"
+								value="#{taskInfo.customer.name}" />
+						</p:column>
+						<p:column headerText="指派对象" filterBy="#{taskInfo.parttimeStaff}"
+							filterMatchMode="contains" filterable="false">
+							<h:outputText value="#{taskInfo.parttimeStaff.name}" />
+						</p:column>
+					</p:dataTable>
+				</h:form>
+			</p:tab>
+			<p:tab title="已提交，未回访" id="unrevisitedTask">
+				<h:form id="taskForm3">
+					<p:dataTable id="unrevisitTaskList" var="taskInfo"
+						value="#{taskView.unrevisitTaskList}" rows="5"
+						binding="#{unrevisitTaskListTable1}"
+						sortBy="#{taskInfo.finishedDate}"
+						filteredValue="#{taskView.filteredTaskList}"
+						paginatorPosition="bottom" paginator="true"
+						rowsPerPageTemplate="4,6,8,10"
+						paginatorTemplate="{CurrentPageReport} 
+											{FirstPageLink}
+											{PreviousPageLink}
+											{PageLinks}
+											{NextPageLink}
+											{LastPageLink}
+											{RowsPerPageDropdown}"
+						currentPageReportTemplate="{totalRecords}
+									 ({currentPage} of {totalPages})"
+						rowKey="#{taskInfo.id}"
+						selection="#{taskView.selectedUnrevisitedTaskList}"
+						widgetVar="unrevisitTaskListTable" rowSelectMode="add">
+
+						<p:column selectionMode="multiple"
+							style="width:16px;text-align:center" />
+
+						<f:facet name="header">
+							<p:outputPanel style="text-align: left;font-weight:normal">
+								<h:outputText value="请输入过滤条件：" />
+								<p:inputText id="globalFilter"
+									onkeyup="PF('unrevisitTaskListTable').filter()"
+									style="width:150px" placeholder="过滤" />
+								<p:commandButton value="批量回访" icon="fa fa-fw fa-cubes"
+									style="margin-left:2%;"
+									action="#{taskView.validateSelectedUnrevisitedTaskList}">
+								</p:commandButton>
+							</p:outputPanel>
+						</f:facet>
+
+						<p:column headerText="任务描述" filterBy="#{taskInfo.taskDescription}"
+							filterable="false" filterMatchMode="contains"
+							style="width:300px;">
+							<p:commandLink title="点击查看此任务的所有问题"
+								value="#{taskInfo.taskDescription}"
+								style="color:#003a6c;text-decoration: underline;"
+								process="@this" oncomplete="alert('待完善...')" immediate="true">
+								<f:setPropertyActionListener value="#{taskInfo}"
+									target="#{taskView.taskInfo}" />
+							</p:commandLink>
+						</p:column>
+						<p:column headerText="创建时间" filterBy="#{taskInfo. createdDate}"
+							filterMatchMode="contains" filterable="false">
+							<h:outputText value="#{taskInfo. createdDate}" />
+						</p:column>
+						<p:column headerText="下达时间" filterBy="#{taskInfo. assignedDate}"
+							filterMatchMode="contains" filterable="false">
+							<h:outputText value="#{taskInfo. assignedDate}" />
+						</p:column>
+
+						<p:column headerText="计划完成时间"
+							filterBy="#{taskInfo.plannedFinishedDate}"
+							filterMatchMode="contains" filterable="false">
+							<h:outputText value="#{taskInfo.plannedFinishedDate}" />
+						</p:column>
+						<p:column headerText="实际完成时间" filterBy="#{taskInfo.finishedDate}"
+							filterMatchMode="contains" filterable="false">
+							<h:outputText value="#{taskInfo.finishedDate}" />
+						</p:column>
+						<p:column headerText="客户名字" filterBy="#{taskInfo.customer}"
+							filterMatchMode="contains" filterable="false">
+							<h:outputText value="#{taskInfo.customer.name}" />
+						</p:column>
+						<p:column headerText="兼职名字" filterBy="#{taskInfo.parttimeStaff}"
+							filterMatchMode="contains" filterable="false">
+							<h:outputText value="#{taskInfo.parttimeStaff.name}" />
+						</p:column>
+						<p:column headerText="选择回访的兼职">
+							<p:commandButton title="点击选择兼职去对该任务进行回访" value="回访" ajax="true"
+								icon="fa fa-fw fa-cube"
+								oncomplete="PF('dlg_chooseRevisiter').show()">
+								<f:setPropertyActionListener value="#{taskInfo}"
+									target="#{taskView.unrevisitedTask}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+					<p:dialog id="dlg_chooseRevisiter" header="请选择回访人员"
+						widgetVar="dlg_chooseRevisiter" modal="true" showEffect="blind"
+						hideEffect="clip" resizable="false" width="700" height="380">
+						<p:dataTable id="parttimeStaffListTableInTm" var="parttimeStaff"
+							value="#{parttimeStaffView.parttimeStaffList}" rows="6"
+							binding="#{parttimeStaffListTableInTm}"
+							sortBy="#{parttimeStaff.name}"
+							filteredValue="#{parttimeStaffView.filteredParttimeStaffList}"
+							rowsPerPageTemplate="6,8,10" paginatorPosition="bottom"
+							paginator="true"
+							paginatorTemplate="{CurrentPageReport} 
+											{FirstPageLink}
+											{PreviousPageLink}
+											{PageLinks}
+											{NextPageLink}
+											{LastPageLink}
+											{RowsPerPageDropdown}"
+							currentPageReportTemplate="{totalRecords}
+									 ({currentPage} of {totalPages})"
+							rowKey="#{parttimeStaff.id}" selection="#{taskView.revisiter}"
+							widgetVar="parttimeStaffListTableInTm" selectionMode="single">
+
+							<p:ajax event="rowSelect"
+								listener="#{taskView.onChooseRevisiter}"
+								update="@form:parttimeStaffListTableInTm" />
+
+							<p:column selectionMode="single"
+								style="width:16px;text-align:center" />
+
+							<f:facet name="header">
+								<p:outputPanel style="text-align: left;font-weight:normal">
+									<h:outputText value="请输入过滤条件：" />
+									<p:inputText id="globalFilter"
+										onkeyup="PF('parttimeStaffListTableInTm').filter()"
+										style="width:150px" placeholder="过滤" />
+								</p:outputPanel>
+							</f:facet>
+
+							<p:column headerText="姓名" filterBy="#{parttimeStaff.name}"
+								filterMatchMode="contains" filterable="false">
+								<h:outputText value="#{parttimeStaff.name}" />
+							</p:column>
+
+							<p:column headerText="性别" filterBy="#{parttimeStaff.gender}"
+								filterMatchMode="contains" filterable="false">
+								<h:outputText value="#{parttimeStaff.gender}" />
+							</p:column>
+
+							<p:column headerText="联系电话" filterBy="#{parttimeStaff.tel}"
+								filterMatchMode="contains" filterable="false">
+								<h:outputText value="#{parttimeStaff.tel}" />
+							</p:column>
+
+							<p:column headerText="QQ" filterBy="#{parttimeStaff.qq}"
+								filterMatchMode="contains" filterable="false">
+								<h:outputText value="#{parttimeStaff.qq}" />
+							</p:column>
+
+							<p:column headerText="住址" filterBy="#{parttimeStaff.address}"
+								filterMatchMode="contains" filterable="false">
+								<h:outputText value="#{parttimeStaff.address}" />
+							</p:column>
+
+							<p:column headerText="家乡" filterBy="#{parttimeStaff.hometown}"
+								filterMatchMode="contains" filterable="false">
+								<h:outputText value="#{parttimeStaff.hometown}" />
+							</p:column>
+						</p:dataTable>
+						<p:separator />
+						<div style="margin-top: 2%;">
+							<p:commandButton value="返回" icon="ui-icon-arrowreturnthick-1-w"
+								oncomplete="PF('dlg_chooseRevisiter').hide()"
+								style="margin-left: 30%" immediate="true" />
+							<p:commandButton value="确认" icon="ui-icon-check" process="@this"
+								immediate="true"
+								oncomplete="PF('dlg_confirmToChooseRevisiter').show()"
+								style="margin-left:18%" />
+						</div>
+					</p:dialog>
+
+					<p:dialog id="dlg_confirmToChooseRevisiter" header="请确认"
+						appendTo="@(body)" widgetVar="dlg_confirmToChooseRevisiter"
+						modal="true" showEffect="bounce" hideEffect="fade"
+						resizable="false" width="230" height="60">
+						<table>
+							<tr>
+								<h:outputText value="确认选择吗?"
+									style="font-size:20px;color:#003a6c;text-align:center;" />
+							</tr>
+							<tr>
+								<td><p:commandButton value="Cancel"
+										oncomplete="PF('dlg_confirmToChooseRevisiter').hide()"
+										icon="fa fa-fw fa-remove" immediate="true">
+									</p:commandButton></td>
+								<td><p:commandButton value="OK" style="margin-left:15%;"
+										action="#{taskView.makeRevisit}"
+										update="@form:unrevisitTaskList"
+										oncomplete="PF('dlg_confirmToChooseRevisiter').hide(),PF('dlg_chooseRevisiter').hide()"
+										icon="ui-icon-check" process="@this">
+									</p:commandButton></td>
+							</tr>
+						</table>
+					</p:dialog>
+				</h:form>
+			</p:tab>
+			<p:tab title="已回访(彻底完成)" id="finishedTask">
+				<h:form id="taskForm4">
+					<p:dataTable id="finishedTaskList" var="taskInfo"
+						value="#{taskView.finishedTaskList}" rows="5"
+						binding="#{finishedTaskListTable1}"
+						sortBy="#{taskInfo.plannedFinishedDate}"
+						filteredValue="#{taskView.filteredTaskList}"
+						paginatorPosition="bottom" paginator="true"
+						rowsPerPageTemplate="5,8,10"
+						paginatorTemplate="{CurrentPageReport} 
+											{FirstPageLink}
+											{PreviousPageLink}
+											{PageLinks}
+											{NextPageLink}
+											{LastPageLink}
+											{RowsPerPageDropdown}"
+						currentPageReportTemplate="{totalRecords}
+									 ({currentPage} of {totalPages})"
+						rowKey="#{taskInfo.id}" selection="#{taskView.selectedTaskList}"
+						widgetVar="finishedTaskListTable" rowSelectMode="add">
+
+						<p:column selectionMode="multiple"
+							style="width:16px;text-align:center" />
+
+						<f:facet name="header">
+							<p:outputPanel style="text-align: left;font-weight:normal">
+								<h:outputText value="请输入过滤条件：" />
+								<p:inputText id="globalFilter"
+									onkeyup="PF('finishedTaskListTable').filter()"
+									style="width:150px" placeholder="过滤" />
+
+								<p:commandButton value="评价标准" title="点击查看评价标准"
+									style="margin-left:2%;font-weight:normal" ajax="true"
+									icon="fa fa-fw fa-star-half-empty"
+									onclick="PF('dlg_standardOfEvaluation').show()">
+								</p:commandButton>
+
+							</p:outputPanel>
+						</f:facet>
+
+						<p:column headerText="任务描述" filterBy="#{taskInfo.taskDescription}"
+							filterable="false" filterMatchMode="contains"
+							style="width:320px;">
+							<h:outputText value="#{taskInfo.taskDescription}" />
+						</p:column>
+						<p:column headerText="创建时间" filterBy="#{taskInfo. assignedDate}"
+							filterMatchMode="contains" filterable="false"
+							styleClass="dateColumn">
+							<h:outputText value="#{taskInfo. assignedDate}" />
+						</p:column>
+
+						<p:column headerText="计划完成时间"
+							filterBy="#{taskInfo.plannedFinishedDate}"
+							filterMatchMode="contains" filterable="false"
+							styleClass="dateColumn">
+							<h:outputText value="#{taskInfo.plannedFinishedDate}" />
+						</p:column>
+						<p:column headerText="实际完成时间" filterBy="#{taskInfo.finishedDate}"
+							filterMatchMode="contains" filterable="false"
+							styleClass="dateColumn">
+							<h:outputText value="#{taskInfo.finishedDate}" />
+						</p:column>
+						<p:column headerText="客户姓名" filterBy="#{taskInfo.customer}"
+							styleClass="nameColumn" filterMatchMode="contains"
+							filterable="false">
+							<h:outputText value="#{taskInfo.customer.name}" />
+						</p:column>
+						<p:column headerText="兼职姓名" filterBy="#{taskInfo.parttimeStaff}"
+							filterMatchMode="contains" filterable="false"
+							styleClass="nameColumn">
+							<h:outputText value="#{taskInfo.parttimeStaff.name}" />
+						</p:column>
+
+						<!--***************************************************************************  -->
+						<p:column headerText="任务回访" filterMatchMode="contains"
+							filterable="false">
+							<p:commandButton title="点击查看该任务的回访信息" value="查看回访"
+								update="@form:revisit" style="width:90px;" icon="ui-icon-search"
+								oncomplete="PF('revisit').show()" process="@this"
+								immediate="true"
+								action="#{revisitView.findTheRevistOfTask(taskInfo.id)}">
+								<f:setPropertyActionListener value="#{taskInfo}"
+									target="#{taskView.taskInfo}" />
+							</p:commandButton>
+						</p:column>
+						<!--***************************************************************************  -->
+
+						<!--***************************************************************************  -->
+						<p:column headerText="评价" styleClass="modificationColumn">
+							<p:commandButton title="点击评价兼职的本次任务" value="评价"
+								update="@form:evaluate" styleClass="modificationColumn"
+								icon="ui-icon-comment" oncomplete="PF('evaluate').show()"
+								process="@this" immediate="true"
+								disabled="#{taskView.disableds.get(taskView.finishedTaskList.indexOf(taskInfo))}">
+								<f:setPropertyActionListener value="#{taskInfo}"
+									target="#{taskView.taskInfo}" />
+							</p:commandButton>
+						</p:column>
+
+
+					</p:dataTable>
+
+					<!--***************************************刚刚************************************  -->
+
+					<!--***************************************************************************  -->
+					<p:dialog id="revisit" header="回访记录" widgetVar="revisit" modal="true"
+						showEffect="blind" hideEffect="clip" resizable="false" width="600px">
+						<p:outputPanel>
+							<div>
+								<table class="common_market_tab">
+									<tr>
+										<th class="appraission_tab_th" style="width: 90px;">客户姓名:</th>
+										<td colspan="8"><h:outputText styleClass="appraission_tab_td"
+												value="#{taskView.taskInfo.customer.name}" style="font-size:16px;" /></td>
+										<th class="appraission_tab_th" style="width: 90px;">兼职姓名:</th>
+										<td colspan="8"><h:outputText styleClass="appraission_tab_td"
+												value="#{taskView.taskInfo.parttimeStaff.name}"
+												style="font-size:16px;" /></td>
+									</tr>
+								</table>
+							</div>
+							<br />
+							<div>
+
+
+								<h:outputText value="1.校园代理的工作成果的真实性: "
+									style="color:#003a6c; margin-left:5%;font-size:18px;" />
+								<h:outputText value="#{revisitView.revisitForStaff.realness} "
+									style="text-decoration:underline;color:red;font-size:18px;" />
+								<br />
+								<br />
+
+								<h:outputText value="2.客户对校园代理的评价:"
+									style="color:#003a6c;margin-left:5%;font-size:18px;" />
+								<br />
+								<h:outputText
+									value="&nbsp;&nbsp;&nbsp;&nbsp;#{revisitView.revisitForStaff.impressionFromCustomer}"
+									style="text-decoration:underline;color:red;margin-left:5%;font-size:16px;" />
+								<br />
+								<br />
+							</div>
+							<div>
+								<div style="margin-top: 10px" />
+								<p:commandButton value="返&nbsp;&nbsp;&nbsp;回"
+									style="margin-left:38%;width:150px;height:40px;border-radius:5%;"
+									oncomplete="PF('revisit').hide()" icon="ui-icon-arrowreturnthick-1-w"
+									immediate="true">
+								</p:commandButton>
+							</div>
+						</p:outputPanel>
+					</p:dialog>
+					<!--***************************************************************************  -->
+					<!-- 评价兼职任务对话框 -->
+					<!-- 评价兼职任务对话框 -->
+					<!-- 评价兼职任务对话框 -->
+					<!-- 评价兼职任务对话框 -->
+					<p:dialog header="评价" widgetVar="evaluate" modal="true"
+						id="evaluate" showEffect="blind" hideEffect="size"
+						resizable="false" width="500px">
+
+						<p:dataScroller mode="inline" scrollHeight="200"
+							value="#{customerView.oneList}">
+							<p:growl id="messages" showDetail="true" />
+							<h:panelGrid columns="2" cellpadding="5">
+								<h:outputText value="点击评价星级:"
+									style="margin-left:20%;color: #33667C; font-size: 16px" />
+								<p:rating value="#{taskView.rating}" style="margin-left:-200px;">
+									<p:ajax event="rate" listener="#{taskView.onrate}"
+										update="messages" />
+									<p:ajax event="cancel" listener="#{taskView.oncancel}"
+										update="messages" />
+								</p:rating>
+								<p:inputTextarea rows="7" cols="25"
+									style="width:370px;font-size:16px;" placeholder="请输入评价"
+									value="#{taskView.evaluation}" />
+								<br />
+								<br />
+							</h:panelGrid>
+						</p:dataScroller>
+						<p:commandButton value="返回" oncomplete="PF('evaluate').hide()"
+							icon="ui-icon-arrowreturnthick-1-w" immediate="true"
+							style="margin-left:15%;margin-top:2px;">
+						</p:commandButton>
+						<p:commandButton value="提交评价" action="#{taskView.evaluate}"
+							style="margin-left:30%;margin-top:2px;"
+							update="@form:finishedTaskList"
+							oncomplete="PF('evaluate').hide()" icon="ui-icon-check">
+						</p:commandButton>
+					</p:dialog>
+					<!--**************************刚刚*************************************************  -->
+
+					<!-- 评价标准对话框 -->
+					<!-- 评价标准对话框 -->
+					<!-- 评价标准对话框 -->
+					<!-- 评价标准对话框 -->
+					<p:dialog header="综合评价标准" id="dlg_standardOfEvaluation"
+						widgetVar="dlg_standardOfEvaluation" modal="true"
+						resizable="false" width="500px" showEffect="blind"
+						hideEffect="clip" height="320px">
+						<table style="color: #33667C; font-size: 16px;"
+							class="common_market_tab">
+							<tr>
+								<th>星 &nbsp;级</th>
+								<td>&nbsp;本次任务满意度</td>
+							</tr>
+							<tr>
+								<th>&nbsp;0:</th>
+								<td>&nbsp;&nbsp;没有评价</td>
+							</tr>
+							<tr>
+								<th>&nbsp;★:</th>
+								<td>&nbsp;&nbsp;非常不满意</td>
+							</tr>
+							<tr>
+								<th>&nbsp;★★:</th>
+								<td>&nbsp;&nbsp;不满意</td>
+							</tr>
+							<tr>
+								<th>&nbsp;★★★:</th>
+								<td>&nbsp;&nbsp;勉强还行</td>
+							</tr>
+							<tr>
+								<th>&nbsp;★★★★:</th>
+								<td>&nbsp;&nbsp;满意</td>
+							</tr>
+							<tr>
+								<th>&nbsp;★★★★★:</th>
+								<td>&nbsp;&nbsp;非常满意</td>
+							</tr>
+						</table>
+					</p:dialog>
+				</h:form>
+			</p:tab>
+		</p:accordionPanel>
+	</div>
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$("[id='#{hidedBtn.clientId}']").hide();
+			$("[id='#{hidedBtn2.clientId}']").hide();
+			$("[id='#{hiddenBtn.clientId}']").hide();
+			$("[id='#{hidedBtn.clientId}']").click();
+		});
+
+		function updateList() {
+			$("[id='#{hidedBtn2.clientId}']").click();
+		}
+
+		function passQuestionNo(obj) {
+			getParams([ {
+				name : 'qno',
+				value : obj
+			} ]);
+		}
+		function lengthenTable() {
+			lengthenList();
+		}
+		function showTable(obj) {
+			if (obj == null || obj.value == null || obj.value.length == 0) {
+				PF('dlg_chooseQuestionInTm').show();
+				$("[id='#{hiddenBtn.clientId}']").click();
+			}
+		}
+	</script>
+</f:view>

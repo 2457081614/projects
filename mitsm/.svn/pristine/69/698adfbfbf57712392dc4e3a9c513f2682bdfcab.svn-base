@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <display-name>mitsm</display-name>
+  <welcome-file-list>
+    <welcome-file>pages/common/login.xhtml</welcome-file>
+  </welcome-file-list>
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath:spring/applicationContext.xml</param-value>
+  </context-param>
+  <listener>
+    <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+  </listener>
+  <filter>
+    <filter-name>Spring OpenEntityManagerInViewFilter</filter-name>
+    <filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>Spring OpenEntityManagerInViewFilter</filter-name>
+    <url-pattern>*.xhtml</url-pattern>
+  </filter-mapping>
+  <context-param>
+    <param-name>javax.faces.FACELETS_SKIP_COMMENTS</param-name>
+    <param-value>true</param-value>
+  </context-param>
+  <context-param>
+    <param-name>primefaces.FONT_AWESOME</param-name>
+    <param-value>true</param-value>
+  </context-param>
+  <context-param>
+    <param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>
+    <param-value>resources.application</param-value>
+  </context-param>
+  <context-param>
+    <param-name>com.sun.faces.expressionFactory</param-name>
+    <param-value>com.sun.el.ExpressionFactoryImpl</param-value>
+  </context-param>
+  <context-param>
+    <param-name>primefaces.THEME</param-name>
+    <param-value>vgc</param-value>
+  </context-param>
+  <context-param>
+    <param-name>primefaces.UPLOADER</param-name>
+    <param-value>commons</param-value>
+  </context-param>
+  <context-param>
+    <param-name>primefaces.TRANSFORM_METADATA</param-name>
+    <param-value>true</param-value>
+  </context-param>
+  <filter>
+    <filter-name>PrimeFaces FileUpload Filter</filter-name>
+    <filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>PrimeFaces FileUpload Filter</filter-name>
+    <servlet-name>Faces Servlet</servlet-name>
+  </filter-mapping>
+  <session-config>
+    <session-timeout>60</session-timeout>
+  </session-config>
+  <error-page>
+    <error-code>404</error-code>
+    <location>/error-pages/404.html</location>
+  </error-page>
+  <error-page>
+    <error-code>403</error-code>
+    <location>/error-pages/403.html</location>
+  </error-page>
+  <error-page>
+    <error-code>500</error-code>
+    <location>/error-pages/500.html</location>
+  </error-page>
+  <servlet>
+    <servlet-name>Faces Servlet</servlet-name>
+    <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Faces Servlet</servlet-name>
+    <url-pattern>*.xhtml</url-pattern>
+  </servlet-mapping>
+  <context-param>
+    <param-name>javax.faces.CONFIG_FILES</param-name>
+    <param-value>/WEB-INF/faces-config.xml,/WEB-INF/faces-config-nav.xml</param-value>
+  </context-param>
+</web-app>

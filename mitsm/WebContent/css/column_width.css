@@ -1,0 +1,33 @@
+.nameColumn{
+	width:60px;
+}
+.classNameColumn{
+	width:250px;
+}
+.telColumn{
+	width:100px;
+}
+.qqColumn{
+	width:100px;
+}
+.addressColumn{
+	width:120px;
+}
+.modificationColumn{
+	width:80px;
+}
+.deletionColumn{
+	width:80px;
+}
+.emailColumn{
+	width:200px;
+}
+.dateColumn{
+	width:100px;
+}
+.bulletinHeadColumn{
+	width:450px;
+}
+.bulletinStatusColumn{
+	width:120px;
+}

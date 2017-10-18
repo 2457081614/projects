@@ -1,0 +1,16 @@
+.btnClass{
+	height:50px;
+	width: 100px;
+	-webkit-border-radius: 5px;
+}
+
+.btnClass2{
+	height:30px;
+	width: 100px;
+	-webkit-border-radius: 5px;
+}
+.select{
+	width: 240px;
+	height: 35px;
+	font-size: 18px;
+}

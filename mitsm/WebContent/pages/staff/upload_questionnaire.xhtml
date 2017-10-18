@@ -1,0 +1,86 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<style type="text/css">
+.questionNo {
+	text-align: center;
+	font-size: 20px;
+}
+
+.questionContent {
+	text-align: center;
+	font-size: 20px;
+}
+</style>
+	<script type="text/javascript">
+		function addRow()
+		{
+			var table = document.getElementById("questionTable");
+			var len = table.rows.length;//表格当前的行数
+			var oldTr = table.rows[len - 2];
+			var newTr = table.insertRow(len - 1);
+			$(newTr).html($(oldTr).html());
+			$(newTr).children().first().text(parseInt($(oldTr).children().first().text()) + 1);
+			$(newTr).hide();
+			$(newTr).fadeIn(500);
+						    
+		}
+	</script>
+
+	<div style="width: 98%" id="div1">
+		<h:form id="upldQstnForm">
+			<h:outputText value="调查问卷标题" style="font-size:16px;font-weight:bold;" />
+			<br />
+			<h:inputText value="" style="font-size:14px;width:100%;" />
+			<br />
+			<br />
+			<h:outputText value="问卷题目" style="font-size:16px;font-weight:bold;" />
+			<br />
+			<table id="questionTable" style="width: 100%;" border="1px" cellspacing="0px">
+				<tr>
+					<td class="questionNo">题号</td>
+					<td class="questionContent">题目</td>
+				</tr>
+				<tr>
+					<td class="questionNo">1</td>
+						<td><p:inputTextarea style="width:99%;font-size:16px;color:black;"/>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<div style="text-align: center;">
+							<img src="good_plus.png" onclick="addRow()"/>
+						</div>
+					</td>
+				</tr>
+			</table>
+
+			<br />
+			<p:commandButton style="margin-left:25%;" value="清空内容" onclick="alert('清空了')"
+				icon="ui-icon-close" />
+			<p:commandButton id="upldQstnBtn" value="发布"
+				onclick="PF('dlg_confirmToPublish').show()"
+				style="margin-left:25%;font-weight:normal" icon="ui-icon-check" />
+
+			<p:dialog id="dlg_confirmToUpload" header="请确认"
+				widgetVar="dlg_confirmToUpload" modal="true" showEffect="bounce"
+				hideEffect="fade" resizable="false" width="230" height="60">
+				<table>
+					<tr>
+						<h:outputText value="确认发布吗?"
+							style="font-size:20px;color:#003a6c;text-align:center;" />
+					</tr>
+					<tr>
+						<td><p:commandButton value="取消"
+								oncomplete="PF('dlg_confirmToUpload').hide()" icon="ui-icon-cancel">
+							</p:commandButton></td>
+						<td><p:commandButton value="确定" style="margin-left:15%;width:100%;"
+								oncomplete="PF('dlg_confirmToUpload').hide()" icon="ui-icon-check">
+							</p:commandButton></td>
+					</tr>
+				</table>
+			</p:dialog>
+		</h:form>
+	</div>
+</f:view>

@@ -1,0 +1,349 @@
+package com.meession.market.staff.view;
+
+import java.io.InputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.ViewScoped;
+
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.FileUploadEvent;
+
+import com.meession.market.common.dateutil.DateUtil;
+import com.meession.market.common.entity.Resumable;
+import com.meession.market.common.util.ExcelReader;
+import com.meession.market.staff.entity.Staff;
+import com.meession.market.staff.service.IStaffService;
+
+@ManagedBean
+@ViewScoped
+public class StaffView implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	@ManagedProperty(value = "#{staffService}")
+	private IStaffService staffService;
+	/**
+	 * 没有被删除的员工列表
+	 */
+	private List<Staff> staffList;
+	/**
+	 * 被删除的员工列表
+	 */
+	private List<Staff> deletedStaffList = new ArrayList<>();
+	/**
+	 * 使用过滤条件时得到的若干条符合条件的数据
+	 */
+	private List<Staff> filteredStaffList;
+	/**
+	 * 批量删除时被选中的行
+	 */
+	private List<Staff> selectedStaffList;
+	/**
+	 * 查询、修改、删除某员工时的员工的信息
+	 */
+	private Staff staff = new Staff();
+
+	private Date birthday;
+	private Date currentDate = new Date();
+
+	@PostConstruct
+	public void init() {
+		initNewStaff();
+		reSelect();
+	}
+
+	public void addBatch(FileUploadEvent event) {
+		try {
+			InputStream is = event.getFile().getInputstream();
+			int sheetIndex = 0;
+			int offsetX = 0;
+			int offsetY = 0;
+			String[][] sourceData = new ExcelReader(is).readExcel(sheetIndex, offsetX, offsetY);
+			staffService.addStaffs(Staff.getStaffs(sourceData));
+			showResultTip("批量导入成功", FacesMessage.SEVERITY_INFO);
+		} catch (Exception e) {
+			String tip = "批量导入失败,请联系相关技术人员";
+			showResultTip(tip, FacesMessage.SEVERITY_ERROR);
+			e.printStackTrace();
+		}
+		new Thread(new Runnable() {
+			public void run() {
+				reSelect();
+			}
+		}).start();
+		
+		
+
+	}
+
+	/**
+	 * 修改一个的员工信息。<br/>
+	 * 要被修改的员工信息保存在this.staff中。
+	 */
+	public void updateStaffInfo() {
+		this.staff.setBirthday(DateUtil.dateToString(this.birthday));
+		staffService.updateStaff(staff);
+		showResultTip("修改成功", FacesMessage.SEVERITY_INFO);
+	}
+
+	/**
+	 * 丢弃员工到回收站
+	 * 
+	 */
+	public void discardToRecycleBin() {
+		if (staff != null) {
+			staffList.remove(staff);
+			if (filteredStaffList != null && filteredStaffList.contains(staff)) {
+				filteredStaffList.remove(staff);
+			}
+			staff.setDeleted(Resumable.DELETED);
+			staffService.updateStaff(staff);
+			deletedStaffList.add(staff);
+			showResultTip("删除成功", FacesMessage.SEVERITY_INFO);
+			/** 注意这句话。原来没被注释，现在被注释了。也就是不删除该员工在数据库的信息↓ */
+			// staffService.deleteByTel(staff.getTel());
+			/** 注意这句话。原来没被注释，现在被注释了。也就是不删除该员工在数据库的信息↑ */
+		}
+	}
+
+	public void recover() {
+		if (staff != null) {
+			if (filteredStaffList != null && filteredStaffList.contains(staff)) {
+				filteredStaffList.remove(staff);
+			}
+			deletedStaffList.remove(staff);
+			staff.setDeleted(Resumable.UNDELETED);
+			staffService.updateStaff(staff);
+			staffList.add(staff);
+			showResultTip("员工" + staff.getName() + "已成功恢复", FacesMessage.SEVERITY_INFO);
+		} else {
+			showResultTip("恢复失败", FacesMessage.SEVERITY_ERROR);
+		}
+	}
+
+	public void recoverAll() {
+		if (deletedStaffList != null && deletedStaffList.size() > 0) {
+			for (Staff s : deletedStaffList) {
+				s.setDeleted(Resumable.UNDELETED);
+				staffList.add(s);
+				staffService.updateStaff(s);
+			}
+			showResultTip(":)成功恢复全部已删除员工", FacesMessage.SEVERITY_INFO);
+			deletedStaffList.clear();
+			if (this.filteredStaffList != null)
+				filteredStaffList.clear();
+		} else {
+			showResultTip("回收站中没有员工", FacesMessage.SEVERITY_ERROR);
+		}
+	}
+
+	public void delete() {
+		if (staff != null) {
+			deletedStaffList.remove(staff);
+			staffService.deleteByTel(staff.getTel());
+			showResultTip("员工" + staff.getName() + "已成功删除", FacesMessage.SEVERITY_INFO);
+			if (filteredStaffList != null && filteredStaffList.contains(staff)) {
+				filteredStaffList.remove(staff);
+			}
+		} else {
+			showResultTip("删除失败", FacesMessage.SEVERITY_ERROR);
+		}
+	}
+
+	public void deleteAll() {
+		if (deletedStaffList != null && deletedStaffList.size() > 0) {
+			List<Long> ids = new ArrayList<>();
+			for (Staff s : deletedStaffList) {
+				ids.add(s.getId());
+			}
+			staffService.deleteBatch(ids);
+			showResultTip(":)已彻底删除清空回收站的员工", FacesMessage.SEVERITY_INFO);
+			deletedStaffList.clear();
+			if (filteredStaffList != null)
+				filteredStaffList.clear();
+		} else {
+			showResultTip("回收站中没有员工", FacesMessage.SEVERITY_ERROR);
+		}
+	}
+
+	/**
+	 * 显示提示信息
+	 * 
+	 * @param tip
+	 *            提示信息
+	 * @param s
+	 */
+	public void showResultTip(String tip, FacesMessage.Severity s) {
+		String realText = null;
+		final int eachWordSize = 30;
+		if (s != null && s == FacesMessage.SEVERITY_ERROR) {
+			realText = "<div style='text-align:center;width:" + (tip.length() * eachWordSize)
+					+ "px;'><span style='color:red;font-size:18px;'>" + tip + "</span>";
+		} else if (s != null && s == FacesMessage.SEVERITY_INFO) {
+			realText = "<div style='text-align:center;width:" + (tip.length() * eachWordSize)
+					+ "px;'><span style='color:#003a6c;font-size:18px;'>" + tip + "</span>";
+		} else if (s != null && s == FacesMessage.SEVERITY_WARN) {
+			realText = "<div style='text-align:center;width:" + (tip.length() * eachWordSize)
+					+ "px;'><span style='color:orange;font-size:18px;'>" + tip + "</span>";
+		} else if (s != null && s == FacesMessage.SEVERITY_FATAL) {
+			realText = "<div style='text-align:center;width:" + (tip.length() * eachWordSize)
+					+ "px;'><span style='color:red;font-weight:bold;font-size:18px;'>" + tip + "</span>";
+		}
+		FacesMessage message = new FacesMessage(s, "提示", realText);
+		RequestContext.getCurrentInstance().showMessageInDialog(message);
+	}
+
+	/**
+	 * 重新查询数据库，更新staffList
+	 */
+	public void reSelect() {
+		staffList = staffService.getAllStaff();
+		/**
+		 * 移除被删除的
+		 */
+		removeDeleted(staffList);
+		/**
+		 * 移除管理员
+		 */
+		removeManager(staffList);
+	}
+
+	/**
+	 * 从没有被删除的员工列表中把所有被删除的员工转移到被删除的员工列表中
+	 * 
+	 * @param staffList
+	 */
+	public void removeDeleted(List<Staff> staffList) {
+		if (staffList != null) {
+			Iterator<Staff> iterator = staffList.iterator();
+			while (iterator.hasNext()) {
+				Staff s = iterator.next();
+				if (s.getDeleted() == Resumable.DELETED) {
+					iterator.remove();
+					this.deletedStaffList.add(s);
+				}
+			}
+		}
+	}
+
+	/**
+	 * 从没有被删除的员工列表中把所有管理者移除。目的是消除管理者删除管理者的弊端
+	 * 
+	 * @param staffList
+	 */
+	public void removeManager(List<Staff> staffList) {
+		if (staffList != null) {
+			Iterator<Staff> iterator = staffList.iterator();
+			while (iterator.hasNext()) {
+				if (iterator.next().getIdentifier() == Staff.MANAGER) {
+					iterator.remove();
+				}
+			}
+		}
+	}
+
+	public Staff getStaff() {
+		return staff;
+	}
+
+	public void setStaff(Staff staff) {
+		this.birthday = DateUtil.stringToDate(staff.getBirthday());
+		this.staff = staff;
+	}
+
+	public List<Staff> getStaffList() {
+		return staffList;
+	}
+
+	public void setStaffList(List<Staff> staffList) {
+		this.staffList = staffList;
+	}
+
+	public List<Staff> getFilteredStaffList() {
+		return filteredStaffList;
+	}
+
+	public void setFilteredStaffList(List<Staff> filteredStaffList) {
+		this.filteredStaffList = filteredStaffList;
+	}
+
+	public List<Staff> getSelectedStaffList() {
+		return selectedStaffList;
+	}
+
+	public void setSelectedStaffList(List<Staff> selectedStaffList) {
+		this.selectedStaffList = selectedStaffList;
+	}
+
+	public IStaffService getStaffService() {
+		return staffService;
+	}
+
+	public void setStaffService(IStaffService staffService) {
+		this.staffService = staffService;
+	}
+
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
+	}
+	public Date getBirthday() {
+		return birthday;
+	}
+
+	public Date getCurrentDate() {
+		return currentDate;
+	}
+
+	public void setCurrentDate(Date currentDate) {
+		this.currentDate = currentDate;
+	}
+
+	public List<Staff> getDeletedStaffList() {
+		return deletedStaffList;
+	}
+
+	public void setDeletedStaffList(List<Staff> deletedStaffList) {
+		this.deletedStaffList = deletedStaffList;
+	}
+
+	/**
+	 * 新增的员工
+	 */
+	private Staff newStaff;
+	public void setNewStaff(Staff newStaff) {
+		this.newStaff = newStaff;
+	}
+	public Staff getNewStaff() {
+		return newStaff;
+	}
+	
+	/**
+	 * 添加员工<br/>
+	 * 保存新员工信息的对象是:newStaff
+	 */
+	public void addStaff(){
+		if(newStaff != null){
+			newStaff.setBirthday(DateUtil.dateToString(this.birthday));
+			Staff s = Staff.cloneStaff(newStaff);
+			staffService.updateStaff(s);
+			showResultTip("添加成功", FacesMessage.SEVERITY_INFO);
+			staffList.add(s);
+			initNewStaff();
+		}else{
+			showResultTip("添加失败", FacesMessage.SEVERITY_ERROR);
+		}
+	}
+	
+	public void initNewStaff(){
+		newStaff = new Staff();
+		newStaff.setPassword(Staff.INITIALIZED_PASSWORD);
+	}
+}

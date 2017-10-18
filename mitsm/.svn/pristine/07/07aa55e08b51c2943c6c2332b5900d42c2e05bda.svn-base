@@ -1,0 +1,54 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<br />
+	<h:form>
+		<div style="width: 100%">
+			<h:outputText value="标题" style="font-size:20px;font-weight:bold;" />
+			<br />
+			<h:inputText id="messageHead" value="#{bulletinView.newBulletin.messageHead}"
+				style="font-size:14px;width:100%;" binding="#{messageHead}"/>
+			<br />
+			<br />
+			<h:outputText value="内容" style="font-size:20px;font-weight:bold;"/>
+			<br />
+			<p:editor id="messageBody" style="width:100%;" converter="#{HTMLConverter}"
+				value="#{bulletinView.newBulletin.messageBody}" binding="#{messageBody}"/>
+			<br />
+			<h:outputText value="保存并发布 " style="font-size:16px;font-weight:bold;" />
+			<p:selectBooleanCheckbox id="needPublish" value="#{bulletinView.needPublish}" />
+			<br />
+			<br />
+			<p:commandButton style="margin-left:25%;" value="清空内容" 
+				action="#{bulletinView.clearContent}" 
+				update="@form:messageHead,@form:messageBody,@form:needPublish"
+				icon="ui-icon-trash" />
+			<p:commandButton id="publishBulletinBtn" value="保存"
+				onclick="PF('dlg_confirmToPublish').show()"
+				style="margin-left:25%;font-weight:normal" icon="ui-icon-check" />
+
+			<p:dialog id="dlg_confirmToPublish" header="请确认"
+				widgetVar="dlg_confirmToPublish" modal="true" showEffect="bounce"
+				hideEffect="fade" resizable="false" width="230" height="60">
+				<table>
+					<tr>
+						<h:outputText value="确认保存吗?"
+							style="font-size:20px;color:#003a6c;text-align:center;" />
+					</tr>
+					<tr>
+						<td><p:commandButton value="取消"
+								oncomplete="PF('dlg_confirmToPublish').hide()" icon="ui-icon-cancel">
+							</p:commandButton></td>
+						<td><p:commandButton value="确定" style="margin-left:15%;width:100%;"
+								action="#{bulletinView.save}"
+								update="@form:messageHead,@form:messageBody,@form:needPublish" 
+								type="submit" oncomplete="PF('dlg_confirmToPublish').hide()"
+								icon="ui-icon-check" process="@form">
+							</p:commandButton></td>
+					</tr>
+				</table>
+			</p:dialog>
+		</div>
+	</h:form>
+</f:view>

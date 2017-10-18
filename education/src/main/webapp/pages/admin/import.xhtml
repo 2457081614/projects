@@ -1,0 +1,24 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="../templates/basicPage.xhtml">
+	<ui:define name="content">
+		<p:tabView>
+			<p:tab title="导入学生">
+				<ui:include src="importStudent.xhtml"></ui:include>
+			</p:tab>
+			<p:tab title="导入老师">
+				<ui:include src="importTeacher.xhtml"></ui:include>
+			</p:tab>
+			<p:tab title="导入用户">
+				<ui:include src="importUser.xhtml"></ui:include>
+			</p:tab>
+			<p:tab title="导入系统角色">
+				<ui:include src="importRole.xhtml"></ui:include>
+			</p:tab>
+		</p:tabView>
+	</ui:define>
+</ui:composition>
+</html>

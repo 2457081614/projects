@@ -1,0 +1,225 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<h:form>
+		<div style="width: 100%" id="div">
+			<br />
+			<p:dataTable id="revisitListTable" var="revisit"
+				value="#{revisitView.revisitList}" rows="6"
+				binding="#{revisitListTable}" sortBy="#{revisit.id}"
+				filteredValue="#{revisitView.filteredRevisitList}"
+				paginatorPosition="bottom" paginator="true" rowsPerPageTemplate="6,10,15,20"
+				paginatorTemplate="{CurrentPageReport} 
+											{FirstPageLink}
+											{PreviousPageLink}
+											{PageLinks}
+											{NextPageLink}
+											{LastPageLink}
+											{RowsPerPageDropdown}"
+				currentPageReportTemplate="{totalRecords}
+									 ({currentPage} of {totalPages})"
+				rowKey="#{revisit.id}" widgetVar="revisitListTable">
+
+
+				<p:column headerText="客户姓名" filterBy="#{revisitView.getCustomerByRvtId(revisit).name}" filterable="false"
+					filterMatchMode="contains" styleClass="nameColumn">
+					<p:commandLink title="点击查看客户更多信息" value="#{revisitView.getCustomerByRvtId(revisit).name}"
+						style="color:red;text-decoration: underline;" process="@this"
+						update="@form:dlg_customerDetails:detail"
+						oncomplete="PF('dlg_customerDetails').show()" immediate="true">
+						<f:setPropertyActionListener value="#{revisitView.getCustomerByRvtId(revisit)}"
+							target="#{customerView.customer}" />
+					</p:commandLink>
+				</p:column>
+
+				<p:column headerText="班级" filterBy="#{revisitView.getCustomerByRvtId(revisit).className}"
+					filterable="false" filterMatchMode="contains" styleClass="classNameColumn">
+					<h:outputText value="#{revisitView.getCustomerByRvtId(revisit).className}" />
+				</p:column>
+
+				<p:column headerText="联系电话" filterBy="#{revisitView.getCustomerByRvtId(revisit).tel}"
+					filterMatchMode="contains" filterable="false" styleClass="telColumn">
+					<h:outputText value="#{revisitView.getCustomerByRvtId(revisit).tel}" />
+				</p:column>
+
+				<p:column headerText="QQ" filterBy="#{revisitView.getCustomerByRvtId(revisit).qq}"
+					filterMatchMode="contains" filterable="false" styleClass="qqColumn">
+					<h:outputText value="#{revisitView.getCustomerByRvtId(revisit).qq}" />
+				</p:column>
+
+				<p:column headerText="住址" filterBy="#{revisitView.getCustomerByRvtId(revisit).address}"
+					filterMatchMode="contains" filterable="false" styleClass="addressColumn">
+					<h:outputText value="#{revisitView.getCustomerByRvtId(revisit).address}" />
+				</p:column>
+
+				<p:column headerText="校园代理名字" filterBy="#{revisitView.getParttimeStaffByRvtId(revisit).name}"
+					filterMatchMode="contains" filterable="false" styleClass="nameColumn">
+					<h:outputText style="color:red;" value="#{revisitView.getParttimeStaffByRvtId(revisit).name}" />
+				</p:column>
+
+				<p:column headerText="客户对校园代理工作的评价" styleClass="modificationColumn">
+					<p:commandButton title="点击填写客户对校园代理的评价以及你对校园代理工作的核实" value="评价"
+						process="@this" icon="fa fa-fw fa-eye" immediate="true"
+						update="@form:dlg_appraiseParttimeStaff" disabled="#{revisitView.disableds.get(revisit.id-1)}"
+						oncomplete="PF('dlg_appraiseParttimeStaff').show()">
+						<f:setPropertyActionListener value="#{revisit}"
+							target="#{revisitView.revisit}"/>
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+
+			<p:dialog id="dlg_appraiseParttimeStaff" header="填写回访记录"
+				widgetVar="dlg_appraiseParttimeStaff" modal="true" showEffect="blind"
+				hideEffect="clip" resizable="false" width="600px">
+				<p:outputPanel>
+					<div style="text-align: center;">
+						<h2 class="title">回访记录</h2>
+					</div>
+					<div>
+						<table class="common_market_tab">
+							<tr>
+								<th class="appraission_tab_th">客户姓名:</th>
+								<td colspan="3"><h:outputText styleClass="appraission_tab_td"
+										value="#{revisitView.customer.name}" /></td>
+								<th class="appraission_tab_th">校园代理姓名:</th>
+								<td colspan="3"><h:outputText styleClass="appraission_tab_td"
+										value="#{revisitView.parttimeStaff.name}" /></td>
+							</tr>
+						</table>
+					</div>
+					<br />
+					<br />
+					<div>
+						<h:outputText value="校园代理的工作成果是否属实？"
+							style="margin-left:1%;font-size:18px;" />
+						<p:selectOneRadio value="#{revisitView.revisit.realness}" columns="2"
+							layout="responsive">
+							<f:selectItem itemLabel="属实" itemValue="属实" />
+							<f:selectItem itemLabel="虚假" itemValue="虚假" />
+							<f:ajax/>
+						</p:selectOneRadio>
+						<br />
+						<br />
+						<h:outputText value="客户对校园代理的评价:" style="margin-left:1%;font-size:18px;" />
+						<p:selectManyCheckbox id="multiSelectedItems" value="#{revisitView.impressions}" immediate="true"
+							columns="#{revisitView.staticContents.size()/2}" layout="responsive">
+							<f:selectItems value="#{revisitView.staticContents}" var="sc"
+								itemLabel="#{sc}" itemValue="#{sc}" />
+							<f:ajax/>
+						</p:selectManyCheckbox>
+						<br />
+						<p:inputTextarea style="width:98%;" rows="10" value="#{revisitView.revisit.impressionFromCustomer}" >
+							<p:ajax/>
+						</p:inputTextarea>
+					</div>
+					<div>
+						<div style="margin-top: 10px" />
+						<p:commandButton value="返回" style="margin-left:20%;"
+							oncomplete="PF('dlg_appraiseParttimeStaff').hide()"
+							icon="ui-icon-arrowreturnthick-1-w" immediate="true">
+						</p:commandButton>
+
+						<p:commandButton value="提交" style="margin-left:30%;" 
+							type="submit" 
+							update="@form:dlg_appraiseParttimeStaff,@form:revisitListTable,@form:multiSelectedItems"
+							icon="ui-icon-check" process="@this" action="#{revisitView.commitRevisit}"
+							oncomplete="PF('dlg_appraiseParttimeStaff').hide()">
+						</p:commandButton>
+					</div>
+				</p:outputPanel>
+			</p:dialog>
+
+			<!-- 查看客户信息对话框 -->
+			<!-- 查看客户信息对话框 -->
+			<!-- 查看客户信息对话框 -->
+			<p:dialog id="dlg_customerDetails" header="详细信息"
+				widgetVar="dlg_customerDetails" modal="true" showEffect="size"
+				hideEffect="size" resizable="false">
+				<p:outputPanel style="text-align:center;" id="detail">
+					<p:panelGrid rendered="#{not empty customerView.customer}">
+						<table class="common_market_tab"  style="width: 450px">
+						<tr>
+							<!--第1行开始-->
+							<th>姓名</th>
+							<td colspan="3"><h:outputText value="#{customerView.customer.name}" /></td>
+                            <th>家乡</th>
+							<td colspan="3"><h:outputText
+									value="#{customerView.customer.hometown}" /></td>
+						</tr>
+						<!--第1行结束-->
+
+						<tr>
+							<!--第2行开始-->
+							<th>学校</th>
+							<td colspan="3"><h:outputText
+									value="#{customerView.customer.school}" /></td>
+							<th>院系</th>
+							<td colspan="3"><h:outputText
+									value="#{customerView.customer.academy}" /></td>
+						</tr>
+						<tr>
+							<!--第4行开始-->
+							<th>年级</th>
+							<td colspan="3"><h:outputText value="#{customerView.customer.grade}" /></td>
+						<th>班级</th>
+							<td colspan="3"><h:outputText value="#{customerView.customer.className}" /></td>
+						</tr>
+
+					
+
+						<tr>
+						<!--第6行开始-->
+							<th>电话</th>
+							<td colspan="3"><h:outputText
+									value="#{customerView.customer.tel}" /></td>
+							<th>QQ</th>
+							<td colspan="3"><h:outputText
+									value="#{customerView.customer.qq}" /></td>
+						</tr>
+						<!--第6行结束-->
+						
+						<tr>
+							<th>兴趣</th>
+							<td colspan="3"><h:outputText
+									value="#{customerView.customer.interest}" /></td>
+								<th>生日</th>
+							<td colspan="3"><h:outputText
+									value="#{customerView.customer.birthday}" /></td>
+						</tr>
+					
+						<tr>
+							<th>住址</th>
+							<td colspan="3"><h:outputText
+									value="#{customerView.customer.address}" /></td>
+							<th>备注</th>
+							<td colspan="3"><h:outputText
+									value="#{customerView.customer.remarks}" /></td>
+						</tr>
+					</table>
+					</p:panelGrid>
+				</p:outputPanel>
+			</p:dialog>
+		</div>
+	</h:form>
+	<style type="text/css">
+.revisitTableHead_a {
+	font-size: 18px;
+}
+
+.revisitTableHead_b {
+	font-size: 18px;
+	color: orange;
+}
+
+.appraission_tab_th {
+	font-size: 18px;
+	width: 120px;
+}
+
+.appraission_tab_td {
+	font-size: 18px;
+}
+</style>
+</f:view>

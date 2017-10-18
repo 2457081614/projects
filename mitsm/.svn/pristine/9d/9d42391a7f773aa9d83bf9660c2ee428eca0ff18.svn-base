@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<ui:composition template="/pages/common/basicPage.xhtml">
+	<ui:param name="menuIndex" value="6" />
+	<ui:define name="content">
+		<ui:include src="/pages/common/top.xhtml"></ui:include>
+		<h:form id="mainForm">
+			<script type="text/javascript">
+				$(document).ready(function() {
+					$("[id='#{hidedButton.clientId}']").hide();
+					$("[id='#{hidedButton.clientId}']").click();
+				});
+			</script>
+			<p:commandButton value=" " id="hidedButton" binding="#{hidedButton}"
+				action="#{pagesView.changePage('welcome')}" update="mainOutputPanel" />
+			<br />
+			<div class="div_2_1">
+				<p:accordionPanel multiple="false" dynamic="true"  >
+					<p:tab titleStyleClass="titleStyle">
+						<f:facet name="title">
+							<p:graphicImage value="/icons/task_notice.png" />
+							<h:outputText value="任务通知" />
+						</f:facet>
+						<p:graphicImage value="/icons/tasklist.png" />
+						<p:commandLink value="任务列表" styleClass="menuStyle"
+							action="#{pagesView.changePage('taskList')}"
+							onmousemove="move(this)" onmouseout="out(this)"
+							update="mainOutputPanel" />
+					</p:tab>
+
+					<!-- by YLX -->
+					<c:choose>
+						<c:when
+							test="#{parttimeStaffView.loginedParttimeStaff.identifier==1}">
+							<p:tab titleStyleClass="titleStyle">
+								<f:facet name="title">
+									<p:graphicImage value="/icons/feedback.png" />
+									<h:outputText value="客户反馈" />
+								</f:facet>
+								<p:graphicImage value="/icons/appraise.png" />
+								<p:commandLink value="编辑反馈" styleClass="menuStyle"
+									action="#{pagesView.changePage('customerFeedback')}"
+									onmousemove="move(this)" onmouseout="out(this)"
+									update="mainOutputPanel" />
+								<br />
+							</p:tab>
+						</c:when>
+						<c:when
+							test="#{parttimeStaffView.loginedParttimeStaff.identifier==2}">
+							<!-- <p:tab titleStyleClass="titleStyle">
+								<f:facet name="title">
+									<p:graphicImage value="/icons/feedback.png" />
+									<h:outputText value="客户反馈" />
+								</f:facet>
+								<p:graphicImage value="/icons/appraise.png" />
+								<p:commandLink value="编辑反馈" styleClass="menuStyle"
+									action="#{pagesView.changePage('customerFeedback')}"
+									onmousemove="move(this)" onmouseout="out(this)"
+									update="mainOutputPanel" /> 
+								<br />
+							</p:tab> -->
+							<p:tab titleStyleClass="titleStyle">
+								<f:facet name="title">
+									<p:graphicImage value="/icons/check.png" />
+									<h:outputText value="回访" />
+								</f:facet>
+								<p:graphicImage value="/icons/appraise.png" />
+								<p:commandLink value="填写回访" styleClass="menuStyle"
+									action="#{pagesView.changePage('revisit')}"
+									onmousemove="move(this)" onmouseout="out(this)"
+									update="mainOutputPanel" />
+								<br />
+							</p:tab>
+						</c:when>
+					</c:choose>
+					<p:tab title="更多" titleStyleClass="titleStyle">
+						<f:facet name="title">
+							<p:graphicImage value="/icons/more.png" />
+							<h:outputText value="更多" />
+						</f:facet>
+						<p:graphicImage value="/icons/new_version.png" />
+						<p:commandLink value="新版预览" styleClass="menuStyle"
+							action="#{pagesView.changePage('more')}" onmousemove="move(this)"
+							onmouseout="out(this)" update="mainOutputPanel" />
+						<br />
+					</p:tab>
+				</p:accordionPanel>
+			</div>
+		</h:form>
+		<div class="div_2_2">
+			<p:outputPanel id="mainOutputPanel">
+				<ui:include src="#{pagesView.dynamicaPagesInclude}"></ui:include>
+			</p:outputPanel>
+		</div>
+
+	</ui:define>
+</ui:composition>
+</html>

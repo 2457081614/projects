@@ -1,0 +1,132 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	<script type="text/javascript">
+		$(document).ready(function($) {
+			$("[id='#{addStaffPanel.clientId}']").hide();
+		});
+
+		function showInfoTable() {
+			$("[id='#{addStaff.clientId}']").hide();
+			$("[id='#{addStaffPanel.clientId}']").slideDown("slow");
+			return true;
+		}
+
+		function hideInfoTable() {
+			$("[id='#{addStaffPanel.clientId}']").fadeOut(0);
+			$("[id='#{addStaff.clientId}']").slideDown("slow");
+			return true;
+		}
+	</script>
+
+	<h:form>
+		<p:outputPanel id="addStaff" binding="#{addStaff}">
+			<div style="margin-left: 30%;">
+				<h2 class="title" style="margin-left: 10%;">新增员工</h2>
+				<p:commandButton value="单个输入" styleClass="btnClass" icon="fa fa-fw fa-edit"
+					onclick="showInfoTable()" />
+				<p:spacer width="100" />
+				<p:commandButton value="批量导入" styleClass="btnClass"
+					icon="fa fa-fw fa-align-justify" update="@form:fileUploadTag"
+					onclick="PF('dlg_chooseFile').show()" />
+			</div>
+		</p:outputPanel>
+
+
+		<p:outputPanel id="addStaffPanel" binding="#{addStaffPanel}">
+			<div style="border: solid DarkCyan 2px; width: 70%; margin-top: 10%">
+					<table id="addStaff1" class="common_tab" style="width: 100%;">
+						<tr>
+							<td colspan="4"
+								style="color: White; background-color: DarkCyan; font-size: 18px;">填写员工基本信息</td>
+						</tr>
+						<tr>
+							<!--第1行开始-->
+							<th><span style="color: red;">*</span>姓名</th>
+							<td><p:inputText styleClass="inputTextClass" placeholder="请输入员工姓名">
+								</p:inputText></td>
+							<th><span style="color: red;">*</span>电话</th>
+							<td><p:inputText styleClass="inputTextClass"
+									placeholder="请输员工电话">
+								</p:inputText></td>
+
+						</tr>
+						<!--第1行结束-->
+
+
+						<tr>
+							<!--第2行开始-->
+							<th><span style="color: red;">*</span>员工住址</th>
+							<td><p:inputText styleClass="inputTextClass"
+									placeholder="员工住址" /></td>
+							<th><span style="color: red;">*</span>邮箱</th>
+							<td><p:inputText styleClass="inputTextClass" 
+									placeholder="请输入员工邮箱" >
+								</p:inputText></td>
+						</tr>
+
+
+						<tr>
+
+							<th><span style="color: red;">*</span>身份证号</th>
+							<td><p:inputText styleClass="inputTextClass"
+									placeholder="请输入员工身份证号">
+								</p:inputText></td>
+							<th><span style="color: red;">*</span>员工生日</th>
+							<td><p:calendar effect="blind" pattern="yyyy-MM-dd" navigator="true"
+									locale="zh_CN"
+									yearRange="c-60:c" lang="zh_CN" readonlyInput="true" /></td>
+						</tr>
+
+						<tr>
+							<th><span style="color: red;">*</span>员工性别</th>
+							<td><p:selectOneRadio>
+									<f:selectItem itemLabel="男" itemValue="男" />
+									<f:selectItem itemLabel="女" itemValue="女" />
+								</p:selectOneRadio></td>
+						</tr>
+					</table>
+					<p:separator />
+					<div style="margin-bottom: 8px; width: 100%; margin-top: 5px">
+						<p:commandButton value="返回" id="returnBtnStaff"
+							binding="#{returnBtnSTaff}"
+							style="width:100px;margin-left:30%;font-weight:normal" ajax="true"
+							icon="ui-icon-arrowreturnthick-1-w" oncomplete="hideInfoTable() " />
+						<p:commandButton value="添加" id="confirmAddingStaffBtn"
+							icon="ui-icon-check" binding="#{confirmAddingStaffBtn}"
+							onclick="PF('dlg_confirmAddingStaff').show()"
+							style="width:100px;margin-left:10%;font-weight:normal" ajax="true" />
+					</div>
+			</div>
+			<!--   确认增加对话框 -->
+			<p:dialog id="dlg_confirmAddingStaff" header="请确认" appendTo="@(body)"
+				widgetVar="dlg_confirmAddingStaff" modal="true" showEffect="bounce"
+				hideEffect="fade" resizable="false" width="200px">
+				<table>
+					<tr>
+						<h:outputText value="确认添加吗?" style="font-size:16px;color:#003a6c;" />
+					</tr>
+					<tr>
+						<td><p:commandButton value="Cancel"
+								oncomplete="PF('dlg_confirmAddingStaff').hide()" icon="ui-icon-cancel">
+							</p:commandButton></td>
+						<td><p:commandButton value="Ok" style="margin-left:10%;"
+								oncomplete="PF('dlg_confirmAddingStaff').hide(),hideInfoTable()"
+								icon="ui-icon-check">
+							</p:commandButton></td>
+					</tr>
+				</table>
+			</p:dialog>
+		</p:outputPanel>
+		
+		<p:dialog id="dlg_chooseFile" header="选择文件" widgetVar="dlg_chooseFile"
+			width="520px" height="200px" showEffect="blind" hideEffect="clip">
+			<p:outputLabel style="color:red;" value="提示:可支持文件拖拽" />
+			<p:fileUpload fileUploadListener="#{staffView.addBatch}" id="fileUploadTag"
+				style="margin-left:0px;" mode="advanced" dragDropSupport="true"
+				label="选择" cancelLabel="取消" uploadLabel="上传"
+				sizeLimit="1000000" allowTypes="/(\.|\/)(xls|xlsx)$/" fileLimit="1"
+				oncomplete="PF('dlg_chooseFile').hide()"/>
+		</p:dialog>
+	</h:form>
+</f:view>

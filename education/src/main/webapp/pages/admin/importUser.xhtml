@@ -1,0 +1,48 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<h:form>
+		<p:dataTable var="user" value="#{userView.userList}">
+			<p:column headerText="Id">
+				<h:outputText value="#{user.id}" />
+			</p:column>
+
+			<p:column headerText="用户名">
+				<h:outputText value="#{user.username}" />
+			</p:column>
+
+			<p:column headerText="具有的角色">
+				<p:dataList var="role" value="#{user.roles}" emptyMessage=""
+					type="definition">
+					<button type="button" class="btn btn-success">#{role.name}</button>
+				</p:dataList>
+			</p:column>
+		</p:dataTable>
+	</h:form>
+
+
+	<table>
+		<tr>
+			<h:form enctype="multipart/form-data">
+				<td><p:fileUpload value="#{userView.uploadFile}" mode="simple"
+						icon="fa fa-plus" skinSimple="true" label="选择要导入的文件" /></td>
+				<td><p:commandButton value="导入" ajax="false"
+						actionListener="#{userView.importUsers}" icon="fa fa-user-plus" />
+				</td>
+			</h:form>
+		</tr>
+		<tr>
+			<td><h:form>
+					<p:commandButton value="下载导入文件模板"
+						onclick="PrimeFaces.monitorDownload(start, stop);" process="@none"
+						update="@none" icon="fa fa-cloud-download">
+						<p:fileDownload value="#{userView.downloadTemplate()}" />
+					</p:commandButton>
+				</h:form></td>
+		</tr>
+	</table>
+
+</f:view>

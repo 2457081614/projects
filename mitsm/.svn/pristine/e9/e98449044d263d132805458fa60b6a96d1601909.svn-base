@@ -1,0 +1,33 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<style type="text/css">
+.greeting {
+	font-size: 24px;
+	font-family: Tahoma, Verdana, STHeiTi, simsun, sans-serif;
+	color: #003a6c;
+	font-weight: bold;
+}
+</style>
+
+	<h:form>
+		<p:commandButton value=" " id="hiddenBtn" binding="#{hiddenBtn}"
+			action="#{loginView.checkIn}"/>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$("[id='#{hiddenBtn.clientId}']").hide();
+				$("[id='#{hiddenBtn.clientId}']").click();
+			});
+		</script>
+		<div style="margin-left: 35%; margin-top: 10%;">
+			<p:outputLabel value="#{pagesView.loginedUser.name}" style="color:red;"
+				styleClass="greeting" />
+			<p:outputLabel value="#{pagesView.appellation}" styleClass="greeting" />
+			<p:outputLabel value="，#{pagesView.timePeriod}好" styleClass="greeting" />
+			<br />
+			<p:outputLabel value="欢迎登录 " styleClass="greeting" />
+			<p:graphicImage value="/icons/smile.png" />
+		</div>
+	</h:form>
+</f:view>

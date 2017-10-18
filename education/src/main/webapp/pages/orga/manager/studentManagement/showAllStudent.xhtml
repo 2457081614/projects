@@ -1,0 +1,179 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition template="../../../templates/basicPage.xhtml">
+		<ui:define name="content">
+			<h:form id="form">
+				<p:dataTable id="studentListTable" var="student"
+					value="#{studentView.studentList}" rows="6" 
+					binding="#{studentListTable}" sortBy="#{student.stuNo}"
+					filteredValue="#{studentView.filteredStudentList}"
+					paginatorPosition="bottom" paginator="true"
+					rowsPerPageTemplate="6,10,15,20"
+					paginatorTemplate="{CurrentPageReport} 
+											{FirstPageLink}
+											{PreviousPageLink}
+											{PageLinks}
+											{NextPageLink}
+											{LastPageLink}
+											{RowsPerPageDropdown}"
+					currentPageReportTemplate="{totalRecords}
+									 ({currentPage} of {totalPages})"
+					rowKey="#{student.stuNo}" widgetVar="studentListTable"
+					rowSelectMode="add">
+
+					<f:facet name="header">
+						<p:outputPanel style="text-align: left;font-weight:normal">
+							<h:outputText value="请输入过滤关键字：" />
+							<p:inputText id="globalFilter"
+								onkeyup="PF('studentListTable').filter()" style="width:150px"
+								placeholder="关键字" />
+						</p:outputPanel>
+					</f:facet>
+
+					<p:column headerText="姓名" filterBy="#{student.stuName}"
+						filterable="false" filterMatchMode="contains"
+						styleClass="nameColumn">
+						<p:commandLink title="点击查看学生更多信息" value="#{student.stuName}"
+							style="color:#003a6c;text-decoration: underline;" process="@this"
+							icon="ui-icon-search" update="@form:@parent:dlg_studentDetails"
+							oncomplete="PF('dlg_studentDetails').show()" immediate="true"
+							action="#{studentView.showStudent}">
+							<f:setPropertyActionListener value="#{student}"
+								target="#{studentView.student}" />
+						</p:commandLink>
+					</p:column>
+
+					<p:column headerText="学号" filterBy="#{student.stuNo}"
+						filterable="false" filterMatchMode="contains">
+						<h:outputText value="#{student.stuNo}" />
+					</p:column>
+
+					<p:column headerText="性别" filterBy="#{student.gendar}"
+						filterable="false" filterMatchMode="contains" style="width:110px;">
+						<h:outputText value="#{student.gendar}" />
+					</p:column>
+
+					<p:column headerText="联系电话" filterBy="#{student.cellPhone}"
+						filterMatchMode="contains" filterable="false"
+						styleClass="telColumn">
+						<h:outputText value="#{student.cellPhone}" />
+					</p:column>
+
+					<p:column headerText="QQ" filterBy="#{student.qq}"
+						filterMatchMode="contains" filterable="false"
+						styleClass="qqColumn">
+						<h:outputText value="#{student.qq}" />
+					</p:column>
+
+					<p:column headerText="删除学生" styleClass="deletionColumn">
+						<p:commandButton title="删除此学生" value="删除" icon="ui-icon-trash"
+							ajax="true" oncomplete="PF('dlg_confirmToDeleteOne').show()"
+							immediate="true">
+							<f:setPropertyActionListener value="#{student}"
+								target="#{studentView.student}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+			</h:form>
+		</ui:define>
+
+		<ui:define name="dialog">
+			<!-- 查看学生信息对话框 -->
+			<!-- 查看学生信息对话框 -->
+			<!-- 查看学生信息对话框 -->
+			<p:dialog id="dlg_studentDetails" header="详细信息"
+				widgetVar="dlg_studentDetails" modal="true" showEffect="size"
+				hideEffect="size" resizable="false" width="400px">
+				<p:outputPanel style="text-align:center;" id="detail">
+					<p:panelGrid rendered="#{not empty studentView.student}">
+						<table class="common_market_tab">
+							<tr>
+								<th>姓名</th>
+								<td colspan="3"><h:outputText
+										value="#{studentView.student.stuName}" /></td>
+								<th>学号</th>
+								<td colspan="3"><h:outputText
+										value="#{studentView.student.stuNo}" /></td>
+							</tr>
+
+							<tr>
+								<th>学校</th>
+								<td colspan="3"><h:outputText
+										value="#{studentView.student.school}" /></td>
+								<th>院系</th>
+								<td colspan="3"><h:outputText
+										value="#{studentView.student.department}" /></td>
+							</tr>
+							<tr>
+								<th>专业</th>
+								<td colspan="3"><h:outputText
+										value="#{studentView.student.major}" /></td>
+								<th>班级</th>
+								<td colspan="3"><h:outputText
+										value="#{studentView.student.classInfo}" /></td>
+							</tr>
+
+
+							<tr>
+								<th>年级</th>
+								<td colspan="3"><h:outputText
+										value="#{studentView.student.grade}" /></td>
+								<th>职务</th>
+								<td colspan="3"><h:outputText
+										value="#{studentView.student.post}" /></td>
+							</tr>
+
+
+							<tr>
+								<th>家乡</th>
+								<td colspan="3"><h:outputText
+										value="#{studentView.student.homeAddress}" /></td>
+								<th>QQ</th>
+								<td colspan="3"><h:outputText
+										value="#{studentView.student.qq}" /></td>
+							</tr>
+
+							<tr>
+								<th>备注</th>
+								<td colspan="6"><h:outputText
+										value="#{studentView.student.remark}" /></td>
+							</tr>
+						</table>
+					</p:panelGrid>
+				</p:outputPanel>
+			</p:dialog>
+
+
+			<!-- 确认删除一个客户的对话框 -->
+			<p:dialog id="dlg_confirmToDeleteOne" header="请确认"
+				widgetVar="dlg_confirmToDeleteOne" modal="true" showEffect="bounce"
+				hideEffect="fade" resizable="false" width="230" height="60">
+				<table>
+					<tr>
+						<h:outputText value="确认删除吗?"
+							style="font-size:20px;color:#003a6c;text-align:center;" />
+					</tr>
+					<tr>
+						<td><p:commandButton value="Cancel"
+								oncomplete="PF('dlg_confirmToDeleteOne').hide()"
+								icon="fa fa-fw fa-remove" immediate="true">
+							</p:commandButton></td>
+						<td><p:commandButton value="OK" style="margin-left:15%;"
+								action="#{studentView.delete}"
+								oncomplete="PF('dlg_confirmToDeleteOne').hide()"
+								update="@all:form"
+								icon="ui-icon-check" process="@this">
+							</p:commandButton></td>
+					</tr>
+				</table>
+			</p:dialog>
+		</ui:define>
+
+	</ui:composition>
+
+</f:view>

@@ -1,0 +1,122 @@
+package com.meession.market.evaluation.entity;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "Evaluation")
+public class Evaluation {
+	
+	/**
+	 * 根据实际情况动态的加入要评价的对象
+	 * 
+	 * 这是对兼职的评价
+	 */
+	public static final String PARTTIMESTAFF="parttimeStaff";
+	
+	/**
+	 * 对员工的评价
+	 */
+	public static final String STAFF="staff";
+	/**
+	 * 数据库唯一标识符
+	 */
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "evaluation_id")
+	private long id;
+	/**
+	 * 评价人的id
+	 */
+	private long evaluaterId;
+	/**
+	 * 要评价的对象的类型
+	 */
+	private String type;
+	/**
+	 * 被评价对象的id
+	 */
+	private long evaluatedObjectId;
+	/**
+	 * 评价星级 
+	 * 兼职的好评度
+	 *  是用星级评判的，员工通过对兼职对任务的完成结果进行评价 
+	 *  非常不满意： 0星级 
+	 *  不满意： 1星级 
+	 *  比较满意能接受： 2星级
+	 *  满意： 3星级 
+	 *  很满意： 4星级 
+	 *  非常满意： 5星级
+	 */
+	private double grade;
+	/**
+	 * 评价内容
+	 */
+	private String content;
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public long getEvaluaterId() {
+		return evaluaterId;
+	}
+
+	public void setEvaluaterId(long evaluaterId) {
+		this.evaluaterId = evaluaterId;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public long getEvaluatedObjectId() {
+		return evaluatedObjectId;
+	}
+
+	public void setEvaluatedObjectId(long evaluatedObjectId) {
+		this.evaluatedObjectId = evaluatedObjectId;
+	}
+
+	public double getGrade() {
+		return grade;
+	}
+
+	public void setGrade(double grade) {
+		this.grade = grade;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public Evaluation(long id, long evaluaterId, String type, long evaluatedObjectId, double grade, String content) {
+		super();
+		this.id = id;
+		this.evaluaterId = evaluaterId;
+		this.type = type;
+		this.evaluatedObjectId = evaluatedObjectId;
+		this.grade = grade;
+		this.content = content;
+	}
+
+	public Evaluation() {
+		super();
+	}
+}

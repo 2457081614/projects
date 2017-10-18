@@ -1,0 +1,21 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form>
+		<p:dataTable var="role" value="#{roleView.roleList}">
+			<p:column headerText="Id">
+				<h:outputText value="#{role.id}" />
+			</p:column>
+
+			<p:column headerText="用户名">
+				<h:outputText value="#{role.name}" />
+			</p:column>
+
+		</p:dataTable>
+
+	</h:form>
+
+</f:view>

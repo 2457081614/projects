@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	
+	xmlns:p="http://primefaces.org/ui"
+	>
+       <div id="modifyInfoP_top">
+		<h:form id="modifyInfoP_form1" style="border:0px solid red;left:36%;top:100px" >
+			<p:growl id="modifyInfoP_growl" showDetail="true" sticky="true" />
+			<div id="modifyInfoP_header">
+			  修改联系方式
+			</div>
+			<div id="modifyInfoP_Info">
+			      <div id="modifyIP"  >
+                 <h:panelGrid columns="2" id="matchGrid" cellpadding="5">  
+               
+               <h:outputLabel for="tel" value="电话:" />
+            	<p:inputText  id="tel" value="13245678900"  mask="**"/>
+               
+               <h:outputLabel for="qq" value="QQ:" />
+            	<p:inputText  id="qq"  value="10001" />
+         
+                <h:outputLabel for="address" value="地址:" />
+            	<p:inputText id="address" value="广东深圳" />
+         
+              </h:panelGrid>
+              </div>
+       
+              <SPAN class="buttonI1"> 
+            	<p:commandButton value="提交" action="alert('提交')"  icon="ui-icon-plusthick" update="modifyInfoP_growl"/>
+              </SPAN>
+              <SPAN class="buttonI2"> 
+            	<p:commandButton value="返回" action="1" icon="ui-icon-minus" />
+            	</SPAN>
+                 
+			</div>
+		   </h:form>
+	   </div>
+</html>

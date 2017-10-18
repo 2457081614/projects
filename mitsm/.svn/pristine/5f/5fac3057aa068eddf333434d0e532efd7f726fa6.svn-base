@@ -1,0 +1,110 @@
+body{background-image:url("../images/loginBK2.jpg");filter:alpha(opacity=30);background-size:100%;}
+#header{
+	border:0px solid blue;height: 40px;width: 350px;
+	text-align:center;
+	line-height: 40px;
+	position:absolute;
+	color:#729fcf;
+	left:55px;
+	top:20px;
+	font-size: 35px;font-family: monospace; font-weight: 400; 
+	
+}
+#loginInfo{
+	border:0px solid blue;
+	height: 250px;width: 450px;
+	position: absolute;top:90px;left: 23px;
+	background: rgba(0, 0, 0, 0.3); 
+	-moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-box-shadow: 0 0 13px 3px rgba(20, 4a, 87,.3);
+    -webkit-box-shadow: 0 0 13px 3px rgba(20, 4a, 87,.5);
+	
+}
+#loginTop{
+	border:0px solid black;
+	position: absolute;
+	left:33%;
+	top:80px;
+	-moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+	height:400px;width:500px;
+	background: rgba(0, 0, 0, 0.5); 
+    -moz-box-shadow: 0 0 13px 3px rgba(0,0,0,.6);
+    -webkit-box-shadow: 0 0 13px 3px rgba(0,0,0,.5);
+}
+#username{
+	margin-top:30px;
+	border:0px solid green;
+	margin-left:40px;
+	width:70px;
+	font-size: 22px;font-family: monospace; font-weight: 400; 
+	height:30px;
+	left:90px;
+	color:#729fcf;
+	float: left;
+	clear:both;
+	text-align:center;
+	line-height: 30px;
+}
+#inputname{
+	border:0px solid red;
+	position:absolute;
+	right: 35px;
+	color:#729fcf;
+	margin-top:30px;
+	margin-left:20px;
+	width:320px;
+	height:30px;
+	text-align:center;
+	line-height: 30px;
+}
+
+#pwd{
+	margin-top:30px;
+	border:0px solid green;
+	margin-left:40px;
+	width:70px;
+	font-size: 22px;font-family: monospace; font-weight: 400; 
+	height:30px;
+	color:#729fcf;
+	left:90px;
+	float: left;
+	clear:both;
+	text-align:center;
+	line-height: 30px;
+}
+#inputpwd{
+	border:0px solid red;
+	position:absolute;
+	right: 35px;
+	margin-top:90px;
+	margin-left:20px;
+	width:320px;
+	height:30px;
+	text-align:center;
+	line-height: 30px;
+}
+#add{
+	margin-top:39px;
+	border:0px solid green;
+	margin-left:180px;
+	width:130px;
+	height:30px;
+	left:90px;
+	float: left;
+	clear:both;
+	text-align:center;
+	line-height: 30px;
+}
+#reset{
+	border:0px solid red;
+	position:absolute;
+	right: 80px;
+	margin-top:158.5px;
+	margin-left:20px;
+	width:130px;
+	height:30px;
+	text-align:center;
+	line-height: 30px;
+}

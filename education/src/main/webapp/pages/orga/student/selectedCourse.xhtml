@@ -1,0 +1,112 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition template="../../templates/basicPage.xhtml">
+		<ui:define name="content">
+			<h:form>
+				<p:dataTable id="courseListTable" var="course"
+					value="#{courseView.selectedCourseListForStudentList}" rows="6" lazy="true"
+					binding="#{courseListTable}" sortBy="#{course.courseNo}"
+					paginatorPosition="bottom" paginator="true"
+					rowsPerPageTemplate="6,10,15,20"
+					paginatorTemplate="{CurrentPageReport} 
+											{FirstPageLink}
+											{PreviousPageLink}
+											{PageLinks}
+											{NextPageLink}
+											{LastPageLink}
+											{RowsPerPageDropdown}"
+					currentPageReportTemplate="{totalRecords}
+									 ({currentPage} of {totalPages})"
+					rowKey="#{course.courseNo}" widgetVar="courseListTable"
+					emptyMessage="No items.">
+
+					<p:column headerText="课程号名" filterBy="#{course.courseName}"
+						filterable="false" filterMatchMode="contains"
+						styleClass="nameColumn">
+						<p:commandLink title="点击查看课程更多信息" value="#{course.courseName}"
+							style="color:#003a6c;text-decoration: underline;" process="@this"
+							update="@form:@parent:dlg_courseDetails:detail"
+							icon="ui-icon-search" oncomplete="PF('dlg_courseDetails').show()"
+							immediate="true" >
+							<f:setPropertyActionListener value="#{course}"
+								target="#{courseView.course}" />
+						</p:commandLink>
+					</p:column>
+
+					<p:column headerText="课程号" filterBy="#{course.courseNo}"
+						filterable="false" filterMatchMode="contains">
+						<h:outputText value="#{course.courseNo}" />
+					</p:column>
+
+					<p:column headerText="学时" filterBy="#{course.hours}"
+						filterMatchMode="contains" filterable="false"
+						styleClass="hoursColumn">
+						<h:outputText value="#{course.hours}" />
+					</p:column>
+
+					<p:column headerText="学分" filterBy="#{course.credit}"
+						filterMatchMode="contains" filterable="false"
+						styleClass="creditColumn">
+						<h:outputText value="#{course.credit}" />
+					</p:column>
+
+
+
+				</p:dataTable>
+			</h:form>
+		</ui:define>
+
+		<ui:define name="dialog">
+			<!-- 查看学生信息对话框 -->
+			<!-- 查看学生信息对话框 -->
+			<!-- 查看学生信息对话框 -->
+			<p:dialog id="dlg_courseDetails" header="详细信息"
+				widgetVar="dlg_courseDetails" modal="true" showEffect="size"
+				hideEffect="size" resizable="false" width="400px">
+				<p:outputPanel style="text-align:center;" id="detail">
+					<p:panelGrid rendered="#{not empty courseView.course}">
+						<table class="common_market_tab">
+							<tr>
+								<th>课程号</th>
+								<td colspan="3"><h:outputText
+										value="#{courseView.course.courseNo}" /></td>
+								<th>课程名</th>
+								<td colspan="3"><h:outputText
+										value="#{courseView.course.courseName}" /></td>
+							</tr>
+
+							<tr>
+								<th>开课时间</th>
+								<td colspan="3"><h:outputText
+										value="#{courseView.course.courseTime}" /></td>
+								<th>上课地点</th>
+								<td colspan="3"><h:outputText
+										value="#{courseView.course.courseAddress}" /></td>
+							</tr>
+							<tr>
+								<th>学时</th>
+								<td colspan="3"><h:outputText
+										value="#{courseView.course.credit}" /></td>
+								<th>任课老师</th>
+								<td colspan="3"><h:outputText
+										value="#{teacherView.getTeacherByCourse().name}" /></td>
+							</tr>
+							<tr>
+								<th>课程简介</th>
+								<td colspan="3"><h:outputText
+										value="#{courseView.course.courseInfo}" /></td>
+							</tr>
+						</table>
+					</p:panelGrid>
+				</p:outputPanel>
+			</p:dialog>
+
+		</ui:define>
+
+	</ui:composition>
+
+</f:view>

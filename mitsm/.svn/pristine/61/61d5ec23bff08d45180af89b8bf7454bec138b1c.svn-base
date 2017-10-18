@@ -1,0 +1,5 @@
+#LDAP
+ldap.url=ldaps://10.120.16.92:636
+ldap.baseDN=O=VGC,C=COM
+ldap.username=uid=hcp,cn=users,O=VGC,C=COM
+ldap.password=object00

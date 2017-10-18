@@ -1,0 +1,62 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h1 class="title">一键导出数据库中所有数据</h1>
+
+	<h:form>
+		<div style="margin-left: 40%; margin-top: 10%">
+			<p:commandButton value="一键导出" styleClass="btnClass" icon="fa fa-fw fa-edit"
+				oncomplete="PF('dlg_fillForm').show()"/>
+		</div>
+
+		<p:dialog header="填写内容" id="dlg_fillForm" widgetVar="dlg_fillForm"
+			modal="true" resizable="false" width="400px" showEffect="blind"
+			hideEffect="clip">
+			<table style="color: #33667C; font-size: 16px;" class="common_market_tab">
+				<tr>
+					<th colspan="2">请提供以下内容</th>
+				</tr>
+				<tr>
+					<th>数据库密码:</th>
+					<td><p:inputText value="#{fileExportView.databasePassword}" immediate="true" >
+							<p:ajax/>
+						</p:inputText>
+					</td>
+				</tr>
+				<tr>
+					<th>文件加密密码(至少8位):</th>
+					<td><p:inputText value="#{fileExportView.key}" immediate="true" >
+						<p:ajax/>
+						</p:inputText>
+					</td>
+				</tr>
+			</table>
+			<p:commandButton value="返回" style="margin-left:15%;"
+				oncomplete="PF('dlg_fillForm').hide()" icon="ui-icon-arrowreturnthick-1-w"
+				immediate="true">
+			</p:commandButton>
+			<p:commandButton value="确认" style="margin-left:30%;" type="submit"
+				update="@form:dlg_fillForm" icon="ui-icon-check" process="@this"
+				action="#{fileExportView.exportEncryptedFile}"
+				oncomplete="PrimeFaces.monitorDownload(start, stop)">
+				<p:fileDownload value="#{fileExportView.encryptedFile}" />
+			</p:commandButton>
+		</p:dialog>
+
+		<p:dialog modal="true" widgetVar="statusDialog" header="状态"
+			draggable="false" closable="false" resizable="false">
+			<p:graphicImage value="/images/ajaxloadingbar.gif" />
+		</p:dialog>
+	</h:form>
+
+	<script type="text/javascript">
+		function start() {
+			PF('statusDialog').show();
+		}
+
+		function stop() {
+			PF('statusDialog').hide();
+		}
+	</script>
+</f:view>

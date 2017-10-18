@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd"
+	version="2.2">
+
+	<navigation-rule>
+        <!-- 导航规则的输入页面 -->
+        <from-view-id>/pages/common/login.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>0</from-outcome>
+            <to-view-id>/pages/common/login.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>1</from-outcome>
+            <to-view-id>/pages/teacher/mystudent_index.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>2</from-outcome>
+            <to-view-id>/pages/common/register.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule> 
+    
+  	<navigation-rule>
+        <from-view-id>/pages/common/register.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>1</from-outcome>
+            <to-view-id>/pages/common/login.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>0</from-outcome>
+            <to-view-id>/pages/common/register.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/pages/common/top.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>0</from-outcome>
+            <to-view-id>/pages/common/login.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>1</from-outcome>
+            <to-view-id>/pages/common/login.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+</faces-config>

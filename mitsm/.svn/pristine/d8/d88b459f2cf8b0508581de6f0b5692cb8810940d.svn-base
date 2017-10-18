@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceXmlLocation" value="classpath:META-INF/default-persistence.xml" />
+		<property name="dataSource" ref="dataSource" />
+		<property name="persistenceProviderClass">
+			<value>org.hibernate.ejb.HibernatePersistence</value>
+		</property>
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="showSql" value="${db.showSql}" />
+				<property name="generateDdl" value="${db.generateDdl}" />
+				<property name="databasePlatform" value="${db.dialect}" />
+			</bean>
+		</property>
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.use_sql_comments">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.default_batch_fetch_size">4</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop> <!--  更新记录，不会重新建表 -->
+			</props>
+		</property>
+	</bean>
+
+</beans>

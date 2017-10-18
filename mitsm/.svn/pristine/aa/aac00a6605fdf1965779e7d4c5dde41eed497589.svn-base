@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	>
+       <div id="modifyInfoP_top">
+		<h:form id="modifyInfoP_form1" style="border:0px solid red;left:36%;top:100px" >
+			<p:growl id="modifyInfoP_growl" showDetail="true" sticky="true" />
+			<div id="modifyInfoP_header">
+			  修改个人信息
+			</div>
+			<div id="modifyInfoP_Info">
+			      <table id="modifyInfoS_table"  style="width: 100%; height: 100%">
+         <tr><!--第1行开始-->
+          <th>姓名</th>
+            <th>
+            	<p:inputMask value="姓名" />
+            </th>
+           
+             <th>生日</th>
+            	
+            <th>
+            	<p:inputMask value="生日" mask="999999999999999999"/>
+            </th>
+         
+         </tr><!--第1行结束-->
+         
+             <tr><!--第2行开始-->
+            <th>性别</th>
+            <th>
+            	<p:selectOneRadio 
+					value="性别">
+					<f:selectItem itemLabel="男" itemValue="男" />
+					<f:selectItem itemLabel="女" itemValue="女" />
+				</p:selectOneRadio>
+            </th>
+               <th>电话</th>
+            	
+            <th>
+            	<p:inputText  value="电话"  mask="**"/>
+           </th>
+         </tr><!--第2行结束-->
+           <th>身份证号</th>
+       <th>
+         <p:inputMask value="身份证号" mask="9999999999999999999"/>
+       </th>
+       <th>身份</th>
+       <th>
+         <p:inputMask value="身份" mask="**" />
+       </th>
+        
+         <tr><!--第4行开始-->
+         	<th colspan="2"> 
+            	<p:commandButton value="提交" style="margin-left:25%" icon="ui-icon-plusthick" update="modifyInfoP_growl"/>
+            </th>
+            <th colspan="2">
+            	<p:commandButton value="返回" action="1" icon="ui-icon-minus" style="margin-left:25%"/>
+            	
+            </th>
+            
+         </tr><!--第4行结束-->
+         </table>
+			</div>
+		   </h:form>
+	   </div>
+</html>

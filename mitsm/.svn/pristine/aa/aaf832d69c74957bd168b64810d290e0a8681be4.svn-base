@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pageflow:Pageflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf14659738660120" configfile="/mitsm/WebContent/WEB-INF/faces-config-nav.xml">
+  <nodes xsi:type="pageflow:PFPage" name="pages/communication/login.xhtml" x="122" y="370" id="pf14659740043481" referenceLink="//@navigationRule.0/@fromViewId|" outlinks="pf14659740251718 pf14659741384719 pf146597872248211" inlinks="pf14659740251718" path="/pages/common/login.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="pages/teacher/mystudent_index.xhtml" x="338" y="178" id="pf146597413847110" referenceLink="//@navigationRule.0/@navigationCase.1/@toViewId|" inlinks="pf14659741384719" path="/pages/teacher/mystudent_index.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="pages/common/register2.xhtml" x="338" y="562" id="pf146597872248212" referenceLink="//@navigationRule.0/@navigationCase.2/@toViewId|" inlinks="pf146597872248211" path="/pages/common/register.xhtml"/>
+  <links id="pf14659741384719" target="pf146597413847110" source="pf14659740043481"/>
+  <links id="pf146597872248211" target="pf146597872248212" source="pf14659740043481"/>
+  <links id="pf14659740251718" target="pf14659740043481" source="pf14659740043481">
+    <bendPoints d1Height="-36" d2Height="-36"/>
+    <bendPoints d1Width="-64" d1Height="-36" d2Width="-64" d2Height="-36"/>
+    <bendPoints d1Width="-64" d2Width="-64"/>
+  </links>
+</pageflow:Pageflow>

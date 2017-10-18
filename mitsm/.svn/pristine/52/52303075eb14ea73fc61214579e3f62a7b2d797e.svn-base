@@ -1,0 +1,327 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	<script type="text/javascript">
+		$(document).ready(function($) {
+			$("[id='#{addStaffPanel.clientId}']").hide();
+			//$("[id='#{confirmAddingStaffBtn.clientId}']").attr({"disabled":"disabled"}); //禁止按钮
+		});
+
+		function showInfoTable() {
+			$("[id='#{addStaff.clientId}']").hide();
+			$("[id='#{addStaffPanel.clientId}']").slideDown("slow");
+			return true;
+		}
+
+		function hideInfoTable() {
+			$("[id='#{addStaffPanel.clientId}']").fadeOut(0);
+			$("[id='#{addStaff.clientId}']").slideDown("slow");
+			return true;
+		}
+		
+	</script>
+	<!-- 表单验证 -->
+	<style type="text/css">
+.state1 {
+	color: blue;
+	background: url(../../images/right.png) no-repeat;
+	width: 46%;
+	font-family: '微软雅黑';
+	font-size: 15px;
+	text-align: right;
+	padding-left: 20px;
+	margin-left: 0%;
+	float: left;
+}
+
+.state2 {
+	color: red;
+	background: url(../../images/error.png) no-repeat;
+	width: 48;
+	height: 200px;
+	font-family: '微软雅黑';
+	font-size: 15px;
+	padding-left: 20px;
+	text-align: left;
+	margin-left: -33px;
+}
+
+input {
+	width: 200px;
+	height: 25px;
+}
+</style>
+	<script type="text/javascript">
+		//姓名
+		$("[id='#{staffName.clientId}']").focus(function() {
+
+		}).keyup(
+				function() {
+					if ($("[id='#{staffName.clientId}']").val() != ''&amp;&amp;$.trim($("[id='#{staffName.clientId}']").val())) {
+						$("#nameError").html("格式正确").removeClass('state2').addClass('state1');
+                        m1=true;
+                        if(m1 &amp;&amp; m2 &amp;&amp; m3 &amp;&amp; m4 &amp;&amp; m5 
+ 	                   ){
+ 	                    	$("[id='#{confirmAddingStaffBtn.clientId}']").removeAttr("disabled");
+ 	                    }
+					} else {
+						$("#nameError").html("姓名不能为空")
+								.addClass('state2').removeClass('state1');
+						m1=false;
+						$("[id='#{confirmAddingStaffBtn.clientId}']").attr({"disabled":"disabled"}); //禁止按钮
+					}
+
+				});
+		//电话
+		$("[id='#{staffTel.clientId}']").focus(function() {
+
+		}).keyup(
+				function() {
+
+					var reg = /^1[3|4|5|7|8][0-9]\d{8}$/ //11数字验证
+					if (!reg.test($("[id='#{staffTel.clientId}']").val())) {
+						$("#telError").html("手机号码错误").addClass('state2').removeClass('state1');
+                      m2=false;
+                      $("[id='#{confirmAddingStaffBtn.clientId}']").attr({"disabled":"disabled"}); //禁止按钮
+					}
+
+					else {
+						$("#telError").html("格式正确").removeClass('state2')
+								.addClass('state1');
+						m2=true;
+						if(m1 &amp;&amp; m2 &amp;&amp; m3 &amp;&amp; m4 &amp;&amp; m5 
+		                   ){
+		                    	$("[id='#{confirmAddingStaffBtn.clientId}']").removeAttr("disabled");
+		                    }
+					}
+
+				});
+		//地址
+		$("[id='#{staffAddress.clientId}']").focus(function() {
+
+		}).keyup(
+				function() {
+					if ($("[id='#{staffAddress.clientId}']").val() != ''&amp;&amp;$.trim($("[id='#{staffAddress.clientId}']").val())) {
+						$("#addressError").html("格式正确").addClass('state1').removeClass('state2');
+						m3=true;
+						if(m1 &amp;&amp; m2 &amp;&amp; m3 &amp;&amp; m4 &amp;&amp; m5 
+		                   ){
+		                    	$("[id='#{confirmAddingStaffBtn.clientId}']").removeAttr("disabled");
+		                    }
+
+					} else {
+						$("#addressError").html("地址不能为空").removeClass('state1')
+								.addClass('state2');
+						m3=false;
+						$("[id='#{confirmAddingStaffBtn.clientId}']").attr({"disabled":"disabled"}); //禁止按钮
+					}
+
+				});
+		//邮箱
+		$("[id='#{staffEmail.clientId}']")
+				.focus(function() {
+
+				})
+				.keyup(
+						function() {
+							var reg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+							if (!reg.test($("[id='#{staffEmail.clientId}']")
+									.val())) {
+								$("#emailError").html("邮箱格式错误").addClass(
+										'state2').removeClass('state1');
+								m4=false;
+								$("[id='#{confirmAddingStaffBtn.clientId}']").attr({"disabled":"disabled"}); //禁止按钮
+
+							} else {
+								$("#emailError").html("格式正确").removeClass(
+										'state2').addClass('state1');
+								m4=true;
+							}
+							if(m1 &amp;&amp; m2 &amp;&amp; m3 &amp;&amp; m4 &amp;&amp; m5 
+			                   ){
+			                    	$("[id='#{confirmAddingStaffBtn.clientId}']").removeAttr("disabled");
+			                    }
+
+						});
+		//id
+		$("[id='#{staffId.clientId}']").focus(function() {
+
+		}).keyup(
+				function() {
+					// 身份证号码为15位或者18位，15位时全为数字，18位前17位为数字，最后一位是校验位，可能为数字或字符X  
+
+					var reg = /(^\d{17}(\d|X)$)/;
+					if (!reg.test($("[id='#{staffId.clientId}']").val())) {
+						$("#idError").html("身份证号错误").addClass('state2').removeClass('state1');
+						m5=false;
+						$("[id='#{confirmAddingStaffBtn.clientId}']").attr({"disabled":"disabled"}); //禁止按钮
+
+					} else {
+						$("#idError").html("格式正确").removeClass('state2')
+								.addClass('state1');
+						m5=true;
+					}
+					if(m1 &amp;&amp; m2 &amp;&amp; m3 &amp;&amp; m4 &amp;&amp; m5 
+	                   ){
+	                    	$("[id='#{confirmAddingStaffBtn.clientId}']").removeAttr("disabled");
+	                    }
+
+				});
+		//生日
+		/* $("[id='#{birth.clientId}_input']").focus(function() {
+
+		}).keyup(
+				function() {
+					if ($("[id='#{birth.clientId}_input']").val() !="") {
+						$("#birthError").html("格式正确").addClass('state1').removeClass('state2');
+                         m5=true;
+                         if(m1 &amp;&amp; m2 &amp;&amp; m3 &amp;&amp; m4 &amp;&amp; m5 
+  	                   ){
+  	                    	$("[id='#{confirmAddingStaffBtn.clientId}']").removeAttr("disabled");
+  	                    }
+					} else {
+						$("#birthError").html("生日不能为空").removeClass('state1')
+								.addClass('state2');
+						m5=false;
+						$("[id='#{confirmAddingStaffBtn.clientId}']").attr({"disabled":"disabled"}); //禁止按钮
+					}
+					
+
+				}); */
+	</script>
+	<!-- 验证结束 -->
+
+	<h:form>
+		<p:outputPanel id="addStaff" binding="#{addStaff}">
+			<div style="margin-left: 30%; margin-top: 5%;">
+				<h2 class="title" style="margin-left: 13%;">新增员工</h2>
+				<p:commandButton value="单个输入" styleClass="btnClass" icon="fa fa-fw fa-edit"
+					onclick="showInfoTable()" />
+				<p:spacer width="100" />
+				<p:commandButton value="批量导入" styleClass="btnClass"
+					icon="fa fa-fw fa-align-justify" update="@form:fileUploadTag"
+					onclick="PF('dlg_chooseFile').show()" />
+			</div>
+		</p:outputPanel>
+
+
+		<p:outputPanel id="addStaffPanel" binding="#{addStaffPanel}">
+			<div style="border: solid DarkCyan 2px; width: 86%; margin-top: 10%">
+				<table id="addStaff1" class="common_tab" style="width: 100%;">
+					<tr>
+						<td colspan="6"
+							style="color: White; background-color: DarkCyan; font-size: 18px;">填写员工基本信息</td>
+					</tr>
+					<tr>
+
+						<!--第1行开始-->
+						<th width="14%"><span style="color: red;">*</span>姓名</th>
+						<td width="20%"><p:inputText styleClass="inputTextClass"
+								value="#{staffView.newStaff.name}" placeholder="请输入员工姓名" id="staffName"
+								binding="#{staffName}">
+							</p:inputText></td>
+						<td width="16%"><span id="nameError"></span></td>
+						<th width="14%"><span style="color: red;">*</span>电话</th>
+						<td width="20%"><p:inputText styleClass="inputTextClass"
+								value="#{staffView.newStaff.tel}" placeholder="请输员工电话" id="staffTel"
+								binding="#{staffTel}">
+							</p:inputText></td>
+						<td width="16%"><span id="telError"></span></td>
+
+					</tr>
+					<!--第1行结束-->
+
+
+					<tr>
+						<!--第2行开始-->
+						<th><span style="color: red;">*</span>员工住址</th>
+						<td><p:inputText styleClass="inputTextClass"
+								value="#{staffView.newStaff.address}" placeholder="员工住址"
+								id="staffAddress" binding="#{staffAddress}" /></td>
+						<td><span id="addressError"></span></td>
+						<th><span style="color: red;">*</span>邮箱</th>
+						<td><p:inputText styleClass="inputTextClass"
+								value="#{staffView.newStaff.email}" placeholder="请输入员工邮箱"
+								id="staffEmail" binding="#{staffEmail}">
+							</p:inputText></td>
+						<td><span id="emailError"></span></td>
+					</tr>
+
+
+					<tr>
+
+						<th><span style="color: red;">*</span>身份证号</th>
+						<td><p:inputText styleClass="inputTextClass"
+								value="#{staffView.newStaff.idCardNumber}" placeholder="请输入员工身份证号"
+								id="staffId" binding="#{staffId}">
+							</p:inputText></td>
+						<td><span id="idError"></span></td>
+						<th><span style="color: red;">*</span>员工生日</th>
+						<td><p:calendar effect="blind" pattern="yyyy-MM-dd"
+								maxdate="#{staffView.currentDate}" navigator="true" yearRange="c-60:c"
+								lang="zh_CN" value="#{staffView.birthday}" readonlyInput="true"
+								id="birth" binding="#{birth}">
+								<p:ajax event="dateSelect" />
+							</p:calendar></td>
+						<td><span id="birthError"></span></td>
+					</tr>
+
+					<tr>
+						<th><span style="color: red;">*</span>员工性别</th>
+						<td><p:selectOneRadio value="#{staffView.newStaff.gender}">
+								<f:selectItem itemLabel="男" itemValue="男" />
+								<f:selectItem itemLabel="女" itemValue="女" />
+							</p:selectOneRadio></td>
+					</tr>
+				</table>
+				<p:separator />
+				<div style="margin-bottom: 8px; width: 100%; margin-top: 20px">
+					<p:commandButton value="返回" id="returnBtnStaff" binding="#{returnBtnSTaff}"
+						update="@form:addStaffPanel" immediate="true"
+						style="width:100px;margin-left:30%;font-weight:normal;height:35px"
+						ajax="true" icon="ui-icon-arrowreturnthick-1-w"
+						oncomplete="hideInfoTable() ">
+						<p:remoteCommand name="initNewStaff" actionListener="#{staffView.initNewStaff}"/>
+					</p:commandButton>
+					<p:commandButton value="添加" id="confirmAddingStaffBtn" icon="ui-icon-check"
+						binding="#{confirmAddingStaffBtn}" immediate="true"
+						process="@this"
+						onclick="PF('dlg_confirmAddingStaff').show()"
+						style="width:100px;margin-left:10%;font-weight:normal;height:35px;"
+						ajax="true" />
+				</div>
+			</div>
+		</p:outputPanel>
+
+		<!--   确认增加对话框 -->
+		<p:dialog id="dlg_confirmAddingStaff" header="请确认"
+			widgetVar="dlg_confirmAddingStaff" modal="true" showEffect="bounce"
+			hideEffect="fade" resizable="false" width="200px">
+			<table>
+				<tr>
+					<h:outputText value="确认添加吗?" style="font-size:16px;color:#003a6c;" />
+				</tr>
+				<tr>
+					<td><p:commandButton value="Cancel"
+							oncomplete="PF('dlg_confirmAddingStaff').hide()" icon="ui-icon-cancel"
+							immediate="true">
+						</p:commandButton></td>
+					<td><p:commandButton value="Ok" style="margin-left:10%;" process="@form"
+							oncomplete="PF('dlg_confirmAddingStaff').hide(),hideInfoTable()"
+							action="#{staffView.addStaff}" update="@form:addStaffPanel"
+							icon="ui-icon-check">
+						</p:commandButton></td>
+				</tr>
+			</table>
+		</p:dialog>
+
+		<p:dialog id="dlg_chooseFile" header="选择文件" widgetVar="dlg_chooseFile"
+			width="520px" height="200px" showEffect="blind" hideEffect="clip">
+			<p:outputLabel style="color:red;" value="提示:可支持文件拖拽" />
+			<p:fileUpload fileUploadListener="#{staffView.addBatch}" id="fileUploadTag"
+				style="margin-left:0px;" mode="advanced" dragDropSupport="true"
+				sizeLimit="1000000" allowTypes="/(\.|\/)(xls|xlsx)$/" fileLimit="1"
+				oncomplete="PF('dlg_chooseFile').hide()" />
+		</p:dialog>
+	</h:form>
+</f:view>

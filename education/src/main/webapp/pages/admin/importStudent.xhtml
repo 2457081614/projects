@@ -1,0 +1,55 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<!-- update="@form:" 通过Id刷新数据-->
+
+	<h:form enctype="multipart/form-data">
+		<table>
+			<tr>
+
+				<td><p:fileUpload value="#{importView.uploadStudentFile}"
+						mode="simple" skinSimple="true" label="选择要导入的文件" /></td>
+				<td><p:commandButton value="导入" ajax="false"
+						actionListener="#{importView.importStudents}"
+						update="@form:@parent:studentListTable"
+						icon="fa fa-fw fa-download" /></td>
+			</tr>
+			<tr>
+				<td><p:commandButton value="导入文件模板下载"
+						onclick="PrimeFaces.monitorDownload(start, stop);" process="@none"
+						update="@none" icon="ui-icon-arrowthick-1-s">
+						<p:fileDownload value="#{importView.downloadTemplate()}" />
+					</p:commandButton></td>
+			</tr>
+		</table>
+	</h:form>
+
+	<p:dataTable id="studentListTable" var="student"
+		value="#{importView.allStudentList}" rows="20" lazy="true"
+		paginator="#{not empty importView.allStudentList}"
+		paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+		currentPageReportTemplate="{totalRecords} ({currentPage} of {totalPages})"
+		paginatorPosition="bottom" rowsPerPageTemplate="10,20,40"
+		emptyMessage="No items." style="min-width: 800;">
+		<p:column headerText="学号">
+			<h:outputText value="#{student.stuNo}" />
+		</p:column>
+		<p:column headerText="姓名">
+			<h:outputText value="#{student.stuName}" />
+		</p:column>
+
+		<p:column headerText="学校名称">
+			<h:outputText value="#{student.school}" />
+		</p:column>
+		<p:column headerText="班级信息">
+			<h:outputText value="#{student.classInfo}" />
+		</p:column>
+
+	</p:dataTable>
+
+
+</f:view>

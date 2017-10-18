@@ -1,0 +1,103 @@
+<!DOCTYPE html [
+<!ENTITY nbsp "&#160;"> 
+]>
+
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<br />
+	<div>
+		<h:form>
+			<p:dataTable id="latestTaskListTable" var="latestTask"
+				binding="#{latestTaskListTable}"
+				value="#{taskView.taskListForParttimeStaff}" rows="5"
+				paginatorPosition="bottom" paginator="true"
+				rowsPerPageTemplate="5,10"
+				paginatorTemplate="{CurrentPageReport} 
+											{FirstPageLink}
+											{PreviousPageLink}
+											{PageLinks}
+											{NextPageLink}
+											{LastPageLink}
+											{RowsPerPageDropdown}"
+				currentPageReportTemplate="{totalRecords}
+									 ({currentPage} of {totalPages})"
+				widgetVar="latestTaskListTable"
+				rowKey="#{latestTask.id}">
+
+				<p:column filterable="false" headerText="任务描述"
+					filterMatchMode="contains" style="text-align:left;font-size:16px;">
+
+					<p:commandLink value="#{latestTask.taskDescription}"
+						action="#{taskView.setTask(latestTask)}"
+						update="@form:taskDetailPanel" onclick="showTaskDetail()"
+						ajax="true" styleClass="taskDescription" onmousemove="move(this)"
+						onmouseout="out(this)"
+						style="font-size:16px;">
+					</p:commandLink>
+					<sup style="color: red;">new</sup>
+
+				<!-- 	 <h:outputText style="float:right;"
+						value="计划完成日期:#{latestTask.plannedFinishedDate}" />  -->
+				</p:column>
+			</p:dataTable>
+
+			<p:outputPanel id="taskDetailPanel" binding="#{taskDetailPanel}">
+				<div style="text-align: left;">
+					<p:commandButton value="返&nbsp;&nbsp;&nbsp;回" id="myReturnBtn"
+						binding="#{myReturnBtn}"
+						style="width:100px;font-weight:normal;-webkit-border-radius: 5px;"
+						ajax="true" icon="fa fa-fw fa-arrow-left"
+						oncomplete="hideTaskDetail()" />
+				</div>
+				<div style="text-align: center;">
+					<p:outputLabel value="#{taskView.task.taskDescription}"
+						style="font-size:32px;font-weight:bold;" />
+				</div>
+				<br />
+				<br />
+				<br />
+				<p:outputPanel style="text-align:center;">
+					<p:outputLabel value="发布者:#{taskView.task.staff.name}"
+						style="font-size:16px;" />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<p:outputLabel
+						value="计划完成时间:#{taskView.task.plannedFinishedDate}"
+						style="font-size:16px;" />
+				&nbsp;&nbsp;
+				</p:outputPanel>
+				<br />
+			</p:outputPanel>
+
+			<br />
+			<!-- This is a hided button,which wouldn't be displayed on any page.
+				And it's function is to update dataTable here when it is clicked by jQuery. -->
+			<p:commandButton id="hidedBtn" binding="#{hidedBtn}"
+				update="@form:latestTaskListTable" />
+
+		</h:form>
+	</div>
+
+
+	<script type="text/javascript">
+		$(document).ready(function($) {
+			$("[id='#{taskDetailPanel.clientId}']").hide();
+			$("[id='#{hidedBtn.clientId}']").hide();
+			$("[id='#{hidedBtn.clientId}']").click();
+		});
+
+		function showTaskDetail() {
+			$("[id='#{latestTaskListTable.clientId}']").hide();
+			$("[id='#{taskDetailPanel.clientId}']").slideDown("slow");
+			return true;
+		}
+
+		function hideTaskDetail() {
+			$("[id='#{taskDetailPanel.clientId}']").fadeOut(0);
+			$("[id='#{latestTaskListTable.clientId}']").slideDown("slow");
+			return true;
+		}
+	</script>
+</f:view>
